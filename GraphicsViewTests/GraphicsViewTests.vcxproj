@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="cMainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\cAddItem.cpp" />
     <ClCompile Include="src\cCustomGraphicsView.cpp" />
     <ClCompile Include="src\cItem.cpp" />
   </ItemGroup>
@@ -128,6 +129,7 @@
     <QtRcc Include="cMainWindow.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cAddItem.h" />
     <ClInclude Include="src\cItem.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>

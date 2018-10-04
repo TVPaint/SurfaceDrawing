@@ -51,6 +51,9 @@
     <ClCompile Include="src\cCustomGraphicsView.cpp">
       <Filter>src\GraphicView</Filter>
     </ClCompile>
+    <ClCompile Include="src\cAddItem.cpp">
+      <Filter>src\GraphicsItem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
@@ -72,6 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cItem.h">
+      <Filter>src\GraphicsItem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cAddItem.h">
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
   </ItemGroup>
