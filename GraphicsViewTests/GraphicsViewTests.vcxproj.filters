@@ -28,6 +28,15 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{32981ac2-a4a5-45a4-83b3-79dddb70f821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GraphicsItem">
+      <UniqueIdentifier>{b2d6b85b-c019-4622-9569-cbae1afd5372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GraphicView">
+      <UniqueIdentifier>{7e78c35d-9255-421b-ae47-6e206df1f3b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,10 +45,19 @@
     <ClCompile Include="cMainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cItem.cpp">
+      <Filter>src\GraphicsItem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cCustomGraphicsView.cpp">
+      <Filter>src\GraphicView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\cCustomGraphicsView.h">
+      <Filter>src\GraphicView</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -51,5 +69,10 @@
     <QtRcc Include="cMainWindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\cItem.h">
+      <Filter>src\GraphicsItem</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

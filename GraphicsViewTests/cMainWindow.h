@@ -3,7 +3,12 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_cMainWindow.h"
 
-class cMainWindow : public QMainWindow
+#include <QGraphicsScene>
+
+class cCustomGraphicsView;
+
+class cMainWindow :
+    public QMainWindow
 {
     Q_OBJECT
 
@@ -11,5 +16,7 @@ public:
     cMainWindow(QWidget *parent = Q_NULLPTR);
 
 private:
-    Ui::cMainWindowClass ui;
+    Ui::cMainWindow ui;
+
+    QGraphicsScene* mScene;
 };
