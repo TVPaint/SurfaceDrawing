@@ -18,7 +18,7 @@ public:
     void  itemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
     void  itemMoved();
 
-    QVector< cGraphicItem* > GetAnimationImages();
+    QVector< cGraphicItem* >& GetAnimationImages();
 
 private:
     void  _UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems );

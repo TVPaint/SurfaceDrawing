@@ -19,6 +19,11 @@ public:
 
 public:
     void TimerTick();
+    void PlayPressed();
+    void StopPressed();
+
+    void UpdatePreview();
+
 
 private:
     Ui::cMainWindow     ui;

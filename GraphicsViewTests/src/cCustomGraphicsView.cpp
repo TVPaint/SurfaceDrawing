@@ -63,6 +63,7 @@ cCustomGraphicsView::AddItem()
     item->setIndex( index );
     item->setZValue( -1 );
     scene()->addItem( item );
+    mAnimationImages.push_back( item );
 }
 
 
@@ -81,7 +82,7 @@ cCustomGraphicsView::itemMoved()
 }
 
 
-QVector< cGraphicItem* >
+QVector< cGraphicItem* >&
 cCustomGraphicsView::GetAnimationImages()
 {
     return  mAnimationImages;

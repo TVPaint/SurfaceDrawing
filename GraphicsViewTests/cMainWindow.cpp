@@ -11,8 +11,11 @@ cMainWindow::cMainWindow(QWidget *parent)
     mCurrentFrame = 0;
 
     mAnimationTimer = new QTimer();
-    connect( mAnimationTimer, &QTimer::timeout, this, &cMainWindow::TimerTick );
     mAnimationTimer->start( 1000 / 24 );
+
+
+    connect( ui.playButton, &QPushButton::clicked, this, &cMainWindow::PlayPressed );
+    connect( ui.stopButton, &QPushButton::clicked, this, &cMainWindow::StopPressed );
 }
 
 
@@ -22,7 +25,42 @@ cMainWindow::TimerTick()
     int animationCount = ui.graphicsView->GetAnimationImages().size();
     mCurrentFrame = ++mCurrentFrame % animationCount;
 
-    auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
+    UpdatePreview();
+}
 
+
+void
+cMainWindow::PlayPressed()
+{
+    if( ui.playButton->text() == "Play" )
+    {
+        connect( mAnimationTimer, &QTimer::timeout, this, &cMainWindow::TimerTick );
+        ui.playButton->setText( "Pause" );
+        mAnimationTimer->start( 1000/24 );
+    }
+    else
+    {
+        disconnect( mAnimationTimer, &QTimer::timeout, this, &cMainWindow::TimerTick );
+        ui.playButton->setText( "Play" );
+        mAnimationTimer->stop();
+    }
+}
+
+
+void
+cMainWindow::StopPressed()
+{
+    disconnect( mAnimationTimer, &QTimer::timeout, this, &cMainWindow::TimerTick );
+    ui.playButton->setText( "Play" );
+    mAnimationTimer->stop();
+    mCurrentFrame = 0;
+    UpdatePreview();
+}
+
+
+void
+cMainWindow::UpdatePreview()
+{
+    auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
     ui.previewLabel->setPixmap( currentItem->pixmap() );
 }

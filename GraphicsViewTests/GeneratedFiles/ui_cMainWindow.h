@@ -11,9 +11,11 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -30,6 +32,9 @@ public:
     QVBoxLayout *verticalLayout;
     QLabel *previewLabel;
     QSpacerItem *verticalSpacer;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *playButton;
+    QPushButton *stopButton;
     cCustomGraphicsView *graphicsView;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -57,6 +62,22 @@ public:
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        playButton = new QPushButton(centralWidget);
+        playButton->setObjectName(QStringLiteral("playButton"));
+
+        horizontalLayout->addWidget(playButton);
+
+        stopButton = new QPushButton(centralWidget);
+        stopButton->setObjectName(QStringLiteral("stopButton"));
+
+        horizontalLayout->addWidget(stopButton);
+
+
+        verticalLayout->addLayout(horizontalLayout);
 
         graphicsView = new cCustomGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
@@ -90,6 +111,8 @@ public:
     {
         cMainWindow->setWindowTitle(QApplication::translate("cMainWindow", "cMainWindow", nullptr));
         previewLabel->setText(QApplication::translate("cMainWindow", "PREVIEW", nullptr));
+        playButton->setText(QApplication::translate("cMainWindow", "Play", nullptr));
+        stopButton->setText(QApplication::translate("cMainWindow", "Stop", nullptr));
     } // retranslateUi
 
 };
