@@ -8,15 +8,18 @@
 
 
 #define SIZE 32
+#define YPOS 0
 
 
 cGraphicItem::cGraphicItem( cCustomGraphicsView* iParentView, QGraphicsItem *parent ) :
-    QGraphicsItem( parent ),
+    QGraphicsPixmapItem ( parent ),
     mParentView( iParentView )
 {
     setFlags( ItemIsSelectable | ItemIsMovable | ItemSendsGeometryChanges );
     setAcceptHoverEvents( true );
-    mColor = Qt::blue;
+    mColor = Qt::lightGray;
+    setPixmap( QPixmap::fromImage( QImage( "Resources/Empty.png" ) ) );
+    setShapeMode( BoundingRectShape );
 }
 
 
@@ -27,16 +30,22 @@ cGraphicItem::setIndex( int iIndex )
     mText = QString::number( iIndex );
 }
 
-
-QRectF
-cGraphicItem::boundingRect() const
+void
+cGraphicItem::setFile( const QString & iFile )
 {
-    qreal size = SIZE;
-    return QRectF( -size/2,   -size/2,
-                   size,       size);
+    setPixmap( QPixmap::fromImage( QImage( iFile ) ) );
 }
 
 
+//QRectF
+//cGraphicItem::boundingRect() const
+//{
+//    qreal size = SIZE;
+//    return QRectF( -size/2,   -size/2,
+//                   size,       size);
+//}
+//
+//
 void
 cGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
@@ -46,8 +55,9 @@ cGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     painter->setBrush(fillColor);
 
-    painter->drawRect( -SIZE/2, -SIZE/2, SIZE, SIZE );
-    painter->drawText( 0, 0, mText );
+    painter->drawRect( 0, 0, SIZE, SIZE );
+
+    QGraphicsPixmapItem::paint( painter, option, widget );
 }
 
 
@@ -81,7 +91,7 @@ cGraphicItem::itemChange( GraphicsItemChange change, const QVariant & value )
 
     if( change == ItemPositionChange && scene() )
     {
-        newPoint.setY( 50 );
+        newPoint.setY( YPOS );
         if( newPoint.x() < 0 )
             newPoint.setX( 0 );
 

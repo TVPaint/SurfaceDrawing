@@ -1,20 +1,21 @@
 #pragma once
 
-#include <QGraphicsItem>
+#include <QGraphicsPixmapItem >
 
 class  cCustomGraphicsView;
 
 class cGraphicItem :
-    public QGraphicsItem
+    public QGraphicsPixmapItem
 {
 public:
     cGraphicItem( cCustomGraphicsView* iParentView, QGraphicsItem *parent = Q_NULLPTR );
 
 public:
     void setIndex( int iIndex );
+    void setFile( const QString& iFile );
 
 public:
-    QRectF  boundingRect() const override;
+    //QRectF  boundingRect() const override;
     void    paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
 
 protected:

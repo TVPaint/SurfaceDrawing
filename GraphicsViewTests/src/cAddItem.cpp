@@ -25,8 +25,7 @@ QRectF
 cAddItem::boundingRect() const
 {
     qreal size = SIZE;
-    return QRectF( -size/2,   -size/2,
-                   size,       size);
+    return  QRectF( 0, 0, size, size );
 }
 
 
@@ -39,8 +38,8 @@ cAddItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     painter->setBrush(fillColor);
 
-    painter->drawRect( -SIZE/2, -SIZE/2, SIZE, SIZE );
-    painter->drawText( 0, 0, mText );
+    painter->drawRect( 0, 0, SIZE, SIZE );
+    painter->drawText( SIZE/2 - 3, SIZE/2 + 3, mText );
 }
 
 
