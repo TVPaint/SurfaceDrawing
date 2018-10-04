@@ -96,7 +96,9 @@ cCustomGraphicsView::CurrentFrameChanged( int iCurrent )
         item->setHighlighted( false);
 
     mAnimationImages[ iCurrent ]->setHighlighted( true );
-    mAnimationImages[ iCurrent ]->update();
+
+    for( auto item : mAnimationImages )
+        item->update();
 }
 
 
