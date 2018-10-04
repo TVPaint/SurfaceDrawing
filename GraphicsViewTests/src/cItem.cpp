@@ -20,6 +20,8 @@ cGraphicItem::cGraphicItem( cCustomGraphicsView* iParentView, QGraphicsItem *par
     mColor = Qt::lightGray;
     setPixmap( QPixmap::fromImage( QImage( "Resources/Empty.png" ) ) );
     setShapeMode( BoundingRectShape );
+
+    mPlaybackHighlight = false;
 }
 
 
@@ -37,15 +39,13 @@ cGraphicItem::setFile( const QString & iFile )
 }
 
 
-//QRectF
-//cGraphicItem::boundingRect() const
-//{
-//    qreal size = SIZE;
-//    return QRectF( -size/2,   -size/2,
-//                   size,       size);
-//}
-//
-//
+void
+cGraphicItem::setHighlighted( bool iHighlighted )
+{
+    mPlaybackHighlight = iHighlighted;
+}
+
+
 void
 cGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
@@ -54,8 +54,16 @@ cGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, 
         fillColor = fillColor.lighter(125);
 
     painter->setBrush(fillColor);
-
     painter->drawRect( 0, 0, SIZE, SIZE );
+
+
+    QPen pen( Qt::red, 10 );
+    painter->setPen( pen );
+    if( mPlaybackHighlight )
+    {
+        auto pixSize = pixmap().size();
+        painter->drawLine( 0, pixSize.height() - 2, pixSize.width(), pixSize.height() - 2 );
+    }
 
     QGraphicsPixmapItem::paint( painter, option, widget );
 }

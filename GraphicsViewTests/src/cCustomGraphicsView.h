@@ -20,6 +20,9 @@ public:
 
     QVector< cGraphicItem* >& GetAnimationImages();
 
+public:
+    void  CurrentFrameChanged( int iCurrent );
+
 private:
     void  _UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems );
     void  _SortItems( QVector< cGraphicItem* >* oSortedItems );

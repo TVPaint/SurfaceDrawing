@@ -9,6 +9,7 @@ cMainWindow::cMainWindow(QWidget *parent)
     ui.setupUi(this);
 
     mCurrentFrame = 0;
+    emit  CurrentFrameChanged( mCurrentFrame );
 
     mAnimationTimer = new QTimer();
     mAnimationTimer->start( 1000 / 24 );
@@ -16,6 +17,7 @@ cMainWindow::cMainWindow(QWidget *parent)
 
     connect( ui.playButton, &QPushButton::clicked, this, &cMainWindow::PlayPressed );
     connect( ui.stopButton, &QPushButton::clicked, this, &cMainWindow::StopPressed );
+    connect( this, &cMainWindow::CurrentFrameChanged, ui.graphicsView, &cCustomGraphicsView::CurrentFrameChanged );
 }
 
 
@@ -24,6 +26,7 @@ cMainWindow::TimerTick()
 {
     int animationCount = ui.graphicsView->GetAnimationImages().size();
     mCurrentFrame = ++mCurrentFrame % animationCount;
+    emit  CurrentFrameChanged( mCurrentFrame );
 
     UpdatePreview();
 }
@@ -54,6 +57,7 @@ cMainWindow::StopPressed()
     ui.playButton->setText( "Play" );
     mAnimationTimer->stop();
     mCurrentFrame = 0;
+    emit  CurrentFrameChanged( mCurrentFrame );
     UpdatePreview();
 }
 

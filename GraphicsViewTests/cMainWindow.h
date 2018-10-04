@@ -24,6 +24,9 @@ public:
 
     void UpdatePreview();
 
+signals:
+    void  CurrentFrameChanged( int iCurrentFrame );
+
 
 private:
     Ui::cMainWindow     ui;

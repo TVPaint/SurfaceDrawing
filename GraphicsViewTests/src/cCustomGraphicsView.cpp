@@ -89,6 +89,17 @@ cCustomGraphicsView::GetAnimationImages()
 }
 
 
+void
+cCustomGraphicsView::CurrentFrameChanged( int iCurrent )
+{
+    for( auto item : mAnimationImages )
+        item->setHighlighted( false);
+
+    mAnimationImages[ iCurrent ]->setHighlighted( true );
+    mAnimationImages[ iCurrent ]->update();
+}
+
+
 void cCustomGraphicsView::_SortItems( QVector<cGraphicItem*>* oSortedItems )
 {
     oSortedItems->clear();

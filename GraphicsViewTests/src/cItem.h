@@ -15,7 +15,9 @@ public:
     void setFile( const QString& iFile );
 
 public:
-    //QRectF  boundingRect() const override;
+    void  setHighlighted( bool iHighlighted );
+
+public:
     void    paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
 
 protected:
@@ -30,5 +32,7 @@ private:
     int                     mIndex;
     QColor                  mColor;
     cCustomGraphicsView*    mParentView;
+
+    bool                    mPlaybackHighlight;
 };
 
