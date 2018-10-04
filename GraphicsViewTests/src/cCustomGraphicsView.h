@@ -18,12 +18,15 @@ public:
     void  itemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
     void  itemMoved();
 
+    QVector< cGraphicItem* > GetAnimationImages();
+
 private:
-    void  _UpdateItemsPosition( QVector< QGraphicsItem* >& iSortedItems );
-    void  _SortItems( QVector< QGraphicsItem* >* oSortedItems );
+    void  _UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems );
+    void  _SortItems( QVector< cGraphicItem* >* oSortedItems );
 
 private:
     cAddItem*  mAddItem;
+    QVector< cGraphicItem* > mAnimationImages;
 
 };
 

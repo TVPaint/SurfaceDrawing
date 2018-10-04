@@ -4,6 +4,8 @@
 #include "ui_cMainWindow.h"
 
 #include <QGraphicsScene>
+#include <QPixmap>
+#include <QTimer>
 
 class cCustomGraphicsView;
 
@@ -15,8 +17,14 @@ class cMainWindow :
 public:
     cMainWindow(QWidget *parent = Q_NULLPTR);
 
-private:
-    Ui::cMainWindow ui;
+public:
+    void TimerTick();
 
-    QGraphicsScene* mScene;
+private:
+    Ui::cMainWindow     ui;
+
+    QGraphicsScene*     mScene;
+
+    int                 mCurrentFrame;
+    QTimer*             mAnimationTimer;
 };

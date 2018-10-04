@@ -18,6 +18,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent )
     imgA->setZValue( -1 );
     imgA->setFile( "Resources/ImgA.png" );
     scene->addItem( imgA );
+    mAnimationImages.push_back( imgA );
 
     int i = 1;
     auto imgB = new  cGraphicItem( this );
@@ -25,6 +26,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent )
     imgB->setZValue( -1 );
     imgB->setFile( "Resources/ImgB.png" );
     scene->addItem( imgB );
+    mAnimationImages.push_back( imgB );
 
     ++i;
     auto imgC = new  cGraphicItem( this );
@@ -32,6 +34,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent )
     imgC->setZValue( -1 );
     imgC->setFile( "Resources/ImgC.png" );
     scene->addItem( imgC );
+    mAnimationImages.push_back( imgC );
 
     ++i;
     auto imgD = new  cGraphicItem( this );
@@ -39,6 +42,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent )
     imgD->setZValue( -1 );
     imgD->setFile( "Resources/ImgD.png" );
     scene->addItem( imgD );
+    mAnimationImages.push_back( imgD );
 
     ++i;
     mAddItem = new  cAddItem( this );
@@ -71,13 +75,20 @@ cCustomGraphicsView::itemMoving( cGraphicItem* iItem, const QPointF& iNewPositio
 void
 cCustomGraphicsView::itemMoved()
 {
-    QVector< QGraphicsItem* > sortedItems;
+    QVector< cGraphicItem* > sortedItems;
     _SortItems( &sortedItems );
     _UpdateItemsPosition( sortedItems );
 }
 
 
-void cCustomGraphicsView::_SortItems( QVector<QGraphicsItem*>* oSortedItems )
+QVector< cGraphicItem* >
+cCustomGraphicsView::GetAnimationImages()
+{
+    return  mAnimationImages;
+}
+
+
+void cCustomGraphicsView::_SortItems( QVector<cGraphicItem*>* oSortedItems )
 {
     oSortedItems->clear();
     for( auto item : scene()->items() )
@@ -94,18 +105,24 @@ void cCustomGraphicsView::_SortItems( QVector<QGraphicsItem*>* oSortedItems )
                 break;
         }
 
-        oSortedItems->insert( i, item );
+        auto itemAsGI = dynamic_cast< cGraphicItem* >( item );
+        if( itemAsGI )
+            oSortedItems->insert( i, itemAsGI );
+        else
+            itemAsGI->acceptDrops(); // CRASH so we are aware in this example if any mistake is done
     }
 }
 
 
 void
-cCustomGraphicsView::_UpdateItemsPosition( QVector< QGraphicsItem* >& iSortedItems )
+cCustomGraphicsView::_UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems )
 {
+    mAnimationImages.clear();
     int i = 0;
     for( i = 0; i < iSortedItems.size(); ++i )
     {
         iSortedItems[ i ]->setPos( i*5 + i*32, YPOS );
+        mAnimationImages.push_back( iSortedItems[ i ] );
     }
 
     mAddItem->setPos( i*5 + i*32, YPOS );
