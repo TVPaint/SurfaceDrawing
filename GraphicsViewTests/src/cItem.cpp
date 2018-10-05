@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QMenu>
 
 
 #define SIZE 32
@@ -77,9 +78,23 @@ void cGraphicItem::mouseMoveEvent( QGraphicsSceneMouseEvent* iEvent )
 void cGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
 {
     update();
-    mParentView->itemMoved();
+    mParentView->ItemMoved();
     setZValue( -1 );
     QGraphicsItem::mouseReleaseEvent( iEvent );
+}
+
+
+void
+cGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent * iEvent )
+{
+    QMenu menu;
+    menu.addAction("Remove Frame");
+    QAction *a = menu.exec( iEvent->screenPos() );
+    if( a && a->text() == "Remove Frame" )
+    {
+        mParentView->ItemAskToBeRemoved( this ); // DON'T DO ANYTHING AFTER THIS
+        return;
+    }
 }
 
 
@@ -97,7 +112,7 @@ cGraphicItem::itemChange( GraphicsItemChange change, const QVariant & value )
         return newPoint;
     }
 
-    mParentView->itemMoving( this, newPoint );
+    mParentView->ItemMoving( this, newPoint );
 
     return QGraphicsItem::itemChange( change, value );
 }

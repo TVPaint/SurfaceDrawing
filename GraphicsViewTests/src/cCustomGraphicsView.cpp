@@ -68,25 +68,38 @@ cCustomGraphicsView::AddItem()
 
 
 void
-cCustomGraphicsView::itemMoving( cGraphicItem* iItem, const QPointF& iNewPosition )
+cCustomGraphicsView::ItemMoving( cGraphicItem* iItem, const QPointF& iNewPosition )
 {
 }
 
 
 void
-cCustomGraphicsView::itemMoved()
+cCustomGraphicsView::ItemMoved()
 {
     _SortItems();
     _UpdateItemsPosition();
+    emit  currentFrameChanged( mCurrentFrame );
 }
 
 
 void
-cCustomGraphicsView::itemCurrentFrameMoved()
+cCustomGraphicsView::ItemCurrentFrameMoved()
 {
     auto index = mCurrentFrameItem->pos().x() / ITEMSIZE;
     CurrentFrameChanged( index );
     _UpdateCurrentFrameItemPosition();
+}
+
+
+void
+cCustomGraphicsView::ItemAskToBeRemoved( cGraphicItem * iItem )
+{
+    delete  iItem;
+    _SortItems();
+    _UpdateItemsPosition();
+    if( mCurrentFrame >= mAnimationImages.size() )
+        mCurrentFrame = mAnimationImages.size() - 1;
+    emit  currentFrameChanged( mCurrentFrame );
 }
 
 

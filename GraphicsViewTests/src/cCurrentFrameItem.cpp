@@ -63,7 +63,6 @@ cCurrentFrameItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *opt
 
     painter->setBrush(fillColor);
     painter->drawRect( 0, 0, WIDTH, HEIGHT );
-    //painter->drawRect( 0, HEIGHT/2 - WIDTH/2, WIDTH, WIDTH );
 }
 
 
@@ -83,7 +82,7 @@ void cCurrentFrameItem::mouseMoveEvent( QGraphicsSceneMouseEvent* iEvent )
 void cCurrentFrameItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
 {
     update();
-    mParentView->itemCurrentFrameMoved();
+    mParentView->ItemCurrentFrameMoved();
     QGraphicsItem::mouseReleaseEvent( iEvent );
 }
 

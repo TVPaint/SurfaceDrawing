@@ -61,6 +61,9 @@ cMainWindow::StopPressed()
 void
 cMainWindow::CurrentFrameChanged( int iNewIndex )
 {
+    if( iNewIndex == -1 )
+        return;
+
     mCurrentFrame = iNewIndex;
     auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
     ui.previewLabel->setPixmap( currentItem->pixmap() );

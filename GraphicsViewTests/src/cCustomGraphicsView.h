@@ -16,9 +16,11 @@ public:
 
 public:
     void  AddItem();
-    void  itemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
-    void  itemMoved();
-    void  itemCurrentFrameMoved();
+    void  ItemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
+    void  ItemMoved();
+    void  ItemCurrentFrameMoved();
+
+    void  ItemAskToBeRemoved( cGraphicItem* iItem );
 
     QVector< cGraphicItem* >& GetAnimationImages();
 
