@@ -99,6 +99,7 @@ cCustomGraphicsView::ItemAskToBeRemoved( cGraphicItem * iItem )
     _UpdateItemsPosition();
     if( mCurrentFrame >= mAnimationImages.size() )
         mCurrentFrame = mAnimationImages.size() - 1;
+    _UpdateCurrentFrameItemPosition();
     emit  currentFrameChanged( mCurrentFrame );
 }
 
