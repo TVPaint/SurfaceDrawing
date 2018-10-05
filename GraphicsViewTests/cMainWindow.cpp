@@ -1,6 +1,6 @@
 #include "cMainWindow.h"
 
-#include "cItem.h"
+#include "cGraphicItem.h"
 #include <QGraphicsPixmapItem >
 
 cMainWindow::cMainWindow(QWidget *parent)

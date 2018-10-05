@@ -1,6 +1,6 @@
 #include "cCustomGraphicsView.h"
 
-#include "cItem.h"
+#include "cGraphicItem.h"
 #include "cAddItem.h"
 #include "cCurrentFrameItem.h"
 

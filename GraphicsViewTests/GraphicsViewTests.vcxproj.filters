@@ -45,9 +45,6 @@
     <ClCompile Include="cMainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cItem.cpp">
-      <Filter>src\GraphicsItem</Filter>
-    </ClCompile>
     <ClCompile Include="src\cCustomGraphicsView.cpp">
       <Filter>src\GraphicView</Filter>
     </ClCompile>
@@ -55,6 +52,9 @@
       <Filter>src\GraphicsItem</Filter>
     </ClCompile>
     <ClCompile Include="src\cCurrentFrameItem.cpp">
+      <Filter>src\GraphicsItem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cGraphicItem.cpp">
       <Filter>src\GraphicsItem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,13 +77,13 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cItem.h">
-      <Filter>src\GraphicsItem</Filter>
-    </ClInclude>
     <ClInclude Include="src\cAddItem.h">
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
     <ClInclude Include="src\cCurrentFrameItem.h">
+      <Filter>src\GraphicsItem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cGraphicItem.h">
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
   </ItemGroup>
