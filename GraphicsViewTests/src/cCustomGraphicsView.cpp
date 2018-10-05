@@ -118,20 +118,35 @@ cCustomGraphicsView::keyPressEvent( QKeyEvent * iEvent )
     if( iEvent->key() == Qt::Key_Delete )
     {
         for( auto item : mAnimationImages )
-        {
             if( item->isSelected() )
                 delete  item;
-        }
-
 
         _SortItems();
         _UpdateItemsPosition();
 
-        if( mCurrentFrame > mAnimationImages.size() )
+        if( mCurrentFrame >= mAnimationImages.size() )
             CurrentFrameChanged( mAnimationImages.size() - 1 );
     }
 
     QGraphicsView::keyPressEvent( iEvent );
+}
+
+
+void
+cCustomGraphicsView::mouseReleaseEvent( QMouseEvent * iEvent )
+{
+    QGraphicsView::mouseReleaseEvent( iEvent );
+
+    for( auto item : mAnimationImages )
+        if( item->isSelected() )
+            return;
+
+    mCurrentFrame = iEvent->pos().x() / 37;
+    if( mCurrentFrame >= 0 && mCurrentFrame < mAnimationImages.size() )
+    {
+        _UpdateCurrentFrameItemPosition();
+        emit  currentFrameChanged( mCurrentFrame );
+    }
 }
 
 
@@ -145,6 +160,7 @@ cCustomGraphicsView::AddItem()
     item->setPos( 2+ index*5 + index*ITEMSIZE, YPOS );
     item->setIndex( index );
     item->setZValue( -1 );
+    item->setSelected( true );
     scene()->addItem( item );
     mAnimationImages.push_back( item );
 }
@@ -175,8 +191,8 @@ cCustomGraphicsView::ItemCurrentFrameMoved()
     if( index < 0 )
         index = 0;
 
-    CurrentFrameChanged( index );
-    _UpdateCurrentFrameItemPosition();
+    mCurrentFrame = index;
+    emit  currentFrameChanged( mCurrentFrame );
 }
 
 
@@ -188,8 +204,8 @@ cCustomGraphicsView::ItemAskToBeRemoved( cGraphicItem * iItem )
     _UpdateItemsPosition();
     if( mCurrentFrame >= mAnimationImages.size() )
         mCurrentFrame = mAnimationImages.size() - 1;
-    _UpdateCurrentFrameItemPosition();
-    emit  currentFrameChanged( mCurrentFrame );
+
+    CurrentFrameChanged( mCurrentFrame );
 }
 
 

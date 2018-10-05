@@ -66,23 +66,25 @@ cCurrentFrameItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *opt
 }
 
 
-void cCurrentFrameItem::mousePressEvent( QGraphicsSceneMouseEvent* iEvent )
+void
+cCurrentFrameItem::mousePressEvent( QGraphicsSceneMouseEvent* iEvent )
 {
     update();
     QGraphicsItem::mousePressEvent( iEvent );
 }
 
 
-void cCurrentFrameItem::mouseMoveEvent( QGraphicsSceneMouseEvent* iEvent )
+void
+cCurrentFrameItem::mouseMoveEvent( QGraphicsSceneMouseEvent* iEvent )
 {
     QGraphicsItem::mouseMoveEvent( iEvent );
 }
 
 
-void cCurrentFrameItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
+void
+cCurrentFrameItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
 {
     update();
-    mParentView->ItemCurrentFrameMoved();
     QGraphicsItem::mouseReleaseEvent( iEvent );
 }
 
@@ -91,14 +93,23 @@ QVariant
 cCurrentFrameItem::itemChange( GraphicsItemChange change, const QVariant & value )
 {
     QPointF newPoint = value.toPointF();
+    int currentFrame = newPoint.x() / 37;
 
     if( change == ItemPositionChange && scene() )
     {
+        if( currentFrame < 0 )
+            currentFrame = 0;
+        if( currentFrame >= mParentView->GetAnimationImages().size() )
+            currentFrame = mParentView->GetAnimationImages().size() - 1;
+
         newPoint.setY( -(HEIGHT/2 - FRAMEHEIGHT/2) );
-        if( newPoint.x() < 0 )
-            newPoint.setX( 0 );
+        newPoint.setX( currentFrame*5 + currentFrame*32 );
 
         return newPoint;
+    }
+    else if( change == ItemPositionHasChanged && scene() )
+    {
+        mParentView->ItemCurrentFrameMoved();
     }
 
     return QGraphicsItem::itemChange( change, value );

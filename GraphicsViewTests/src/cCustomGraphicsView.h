@@ -22,6 +22,8 @@ public:
 
     void  keyPressEvent( QKeyEvent* iEvent ) override;
 
+    void  mouseReleaseEvent( QMouseEvent* iEvent ) override;
+
 public:
     void  AddItem();
     void  ItemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
