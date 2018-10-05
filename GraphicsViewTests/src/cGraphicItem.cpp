@@ -2,10 +2,11 @@
 
 #include "cCustomGraphicsView.h"
 
+#include <QFileDialog>
 #include <QGraphicsSceneMouseEvent>
+#include <QMenu>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QMenu>
 
 
 #define SIZE 32
@@ -85,15 +86,30 @@ void cGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
 
 
 void
+cGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * iEvent )
+{
+    _SelectNewFile();
+}
+
+
+void
 cGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent * iEvent )
 {
     QMenu menu;
     menu.addAction("Remove Frame");
+    menu.addAction("Select File");
     QAction *a = menu.exec( iEvent->screenPos() );
-    if( a && a->text() == "Remove Frame" )
+    if( !a )
+        return;
+
+    if( a->text() == "Remove Frame" )
     {
         mParentView->ItemAskToBeRemoved( this ); // DON'T DO ANYTHING AFTER THIS
         return;
+    }
+    else if( a->text() == "Select File" )
+    {
+        _SelectNewFile();
     }
 }
 
@@ -115,5 +131,14 @@ cGraphicItem::itemChange( GraphicsItemChange change, const QVariant & value )
     mParentView->ItemMoving( this, newPoint );
 
     return QGraphicsItem::itemChange( change, value );
+}
+
+
+void
+cGraphicItem::_SelectNewFile()
+{
+    QString fileName = QFileDialog::getOpenFileName( 0, "Select Image", "", "Images (*.png *.jpg *.bmp)" );
+    if( !fileName.isEmpty() )
+        setFile( fileName );
 }
 
