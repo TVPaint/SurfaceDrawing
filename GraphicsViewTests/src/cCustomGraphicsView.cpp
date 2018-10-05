@@ -16,6 +16,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
 {
     // Config
     setAcceptDrops( true );
+    setDragMode( RubberBandDrag );
 
 
     // Scene
@@ -76,6 +77,7 @@ cCustomGraphicsView::dragMoveEvent( QDragMoveEvent * iEvent )
 void
 cCustomGraphicsView::dragLeaveEvent( QDragLeaveEvent * iEvent )
 {
+    iEvent->accept();
 }
 
 
@@ -107,6 +109,29 @@ cCustomGraphicsView::dropEvent( QDropEvent * iEvent )
     }
 
     iEvent->acceptProposedAction();
+}
+
+
+void
+cCustomGraphicsView::keyPressEvent( QKeyEvent * iEvent )
+{
+    if( iEvent->key() == Qt::Key_Delete )
+    {
+        for( auto item : mAnimationImages )
+        {
+            if( item->isSelected() )
+                delete  item;
+        }
+
+
+        _SortItems();
+        _UpdateItemsPosition();
+
+        if( mCurrentFrame > mAnimationImages.size() )
+            CurrentFrameChanged( mAnimationImages.size() - 1 );
+    }
+
+    QGraphicsView::keyPressEvent( iEvent );
 }
 
 
@@ -144,6 +169,12 @@ void
 cCustomGraphicsView::ItemCurrentFrameMoved()
 {
     auto index = mCurrentFrameItem->pos().x() / ITEMSIZE;
+    if( index >= mAnimationImages.size() )
+        index = mAnimationImages.size() - 1;
+
+    if( index < 0 )
+        index = 0;
+
     CurrentFrameChanged( index );
     _UpdateCurrentFrameItemPosition();
 }

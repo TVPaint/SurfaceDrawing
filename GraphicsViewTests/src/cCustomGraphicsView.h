@@ -20,6 +20,8 @@ public:
     void  dragLeaveEvent( QDragLeaveEvent* iEvent ) override;
     void  dropEvent( QDropEvent* iEvent ) override;
 
+    void  keyPressEvent( QKeyEvent* iEvent ) override;
+
 public:
     void  AddItem();
     void  ItemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );

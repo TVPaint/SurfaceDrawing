@@ -32,7 +32,7 @@ cAddItem::boundingRect() const
 void
 cAddItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    QColor fillColor = ( option->state & QStyle::State_Selected ) ? mColor.dark( 150 ) : mColor;
+    QColor fillColor = mColor;
     if (option->state & QStyle::State_MouseOver)
         fillColor = fillColor.light(125);
 
