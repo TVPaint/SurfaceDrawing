@@ -2,64 +2,63 @@
 
 #include "cItem.h"
 #include "cAddItem.h"
+#include "cCurrentFrameItem.h"
 
 
 #define YPOS 0
 
-cCustomGraphicsView::cCustomGraphicsView( QWidget *parent )
-    : QGraphicsView( parent )
+cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
+    QGraphicsView( parent ),
+    mCurrentFrame( 0 )
 {
     QGraphicsScene* scene = new QGraphicsScene( this );
     setScene( scene );
     setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
 
     auto imgA = new  cGraphicItem( this );
-    imgA->setPos( 0, YPOS );
     imgA->setZValue( -1 );
     imgA->setFile( "Resources/ImgA.png" );
     scene->addItem( imgA );
     mAnimationImages.push_back( imgA );
 
-    int i = 1;
     auto imgB = new  cGraphicItem( this );
-    imgB->setPos(  i*5 + i*32, YPOS );
     imgB->setZValue( -1 );
     imgB->setFile( "Resources/ImgB.png" );
     scene->addItem( imgB );
     mAnimationImages.push_back( imgB );
 
-    ++i;
     auto imgC = new  cGraphicItem( this );
-    imgC->setPos(  i*5 + i*32, YPOS );
     imgC->setZValue( -1 );
     imgC->setFile( "Resources/ImgC.png" );
     scene->addItem( imgC );
     mAnimationImages.push_back( imgC );
 
-    ++i;
     auto imgD = new  cGraphicItem( this );
-    imgD->setPos(  i*5 + i*32, YPOS );
     imgD->setZValue( -1 );
     imgD->setFile( "Resources/ImgD.png" );
     scene->addItem( imgD );
     mAnimationImages.push_back( imgD );
 
-    ++i;
     mAddItem = new  cAddItem( this );
-    mAddItem->setPos(  i*5 + i*32, YPOS );
     mAddItem->setZValue( -1 );
     scene->addItem( mAddItem );
+
+    mCurrentFrameItem = new cCurrentFrameItem( this );
+    scene->addItem( mCurrentFrameItem );
+
+    _UpdateItemsPosition();
+    _UpdateCurrentFrameItemPosition();
 }
 
 
 void
 cCustomGraphicsView::AddItem()
 {
-    int index = scene()->items().size() - 1; // Cuz addbutton is within
-    mAddItem->setPos( (index+1)*5 + (index+1)*32, YPOS );
+    int index = scene()->items().size() - 2; // Cuz addbutton and currentFrame is within
+    mAddItem->setPos( 2+ (index+1)*5 + (index+1)*32, YPOS );
 
     auto item = new  cGraphicItem( this );
-    item->setPos( index*5 + index*32, YPOS );
+    item->setPos( 2+ index*5 + index*32, YPOS );
     item->setIndex( index );
     item->setZValue( -1 );
     scene()->addItem( item );
@@ -76,9 +75,8 @@ cCustomGraphicsView::itemMoving( cGraphicItem* iItem, const QPointF& iNewPositio
 void
 cCustomGraphicsView::itemMoved()
 {
-    QVector< cGraphicItem* > sortedItems;
-    _SortItems( &sortedItems );
-    _UpdateItemsPosition( sortedItems );
+    _SortItems();
+    _UpdateItemsPosition();
 }
 
 
@@ -92,36 +90,31 @@ cCustomGraphicsView::GetAnimationImages()
 void
 cCustomGraphicsView::CurrentFrameChanged( int iCurrent )
 {
-    for( auto item : mAnimationImages )
-        item->setHighlighted( false);
-
-    mAnimationImages[ iCurrent ]->setHighlighted( true );
-
-    for( auto item : mAnimationImages )
-        item->update();
+    mCurrentFrame = iCurrent;
+    _UpdateCurrentFrameItemPosition();
 }
 
 
-void cCustomGraphicsView::_SortItems( QVector<cGraphicItem*>* oSortedItems )
+void cCustomGraphicsView::_SortItems()
 {
-    oSortedItems->clear();
+    mAnimationImages.clear();
     for( auto item : scene()->items() )
     {
-        if( item == mAddItem )
+        if( item == mAddItem || item == mCurrentFrameItem )
             continue;
 
         QPointF position = item->pos();
 
         int i;
-        for( i = 0; i < oSortedItems->size(); ++i )
+        for( i = 0; i < mAnimationImages.size(); ++i )
         {
-            if( oSortedItems->at( i )->pos().x() > position.x() )
+            if( mAnimationImages.at( i )->pos().x() > position.x() )
                 break;
         }
 
         auto itemAsGI = dynamic_cast< cGraphicItem* >( item );
         if( itemAsGI )
-            oSortedItems->insert( i, itemAsGI );
+            mAnimationImages.insert( i, itemAsGI );
         else
             itemAsGI->acceptDrops(); // CRASH so we are aware in this example if any mistake is done
     }
@@ -129,15 +122,18 @@ void cCustomGraphicsView::_SortItems( QVector<cGraphicItem*>* oSortedItems )
 
 
 void
-cCustomGraphicsView::_UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems )
+cCustomGraphicsView::_UpdateItemsPosition()
 {
-    mAnimationImages.clear();
     int i = 0;
-    for( i = 0; i < iSortedItems.size(); ++i )
-    {
-        iSortedItems[ i ]->setPos( i*5 + i*32, YPOS );
-        mAnimationImages.push_back( iSortedItems[ i ] );
-    }
+    for( i = 0; i < mAnimationImages.size(); ++i )
+        mAnimationImages[ i ]->setPos( 2 + i*5 + i*32, YPOS );
 
-    mAddItem->setPos( i*5 + i*32, YPOS );
+    mAddItem->setPos( 2 + i*5 + i*32, YPOS );
+}
+
+
+void
+cCustomGraphicsView::_UpdateCurrentFrameItemPosition()
+{
+    mCurrentFrameItem->setPos( mCurrentFrame*5 + mCurrentFrame*32, 50 );
 }

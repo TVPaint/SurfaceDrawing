@@ -56,15 +56,6 @@ cGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setBrush(fillColor);
     painter->drawRect( 0, 0, SIZE, SIZE );
 
-
-    QPen pen( Qt::red, 10 );
-    painter->setPen( pen );
-    if( mPlaybackHighlight )
-    {
-        auto pixSize = pixmap().size();
-        painter->drawLine( 0, pixSize.height() - 2, pixSize.width(), pixSize.height() - 2 );
-    }
-
     QGraphicsPixmapItem::paint( painter, option, widget );
 }
 

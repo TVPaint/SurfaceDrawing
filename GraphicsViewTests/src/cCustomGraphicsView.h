@@ -3,6 +3,7 @@
 #include <QGraphicsView>
 
 class cGraphicItem;
+class cCurrentFrameItem;
 class cAddItem;
 
 class cCustomGraphicsView :
@@ -24,12 +25,15 @@ public:
     void  CurrentFrameChanged( int iCurrent );
 
 private:
-    void  _UpdateItemsPosition( QVector< cGraphicItem* >& iSortedItems );
-    void  _SortItems( QVector< cGraphicItem* >* oSortedItems );
+    void  _UpdateItemsPosition();
+    void  _UpdateCurrentFrameItemPosition();
+    void  _SortItems();
 
 private:
-    cAddItem*  mAddItem;
-    QVector< cGraphicItem* > mAnimationImages;
+    cAddItem*                   mAddItem;
+    cCurrentFrameItem*          mCurrentFrameItem;
+    QVector< cGraphicItem* >    mAnimationImages;
+    int                         mCurrentFrame;
 
 };
 
