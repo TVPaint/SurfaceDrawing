@@ -4,6 +4,8 @@
 #include "cAddItem.h"
 #include "cCurrentFrameItem.h"
 
+#include <QDragEnterEvent>
+#include <QMimeData>
 
 #define YPOS 0
 #define ITEMSIZE 32
@@ -12,6 +14,11 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
     QGraphicsView( parent ),
     mCurrentFrame( 0 )
 {
+    // Config
+    setAcceptDrops( true );
+
+
+    // Scene
     QGraphicsScene* scene = new QGraphicsScene( this );
     setScene( scene );
     setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -49,6 +56,57 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
 
     _UpdateItemsPosition();
     _UpdateCurrentFrameItemPosition();
+}
+
+
+void
+cCustomGraphicsView::dragEnterEvent( QDragEnterEvent * iEvent )
+{
+    iEvent->acceptProposedAction();
+}
+
+
+void
+cCustomGraphicsView::dragMoveEvent( QDragMoveEvent * iEvent )
+{
+    iEvent->acceptProposedAction();
+}
+
+
+void
+cCustomGraphicsView::dragLeaveEvent( QDragLeaveEvent * iEvent )
+{
+}
+
+
+void
+cCustomGraphicsView::dropEvent( QDropEvent * iEvent )
+{
+    const QMimeData* mimeData = iEvent->mimeData();
+    if( mimeData->hasImage() )
+    {
+        auto item = new  cGraphicItem( this );
+        item->setZValue( -1 );
+        item->setPixmap( qvariant_cast< QPixmap >( mimeData->imageData() ) );
+        scene()->addItem( item );
+        mAnimationImages.push_back( item );
+        _UpdateItemsPosition();
+    }
+    else if( mimeData->hasUrls() )
+    {
+        QList< QUrl > urlList = mimeData->urls();
+        for( auto& url : urlList )
+        {
+            auto item = new  cGraphicItem( this );
+            item->setZValue( -1 );
+            item->setFile( url.toLocalFile() );
+            scene()->addItem( item );
+            mAnimationImages.push_back( item );
+            _UpdateItemsPosition();
+        }
+    }
+
+    iEvent->acceptProposedAction();
 }
 
 

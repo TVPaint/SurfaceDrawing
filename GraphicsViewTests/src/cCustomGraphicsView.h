@@ -15,6 +15,12 @@ public:
     cCustomGraphicsView( QWidget *parent = nullptr );
 
 public:
+    void  dragEnterEvent( QDragEnterEvent* iEvent ) override;
+    void  dragMoveEvent( QDragMoveEvent* iEvent ) override;
+    void  dragLeaveEvent( QDragLeaveEvent* iEvent ) override;
+    void  dropEvent( QDropEvent* iEvent ) override;
+
+public:
     void  AddItem();
     void  ItemMoving( cGraphicItem* iItem, const QPointF& iNewPosition );
     void  ItemMoved();
