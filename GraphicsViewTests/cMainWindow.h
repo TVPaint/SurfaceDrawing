@@ -22,10 +22,10 @@ public:
     void PlayPressed();
     void StopPressed();
 
-    void UpdatePreview();
+    void CurrentFrameChanged( int iNewIndex );
 
 signals:
-    void  CurrentFrameChanged( int iCurrentFrame );
+    void  currentFrameChangeAsked( int iCurrentFrame );
 
 
 private:

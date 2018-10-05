@@ -6,6 +6,7 @@
 
 
 #define YPOS 0
+#define ITEMSIZE 32
 
 cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
     QGraphicsView( parent ),
@@ -58,7 +59,7 @@ cCustomGraphicsView::AddItem()
     mAddItem->setPos( 2+ (index+1)*5 + (index+1)*32, YPOS );
 
     auto item = new  cGraphicItem( this );
-    item->setPos( 2+ index*5 + index*32, YPOS );
+    item->setPos( 2+ index*5 + index*ITEMSIZE, YPOS );
     item->setIndex( index );
     item->setZValue( -1 );
     scene()->addItem( item );
@@ -80,6 +81,15 @@ cCustomGraphicsView::itemMoved()
 }
 
 
+void
+cCustomGraphicsView::itemCurrentFrameMoved()
+{
+    auto index = mCurrentFrameItem->pos().x() / ITEMSIZE;
+    CurrentFrameChanged( index );
+    _UpdateCurrentFrameItemPosition();
+}
+
+
 QVector< cGraphicItem* >&
 cCustomGraphicsView::GetAnimationImages()
 {
@@ -92,6 +102,7 @@ cCustomGraphicsView::CurrentFrameChanged( int iCurrent )
 {
     mCurrentFrame = iCurrent;
     _UpdateCurrentFrameItemPosition();
+    emit  currentFrameChanged( mCurrentFrame );
 }
 
 
@@ -126,14 +137,14 @@ cCustomGraphicsView::_UpdateItemsPosition()
 {
     int i = 0;
     for( i = 0; i < mAnimationImages.size(); ++i )
-        mAnimationImages[ i ]->setPos( 2 + i*5 + i*32, YPOS );
+        mAnimationImages[ i ]->setPos( 2 + i*5 + i*ITEMSIZE, YPOS );
 
-    mAddItem->setPos( 2 + i*5 + i*32, YPOS );
+    mAddItem->setPos( 2 + i*5 + i*ITEMSIZE, YPOS );
 }
 
 
 void
 cCustomGraphicsView::_UpdateCurrentFrameItemPosition()
 {
-    mCurrentFrameItem->setPos( mCurrentFrame*5 + mCurrentFrame*32, 50 );
+    mCurrentFrameItem->setPos( mCurrentFrame*5 + mCurrentFrame*ITEMSIZE, 1 );
 }

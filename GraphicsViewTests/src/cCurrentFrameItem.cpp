@@ -8,6 +8,7 @@
 
 
 #define WIDTH 36
+#define FRAMEHEIGHT 32
 #define HEIGHT 50
 #define YPOS 0
 
@@ -82,6 +83,7 @@ void cCurrentFrameItem::mouseMoveEvent( QGraphicsSceneMouseEvent* iEvent )
 void cCurrentFrameItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *iEvent )
 {
     update();
+    mParentView->itemCurrentFrameMoved();
     QGraphicsItem::mouseReleaseEvent( iEvent );
 }
 
@@ -93,7 +95,7 @@ cCurrentFrameItem::itemChange( GraphicsItemChange change, const QVariant & value
 
     if( change == ItemPositionChange && scene() )
     {
-        newPoint.setY( -10 );
+        newPoint.setY( -(HEIGHT/2 - FRAMEHEIGHT/2) );
         if( newPoint.x() < 0 )
             newPoint.setX( 0 );
 

@@ -9,7 +9,7 @@ cMainWindow::cMainWindow(QWidget *parent)
     ui.setupUi(this);
 
     mCurrentFrame = 0;
-    emit  CurrentFrameChanged( mCurrentFrame );
+    emit  currentFrameChangeAsked( mCurrentFrame );
 
     mAnimationTimer = new QTimer();
     mAnimationTimer->start( 1000 / 24 );
@@ -17,7 +17,8 @@ cMainWindow::cMainWindow(QWidget *parent)
 
     connect( ui.playButton, &QPushButton::clicked, this, &cMainWindow::PlayPressed );
     connect( ui.stopButton, &QPushButton::clicked, this, &cMainWindow::StopPressed );
-    connect( this, &cMainWindow::CurrentFrameChanged, ui.graphicsView, &cCustomGraphicsView::CurrentFrameChanged );
+    connect( this, &cMainWindow::currentFrameChangeAsked, ui.graphicsView, &cCustomGraphicsView::CurrentFrameChanged );
+    connect( ui.graphicsView, &cCustomGraphicsView::currentFrameChanged, this, &cMainWindow::CurrentFrameChanged );
 }
 
 
@@ -25,10 +26,7 @@ void
 cMainWindow::TimerTick()
 {
     int animationCount = ui.graphicsView->GetAnimationImages().size();
-    mCurrentFrame = ++mCurrentFrame % animationCount;
-    emit  CurrentFrameChanged( mCurrentFrame );
-
-    UpdatePreview();
+    emit  currentFrameChangeAsked( ++mCurrentFrame % animationCount );
 }
 
 
@@ -56,15 +54,14 @@ cMainWindow::StopPressed()
     disconnect( mAnimationTimer, &QTimer::timeout, this, &cMainWindow::TimerTick );
     ui.playButton->setText( "Play" );
     mAnimationTimer->stop();
-    mCurrentFrame = 0;
-    emit  CurrentFrameChanged( mCurrentFrame );
-    UpdatePreview();
+    emit  currentFrameChangeAsked( 0 );
 }
 
 
 void
-cMainWindow::UpdatePreview()
+cMainWindow::CurrentFrameChanged( int iNewIndex )
 {
+    mCurrentFrame = iNewIndex;
     auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
     ui.previewLabel->setPixmap( currentItem->pixmap() );
 }
