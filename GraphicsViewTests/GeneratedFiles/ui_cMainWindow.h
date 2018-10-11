@@ -16,11 +16,11 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "Canvas.h"
 #include "cCustomGraphicsView.h"
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +31,7 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QLabel *previewLabel;
-    QSpacerItem *verticalSpacer;
+    cCanvas *canvas;
     QHBoxLayout *horizontalLayout;
     QPushButton *playButton;
     QPushButton *stopButton;
@@ -59,9 +59,10 @@ public:
 
         verticalLayout->addWidget(previewLabel);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        canvas = new cCanvas(centralWidget);
+        canvas->setObjectName(QStringLiteral("canvas"));
 
-        verticalLayout->addItem(verticalSpacer);
+        verticalLayout->addWidget(canvas);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);

@@ -44,6 +44,7 @@ private:
     void  _UpdateItemsPosition();
     void  _UpdateCurrentFrameItemPosition();
     void  _SortItems();
+    void  _UpdateSceneRect();
 
 private:
     cAddItem*                   mAddItem;

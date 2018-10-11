@@ -57,12 +57,21 @@
     <ClCompile Include="src\cGraphicItem.cpp">
       <Filter>src\GraphicsItem</Filter>
     </ClCompile>
+    <ClCompile Include="src\Canvas.cpp">
+      <Filter>src\GraphicView</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EditableItem.cpp">
+      <Filter>src\GraphicsItem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\cCustomGraphicsView.h">
+      <Filter>src\GraphicView</Filter>
+    </QtMoc>
+    <QtMoc Include="src\Canvas.h">
       <Filter>src\GraphicView</Filter>
     </QtMoc>
   </ItemGroup>
@@ -84,6 +93,9 @@
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
     <ClInclude Include="src\cGraphicItem.h">
+      <Filter>src\GraphicsItem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditableItem.h">
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
   </ItemGroup>

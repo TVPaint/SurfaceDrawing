@@ -66,5 +66,5 @@ cMainWindow::CurrentFrameChanged( int iNewIndex )
 
     mCurrentFrame = iNewIndex;
     auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
-    ui.previewLabel->setPixmap( currentItem->pixmap() );
+    ui.canvas->SetPixmap( currentItem->pixmap() );
 }

@@ -57,6 +57,7 @@ cCustomGraphicsView::cCustomGraphicsView( QWidget *parent ) :
 
     _UpdateItemsPosition();
     _UpdateCurrentFrameItemPosition();
+    _UpdateSceneRect();
 }
 
 
@@ -93,6 +94,7 @@ cCustomGraphicsView::dropEvent( QDropEvent * iEvent )
         scene()->addItem( item );
         mAnimationImages.push_back( item );
         _UpdateItemsPosition();
+        _UpdateSceneRect();
     }
     else if( mimeData->hasUrls() )
     {
@@ -106,6 +108,7 @@ cCustomGraphicsView::dropEvent( QDropEvent * iEvent )
             mAnimationImages.push_back( item );
             _UpdateItemsPosition();
         }
+        _UpdateSceneRect();
     }
 
     iEvent->acceptProposedAction();
@@ -126,6 +129,8 @@ cCustomGraphicsView::keyPressEvent( QKeyEvent * iEvent )
 
         if( mCurrentFrame >= mAnimationImages.size() )
             CurrentFrameChanged( mAnimationImages.size() - 1 );
+
+        _UpdateSceneRect();
     }
 
     QGraphicsView::keyPressEvent( iEvent );
@@ -163,6 +168,7 @@ cCustomGraphicsView::AddItem()
     item->setSelected( true );
     scene()->addItem( item );
     mAnimationImages.push_back( item );
+    _UpdateSceneRect();
 }
 
 
@@ -206,6 +212,7 @@ cCustomGraphicsView::ItemAskToBeRemoved( cGraphicItem * iItem )
         mCurrentFrame = mAnimationImages.size() - 1;
 
     CurrentFrameChanged( mCurrentFrame );
+    _UpdateSceneRect();
 }
 
 
@@ -248,6 +255,14 @@ void cCustomGraphicsView::_SortItems()
         else
             itemAsGI->acceptDrops(); // CRASH so we are aware in this example if any mistake is done
     }
+}
+
+
+void
+cCustomGraphicsView::_UpdateSceneRect()
+{
+    int farthestX2 = mAddItem->scenePos().x() + mAddItem->boundingRect().width();
+    scene()->setSceneRect( 0, 0, farthestX2, mCurrentFrameItem->boundingRect().height() );
 }
 
 
