@@ -19,6 +19,7 @@ cMainWindow::cMainWindow(QWidget *parent)
     connect( ui.stopButton, &QPushButton::clicked, this, &cMainWindow::StopPressed );
     connect( this, &cMainWindow::currentFrameChangeAsked, ui.graphicsView, &cCustomGraphicsView::CurrentFrameChanged );
     connect( ui.graphicsView, &cCustomGraphicsView::currentFrameChanged, this, &cMainWindow::CurrentFrameChanged );
+    connect( ui.canvas, &cCanvas::currentFrameGotPainted, ui.graphicsView, &cCustomGraphicsView::CurrentFrameGotPainted );
 }
 
 

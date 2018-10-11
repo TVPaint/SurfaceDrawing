@@ -30,7 +30,7 @@ public:
     void  SetPixmap( const QPixmap& iPixmap );
 
 signals:
-        void  currentFrameChanged( int iNewIndex );
+    void  currentFrameGotPainted( const QPixmap& iPixmap );
 
 
 private:
@@ -63,6 +63,6 @@ private:
     QPen*           mPenTool;
     QBrush*         mBrushTool;
     QColor          mAPen;
-    QSize           mToolSize;
+    int             mToolSize;
 };
 

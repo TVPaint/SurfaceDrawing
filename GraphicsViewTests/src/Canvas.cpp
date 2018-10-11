@@ -4,6 +4,7 @@
 #include "EditableItem.h"
 
 #include <QApplication>
+#include <QColorDialog>
 #include <QDragEnterEvent>
 #include <QMimeData>
 
@@ -82,6 +83,16 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         mEditableItem->setScale( mEditableItem->scale() * (1/1.5) );
     }
+    else if( iEvent->key() == Qt::Key_C )
+    {
+        QColorDialog dialog( mAPen, this );
+        if( dialog.exec() )
+        {
+            mAPen = dialog.selectedColor();
+            mPenTool->setColor( mAPen );
+            mBrushTool->setColor( mAPen );
+        }
+    }
 
     QGraphicsView::keyPressEvent( iEvent );
 }
@@ -115,8 +126,6 @@ cCanvas::mousePressEvent( QMouseEvent * iEvent )
 
         if( mCurrentTool == kPen )
             mPainter->setPen( *mPenTool );
-        else if( mCurrentTool == kBrush )
-            mPainter->setBrush( *mBrushTool );
     }
 
     QGraphicsView::mousePressEvent( iEvent );
@@ -148,11 +157,11 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
 void
 cCanvas::mouseReleaseEvent( QMouseEvent * iEvent )
 {
-
     if( mState == kDrawing )
     {
         delete  mPainter;
         mEditableItem->setPixmap( mItemPixmap );
+        currentFrameGotPainted( mItemPixmap );
     }
 
     mState = kIdle;
@@ -189,10 +198,11 @@ cCanvas::_SetupTools()
     mPenTool    = new QPen();
     mBrushTool  = new QBrush();
     mAPen       = QColor( Qt::black );
-    mToolSize   = QSize( 2, 2 );
+    mToolSize   = 2;
 
-    mPenTool->setColor( mAPen );
     mBrushTool->setColor( mAPen );
+    mPenTool->setWidth( mToolSize );
+    mPenTool->setColor( mAPen );
 }
 
 

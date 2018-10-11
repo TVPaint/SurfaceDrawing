@@ -232,6 +232,13 @@ cCustomGraphicsView::CurrentFrameChanged( int iCurrent )
 }
 
 
+void
+cCustomGraphicsView::CurrentFrameGotPainted( const QPixmap & iNewPixmap )
+{
+    mAnimationImages[ mCurrentFrame ]->setPixmap( iNewPixmap );
+}
+
+
 void cCustomGraphicsView::_SortItems()
 {
     mAnimationImages.clear();

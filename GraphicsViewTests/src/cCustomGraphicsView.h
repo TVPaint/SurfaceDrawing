@@ -36,6 +36,7 @@ public:
 
 public:
     void  CurrentFrameChanged( int iCurrent );
+    void  CurrentFrameGotPainted( const QPixmap& iNewPixmap );
 
 signals:
         void  currentFrameChanged( int iNewIndex );
