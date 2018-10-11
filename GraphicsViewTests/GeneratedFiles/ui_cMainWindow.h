@@ -11,11 +11,13 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
@@ -31,6 +33,10 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QLabel *previewLabel;
+    QHBoxLayout *horizontalLayout_2;
+    QFormLayout *formLayout;
+    QLabel *penSizeLabel;
+    QSpinBox *penSizeSpinBox;
     cCanvas *canvas;
     QHBoxLayout *horizontalLayout;
     QPushButton *playButton;
@@ -59,10 +65,32 @@ public:
 
         verticalLayout->addWidget(previewLabel);
 
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        formLayout = new QFormLayout();
+        formLayout->setSpacing(6);
+        formLayout->setObjectName(QStringLiteral("formLayout"));
+        penSizeLabel = new QLabel(centralWidget);
+        penSizeLabel->setObjectName(QStringLiteral("penSizeLabel"));
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, penSizeLabel);
+
+        penSizeSpinBox = new QSpinBox(centralWidget);
+        penSizeSpinBox->setObjectName(QStringLiteral("penSizeSpinBox"));
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, penSizeSpinBox);
+
+
+        horizontalLayout_2->addLayout(formLayout);
+
         canvas = new cCanvas(centralWidget);
         canvas->setObjectName(QStringLiteral("canvas"));
 
-        verticalLayout->addWidget(canvas);
+        horizontalLayout_2->addWidget(canvas);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -112,6 +140,7 @@ public:
     {
         cMainWindow->setWindowTitle(QApplication::translate("cMainWindow", "cMainWindow", nullptr));
         previewLabel->setText(QApplication::translate("cMainWindow", "PREVIEW", nullptr));
+        penSizeLabel->setText(QApplication::translate("cMainWindow", "PenSize", nullptr));
         playButton->setText(QApplication::translate("cMainWindow", "Play", nullptr));
         stopButton->setText(QApplication::translate("cMainWindow", "Stop", nullptr));
     } // retranslateUi

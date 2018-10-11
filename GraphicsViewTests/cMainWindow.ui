@@ -38,7 +38,25 @@
      </widget>
     </item>
     <item>
-     <widget class="cCanvas" name="canvas"/>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="penSizeLabel">
+          <property name="text">
+           <string>PenSize</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="penSizeSpinBox"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="cCanvas" name="canvas"/>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">

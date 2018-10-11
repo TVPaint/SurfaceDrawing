@@ -45,12 +45,6 @@ private:
         kDrawing
     };
 
-    enum  eCurrentTool
-    {
-        kPen,
-        kBrush
-    };
-
     eState          mState;
     cEditableItem*  mEditableItem;
     QPointF         mClickPos;
@@ -58,10 +52,9 @@ private:
 
 
     // Tools
-    eCurrentTool    mCurrentTool;
     QPainter*       mPainter;
-    QPen*           mPenTool;
-    QBrush*         mBrushTool;
+    QPen*           mPen;
+    QBrush*         mBrush;
     QColor          mAPen;
     int             mToolSize;
 };
