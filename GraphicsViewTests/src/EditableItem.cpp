@@ -13,6 +13,23 @@ cEditableItem::cEditableItem( QGraphicsItem *parent ) :
 }
 
 
+QRectF
+cEditableItem::boundingRect() const
+{
+    return QRectF( 0, 0, 32, 32 );
+}
+
+
+void
+cEditableItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+{
+    QGraphicsPixmapItem::paint( painter, option, widget );
+
+    QPen pen( Qt::black );
+    painter->drawRect( boundingRect() );
+}
+
+
 void
 cEditableItem::setFile( const QString & iFile )
 {

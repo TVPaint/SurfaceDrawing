@@ -107,15 +107,13 @@ cCanvas::keyReleaseEvent( QKeyEvent * iEvent )
     else if( iEvent->key() == Qt::Key_Delete )
     {
         mItemPixmap = mEditableItem->pixmap();
-        mPainter = new QPainter( &mItemPixmap );
-        mPainter->fillRect( QRect( QPoint( 0, 0), mItemPixmap.size() ), Qt::white );
-        delete  mPainter;
+        mItemPixmap.fill( Qt::transparent );
         mEditableItem->setPixmap( mItemPixmap );
+        currentFrameGotPainted( mItemPixmap );
     }
 
     QGraphicsView::keyReleaseEvent( iEvent );
 }
-
 
 
 void
@@ -154,7 +152,6 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
         mPainter->drawLine( originInItemCoordinate, newPointInItemCoordinate );
         mEditableItem->setPixmap( mItemPixmap );
     }
-
 
     mClickPos = iEvent->pos();
     QGraphicsView::mouseMoveEvent( iEvent );
