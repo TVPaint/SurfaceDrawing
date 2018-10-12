@@ -22,6 +22,7 @@ public:
 
     void  keyPressEvent( QKeyEvent* iEvent ) override;
 
+    void  mousePressEvent( QMouseEvent* iEvent ) override;
     void  mouseReleaseEvent( QMouseEvent* iEvent ) override;
 
 public:
@@ -52,6 +53,6 @@ private:
     cCurrentFrameItem*          mCurrentFrameItem;
     QVector< cGraphicItem* >    mAnimationImages;
     int                         mCurrentFrame;
-
+    QPoint                      mOriginPos;
 };
 

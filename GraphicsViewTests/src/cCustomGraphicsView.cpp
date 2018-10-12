@@ -138,13 +138,27 @@ cCustomGraphicsView::keyPressEvent( QKeyEvent * iEvent )
 
 
 void
+cCustomGraphicsView::mousePressEvent( QMouseEvent * iEvent )
+{
+    mOriginPos = iEvent->pos();
+
+    QGraphicsView::mousePressEvent( iEvent );
+}
+
+
+void
 cCustomGraphicsView::mouseReleaseEvent( QMouseEvent * iEvent )
 {
     QGraphicsView::mouseReleaseEvent( iEvent );
 
-    for( auto item : mAnimationImages )
-        if( item->isSelected() )
-            return;
+    QPoint delta = iEvent->pos() - mOriginPos;
+
+    if( delta.x() <= -1 || delta.x() >= 1 )
+    {
+        for( auto item : mAnimationImages )
+            if( item->isSelected() )
+                return;
+    }
 
     mCurrentFrame = iEvent->pos().x() / 37;
     if( mCurrentFrame >= 0 && mCurrentFrame < mAnimationImages.size() )
