@@ -1,8 +1,10 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QPaintEvent>
 
 #include "ToolModel.h"
+#include "cGridItem.h"
 
 class cEditableItem;
 
@@ -15,6 +17,8 @@ public:
     cCanvas( QWidget *parent = nullptr );
 
 public:
+    void  paintEvent( QPaintEvent* iEvent ) override;
+
     void  dragEnterEvent( QDragEnterEvent* iEvent ) override;
     void  dragMoveEvent( QDragMoveEvent* iEvent ) override;
     void  dragLeaveEvent( QDragLeaveEvent* iEvent ) override;
@@ -32,6 +36,8 @@ public:
     void  SetPixmap( const QPixmap& iPixmap );
     void  SetToolModel( cToolModel* iToolModel );
 
+    void  UpdateGridItem();
+
 signals:
     void  currentFrameGotPainted( const QPixmap& iPixmap );
 
@@ -47,6 +53,7 @@ private:
 
     eState              mState;
     cEditableItem*      mEditableItem;
+    cGridItem*          mGridItem;
     QPointF             mClickPos;
     QPixmap             mItemPixmap;
 

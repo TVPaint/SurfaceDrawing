@@ -123,6 +123,7 @@
     <ClCompile Include="src\cCurrentFrameItem.cpp" />
     <ClCompile Include="src\cCustomGraphicsView.cpp" />
     <ClCompile Include="src\cGraphicItem.cpp" />
+    <ClCompile Include="src\cGridItem.cpp" />
     <ClCompile Include="src\EditableItem.cpp" />
     <ClCompile Include="src\ToolModel.cpp" />
   </ItemGroup>
@@ -140,6 +141,7 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
     </QtMoc>
     <ClInclude Include="src\cAddItem.h" />
+    <ClInclude Include="src\cGridItem.h" />
     <ClInclude Include="src\EditableItem.h" />
     <ClInclude Include="src\ToolModel.h" />
     <QtMoc Include="src\Canvas.h">

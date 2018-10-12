@@ -22,9 +22,22 @@ cCanvas::cCanvas( QWidget *parent ) :
 
     mEditableItem = new cEditableItem();
     scene->addItem( mEditableItem );
+
+    mGridItem = new cGridItem();
+    scene->addItem( mGridItem );
+
     QRectF sceneRect = geometry();
     setSceneRect( sceneRect );
+
+
     setStyleSheet( "background-color: #555555");
+}
+
+
+void
+cCanvas::paintEvent( QPaintEvent * iEvent )
+{
+    QGraphicsView::paintEvent( iEvent );
 }
 
 
@@ -73,10 +86,12 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     if( iEvent->key() == Qt::Key_Plus )
     {
         mEditableItem->setScale( mEditableItem->scale() * 1.5 );
+        UpdateGridItem();
     }
     else if( iEvent->key() == Qt::Key_Minus )
     {
         mEditableItem->setScale( mEditableItem->scale() * (1/1.5) );
+        UpdateGridItem();
     }
     else if( iEvent->key() == Qt::Key_C )
     {
@@ -137,6 +152,7 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
     {
         QPointF offset = iEvent->pos() - mClickPos;
         mEditableItem->setPos( mEditableItem->pos() + offset );
+        mGridItem->setPos( mEditableItem->pos() + offset );
     }
     else if( mState == kDrawing )
     {
@@ -176,6 +192,8 @@ cCanvas::wheelEvent( QWheelEvent * iEvent )
             mEditableItem->setScale( mEditableItem->scale() * 1.5 );
         else
             mEditableItem->setScale( mEditableItem->scale() / 1.5 );
+
+        UpdateGridItem();
     }
 
     QGraphicsView::wheelEvent( iEvent );
@@ -193,5 +211,16 @@ void
 cCanvas::SetToolModel( cToolModel* iToolModel )
 {
     mToolModel = iToolModel;
+}
+
+
+void
+cCanvas::UpdateGridItem()
+{
+    float  pixelSize = mEditableItem->sceneBoundingRect().width() / mEditableItem->boundingRect().width();
+    auto test = mEditableItem->sceneBoundingRect();
+
+    mGridItem->psize = pixelSize;
+    mGridItem->size = mEditableItem->sceneBoundingRect().size();
 }
 

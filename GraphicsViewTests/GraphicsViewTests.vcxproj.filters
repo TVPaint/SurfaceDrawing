@@ -75,6 +75,9 @@
     <ClCompile Include="ColorSwatch.cpp">
       <Filter>src\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="src\cGridItem.cpp">
+      <Filter>src\GraphicsItem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
@@ -110,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="src\ToolModel.h">
       <Filter>src\ToolModel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cGridItem.h">
+      <Filter>src\GraphicsItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
