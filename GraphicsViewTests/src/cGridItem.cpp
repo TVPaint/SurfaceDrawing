@@ -16,7 +16,6 @@ cGridItem::cGridItem( QGraphicsItem *parent ) :
 QRectF
 cGridItem::boundingRect() const
 {
-
     return  QRectF( 0, 0, size.width(), size.height() );
 }
 
@@ -31,14 +30,14 @@ cGridItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         int numbOfLines = size.width() / psize;
         for( int i = 0; i < numbOfLines; ++i )
         {
-            int position = std::round( i*psize );
+            int position = int( i*psize );
             painter->drawLine( position, 0, position, size.height() );
         }
 
         int numbOfColu = size.height() / psize;
         for( int i = 0; i < numbOfColu; ++i )
         {
-            int position = std::round( i*psize );
+            int position = int( i*psize );
             painter->drawLine( 0, position, size.width(), position );
         }
     }

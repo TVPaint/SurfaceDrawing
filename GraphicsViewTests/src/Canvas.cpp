@@ -151,8 +151,9 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
     if( mState == kPan )
     {
         QPointF offset = iEvent->pos() - mClickPos;
-        mEditableItem->setPos( mEditableItem->pos() + offset );
-        mGridItem->setPos( mEditableItem->pos() + offset );
+        QPointF pos = mEditableItem->pos() + offset;
+        mEditableItem->setPos( pos );
+        mGridItem->setPos( pos );
     }
     else if( mState == kDrawing )
     {
@@ -189,7 +190,7 @@ cCanvas::wheelEvent( QWheelEvent * iEvent )
     if( QApplication::keyboardModifiers() & Qt::AltModifier )
     {
         if( delta > 0 )
-            mEditableItem->setScale( mEditableItem->scale() * 1.5 );
+            mEditableItem->setScale( mEditableItem->scale() * 2.5 );
         else
             mEditableItem->setScale( mEditableItem->scale() / 1.5 );
 
@@ -218,7 +219,6 @@ void
 cCanvas::UpdateGridItem()
 {
     float  pixelSize = mEditableItem->sceneBoundingRect().width() / mEditableItem->boundingRect().width();
-    auto test = mEditableItem->sceneBoundingRect();
 
     mGridItem->psize = pixelSize;
     mGridItem->size = mEditableItem->sceneBoundingRect().size();
