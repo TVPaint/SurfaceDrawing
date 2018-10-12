@@ -123,12 +123,10 @@
     <ClCompile Include="src\cCustomGraphicsView.cpp" />
     <ClCompile Include="src\cGraphicItem.cpp" />
     <ClCompile Include="src\EditableItem.cpp" />
+    <ClCompile Include="src\ToolModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="cMainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="cMainWindow.qrc" />
@@ -136,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="src\cAddItem.h" />
     <ClInclude Include="src\EditableItem.h" />
+    <ClInclude Include="src\ToolModel.h" />
     <QtMoc Include="src\Canvas.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
@@ -157,6 +156,9 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="cMainWindow.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

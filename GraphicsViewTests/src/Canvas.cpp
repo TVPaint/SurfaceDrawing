@@ -10,10 +10,7 @@
 
 
 cCanvas::cCanvas( QWidget *parent ) :
-    QGraphicsView( parent ),
-    mPainter( 0 ),
-    mPen( 0 ),
-    mBrush( 0 )
+    QGraphicsView( parent )
 {
     // Config
     setAcceptDrops( true );
@@ -27,8 +24,6 @@ cCanvas::cCanvas( QWidget *parent ) :
     scene->addItem( mEditableItem );
     QRectF sceneRect = geometry();
     setSceneRect( sceneRect );
-
-    _SetupTools();
 }
 
 
@@ -84,12 +79,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     }
     else if( iEvent->key() == Qt::Key_C )
     {
-        QColorDialog dialog( mAPen, this );
+        QColorDialog dialog( mToolModel->getColor(), this );
         if( dialog.exec() )
         {
-            mAPen = dialog.selectedColor();
-            mPen->setColor( mAPen );
-            mBrush->setColor( mAPen );
+            mToolModel->setColor( dialog.selectedColor() );
         }
     }
 
@@ -129,8 +122,7 @@ cCanvas::mousePressEvent( QMouseEvent * iEvent )
     {
         mState = kDrawing;
         mItemPixmap = mEditableItem->pixmap();
-        mPainter = new QPainter( &mItemPixmap );
-        mPainter->setPen( *mPen );
+        mPainter = mToolModel->getNewPainter( &mItemPixmap );
     }
 
     QGraphicsView::mousePressEvent( iEvent );
@@ -197,17 +189,8 @@ cCanvas::SetPixmap( const QPixmap & iPixmap )
 
 
 void
-cCanvas::_SetupTools()
+cCanvas::SetToolModel( cToolModel* iToolModel )
 {
-    mPen        = new QPen();
-    mBrush      = new QBrush();
-    mAPen       = QColor( Qt::black );
-    mToolSize   = 2;
-
-    mBrush->setColor( mAPen );
-    mBrush->setStyle( Qt::SolidPattern );
-    mPen->setWidth( mToolSize );
-    mPen->setBrush( *mBrush );
+    mToolModel = iToolModel;
 }
-
 

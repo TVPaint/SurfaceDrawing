@@ -37,6 +37,9 @@
     <Filter Include="src\GraphicView">
       <UniqueIdentifier>{7e78c35d-9255-421b-ae47-6e206df1f3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ToolModel">
+      <UniqueIdentifier>{0a5ef651-7279-4ade-9c0e-9b272965b7f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,6 +66,9 @@
     <ClCompile Include="src\EditableItem.cpp">
       <Filter>src\GraphicsItem</Filter>
     </ClCompile>
+    <ClCompile Include="src\ToolModel.cpp">
+      <Filter>src\ToolModel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
@@ -74,11 +80,6 @@
     <QtMoc Include="src\Canvas.h">
       <Filter>src\GraphicView</Filter>
     </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="cMainWindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="cMainWindow.qrc">
@@ -98,5 +99,13 @@
     <ClInclude Include="src\EditableItem.h">
       <Filter>src\GraphicsItem</Filter>
     </ClInclude>
+    <ClInclude Include="src\ToolModel.h">
+      <Filter>src\ToolModel</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="cMainWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>

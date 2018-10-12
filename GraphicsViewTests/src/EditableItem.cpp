@@ -26,7 +26,14 @@ cEditableItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * optio
     QGraphicsPixmapItem::paint( painter, option, widget );
 
     QPen pen( Qt::black );
-    painter->drawRect( boundingRect() );
+    pen.setWidth( 1 );
+    auto  rect = boundingRect();
+    int off = 1;
+    rect.setLeft( rect.left() + off );
+    rect.setTop( rect.top() + off );
+    rect.setWidth( rect.width() - off );
+    rect.setHeight( rect.height() - off );
+    painter->drawRect( rect );
 }
 
 

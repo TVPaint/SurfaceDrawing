@@ -6,6 +6,9 @@
 #include <QGraphicsScene>
 #include <QPixmap>
 #include <QTimer>
+#include <QDataWidgetMapper>
+
+#include "ToolModel.h"
 
 class cCustomGraphicsView;
 
@@ -35,4 +38,8 @@ private:
 
     int                 mCurrentFrame;
     QTimer*             mAnimationTimer;
+
+    QDataWidgetMapper*  mMapper;
+    cToolModel*         mToolModel;
+
 };

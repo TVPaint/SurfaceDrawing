@@ -2,6 +2,8 @@
 
 #include <QGraphicsView>
 
+#include "ToolModel.h"
+
 class cEditableItem;
 
 class cCanvas :
@@ -28,13 +30,11 @@ public:
 
 public:
     void  SetPixmap( const QPixmap& iPixmap );
+    void  SetToolModel( cToolModel* iToolModel );
 
 signals:
     void  currentFrameGotPainted( const QPixmap& iPixmap );
 
-
-private:
-    void  _SetupTools();
 
 private:
     enum  eState
@@ -45,17 +45,12 @@ private:
         kDrawing
     };
 
-    eState          mState;
-    cEditableItem*  mEditableItem;
-    QPointF         mClickPos;
-    QPixmap         mItemPixmap;
+    eState              mState;
+    cEditableItem*      mEditableItem;
+    QPointF             mClickPos;
+    QPixmap             mItemPixmap;
 
-
-    // Tools
-    QPainter*       mPainter;
-    QPen*           mPen;
-    QBrush*         mBrush;
-    QColor          mAPen;
-    int             mToolSize;
+    cToolModel*         mToolModel;
+    QPainter*           mPainter;
 };
 

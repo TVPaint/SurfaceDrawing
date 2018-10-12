@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
@@ -37,6 +38,8 @@ public:
     QFormLayout *formLayout;
     QLabel *penSizeLabel;
     QSpinBox *penSizeSpinBox;
+    QLabel *antiAliasLabel;
+    QCheckBox *antiAliasCheckBox;
     cCanvas *canvas;
     QHBoxLayout *horizontalLayout;
     QPushButton *playButton;
@@ -80,6 +83,16 @@ public:
         penSizeSpinBox->setObjectName(QStringLiteral("penSizeSpinBox"));
 
         formLayout->setWidget(0, QFormLayout::FieldRole, penSizeSpinBox);
+
+        antiAliasLabel = new QLabel(centralWidget);
+        antiAliasLabel->setObjectName(QStringLiteral("antiAliasLabel"));
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, antiAliasLabel);
+
+        antiAliasCheckBox = new QCheckBox(centralWidget);
+        antiAliasCheckBox->setObjectName(QStringLiteral("antiAliasCheckBox"));
+
+        formLayout->setWidget(1, QFormLayout::FieldRole, antiAliasCheckBox);
 
 
         horizontalLayout_2->addLayout(formLayout);
@@ -141,6 +154,7 @@ public:
         cMainWindow->setWindowTitle(QApplication::translate("cMainWindow", "cMainWindow", nullptr));
         previewLabel->setText(QApplication::translate("cMainWindow", "PREVIEW", nullptr));
         penSizeLabel->setText(QApplication::translate("cMainWindow", "PenSize", nullptr));
+        antiAliasLabel->setText(QApplication::translate("cMainWindow", "AntiAlias", nullptr));
         playButton->setText(QApplication::translate("cMainWindow", "Play", nullptr));
         stopButton->setText(QApplication::translate("cMainWindow", "Stop", nullptr));
     } // retranslateUi
