@@ -2,6 +2,10 @@
 
 #include "cGraphicItem.h"
 #include <QGraphicsPixmapItem >
+#include <QColorDialog >
+
+
+#include "ColorSwatch.h"
 
 cMainWindow::cMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +27,8 @@ cMainWindow::cMainWindow(QWidget *parent) :
 
     mMapper->toFirst();
 
+    ui.colorSwatch->SetColor( mToolModel->getColor() );
+
     ui.canvas->SetToolModel( mToolModel );
 
     connect( ui.playButton, &QPushButton::clicked, this, &cMainWindow::PlayPressed );
@@ -30,6 +36,8 @@ cMainWindow::cMainWindow(QWidget *parent) :
     connect( this, &cMainWindow::currentFrameChangeAsked, ui.graphicsView, &cCustomGraphicsView::CurrentFrameChanged );
     connect( ui.graphicsView, &cCustomGraphicsView::currentFrameChanged, this, &cMainWindow::CurrentFrameChanged );
     connect( ui.canvas, &cCanvas::currentFrameGotPainted, ui.graphicsView, &cCustomGraphicsView::CurrentFrameGotPainted );
+
+    connect( ui.colorSwatch, &ColorSwatch::swatchClicked, this, &cMainWindow::AskColor );
 
     CurrentFrameChanged( 0 );
 }
@@ -80,4 +88,22 @@ cMainWindow::CurrentFrameChanged( int iNewIndex )
     mCurrentFrame = iNewIndex;
     auto currentItem = ui.graphicsView->GetAnimationImages().at( mCurrentFrame );
     ui.canvas->SetPixmap( currentItem->pixmap() );
+}
+
+
+void
+cMainWindow::UpdateColor()
+{
+}
+
+
+void
+cMainWindow::AskColor()
+{
+    QColorDialog dialog( mToolModel->getColor(), this );
+    if( dialog.exec() )
+    {
+        mToolModel->setColor( dialog.selectedColor() );
+        ui.colorSwatch->SetColor( mToolModel->getColor() );
+    }
 }

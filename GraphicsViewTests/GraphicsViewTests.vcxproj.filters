@@ -40,6 +40,9 @@
     <Filter Include="src\ToolModel">
       <UniqueIdentifier>{0a5ef651-7279-4ade-9c0e-9b272965b7f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Widgets">
+      <UniqueIdentifier>{e2be922e-dce3-472d-81d1-65c5edd33a08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="src\ToolModel.cpp">
       <Filter>src\ToolModel</Filter>
     </ClCompile>
+    <ClCompile Include="ColorSwatch.cpp">
+      <Filter>src\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
@@ -79,6 +85,9 @@
     </QtMoc>
     <QtMoc Include="src\Canvas.h">
       <Filter>src\GraphicView</Filter>
+    </QtMoc>
+    <QtMoc Include="ColorSwatch.h">
+      <Filter>src\Widgets</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

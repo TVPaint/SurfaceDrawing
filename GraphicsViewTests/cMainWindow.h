@@ -27,6 +27,9 @@ public:
 
     void CurrentFrameChanged( int iNewIndex );
 
+    void UpdateColor();
+    void AskColor();
+
 signals:
     void  currentFrameChangeAsked( int iCurrentFrame );
 

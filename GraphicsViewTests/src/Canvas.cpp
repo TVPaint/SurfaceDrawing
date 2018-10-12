@@ -24,6 +24,7 @@ cCanvas::cCanvas( QWidget *parent ) :
     scene->addItem( mEditableItem );
     QRectF sceneRect = geometry();
     setSceneRect( sceneRect );
+    setStyleSheet( "background-color: #555555");
 }
 
 

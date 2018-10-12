@@ -35,12 +35,14 @@ cToolModel::rowCount( const QModelIndex & iIndex ) const
 QVariant
 cToolModel::data( const QModelIndex & iIndex, int iRole ) const
 {
-    if( iRole == Qt::DecorationRole || iRole == Qt::EditRole )
+    if( iRole == Qt::DisplayRole || iRole == Qt::EditRole )
     {
         if( iIndex.row() == 0 )
             return  mToolSize;
         else if( iIndex.row() == 1 )
             return  mAntiAliasingOn;
+        else if( iIndex.row() == 2 )
+            return  mAPen;
     }
 
     return QVariant();
@@ -71,6 +73,12 @@ cToolModel::setData( const QModelIndex & iIndex, const QVariant & iValue, int iR
         {
             mAntiAliasingOn = iValue.toBool();
         }
+        else if( iIndex.row() == 2 )
+        {
+            mAPen = iValue.value<QColor>();
+            mBrush->setColor( mAPen );
+            mPen->setBrush( *mBrush );
+        }
     }
 
     return false;
@@ -87,16 +95,15 @@ cToolModel::flags( const QModelIndex & iIndex ) const
 QColor
 cToolModel::getColor() const
 {
-    return  mAPen;
+    QVariant dataColor = data( createIndex( 2, 0 ) );
+    return  dataColor.value< QColor >();
 }
 
 
 void
 cToolModel::setColor( const QColor & iColor )
 {
-    mAPen = iColor;
-    mBrush->setColor( mAPen );
-    mPen->setBrush( *mBrush );
+    setData( createIndex( 2, 0 ), iColor );
 }
 
 

@@ -24,6 +24,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "Canvas.h"
+#include "ColorSwatch.h"
 #include "cCustomGraphicsView.h"
 
 QT_BEGIN_NAMESPACE
@@ -32,14 +33,18 @@ class Ui_cMainWindow
 {
 public:
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout;
+    QVBoxLayout *verticalLayout_2;
     QLabel *previewLabel;
     QHBoxLayout *horizontalLayout_2;
+    QVBoxLayout *verticalLayout;
+    QLabel *label_2;
     QFormLayout *formLayout;
     QLabel *penSizeLabel;
     QSpinBox *penSizeSpinBox;
     QLabel *antiAliasLabel;
     QCheckBox *antiAliasCheckBox;
+    QLabel *label;
+    ColorSwatch *colorSwatch;
     cCanvas *canvas;
     QHBoxLayout *horizontalLayout;
     QPushButton *playButton;
@@ -56,21 +61,34 @@ public:
         cMainWindow->resize(649, 589);
         centralWidget = new QWidget(cMainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        verticalLayout = new QVBoxLayout(centralWidget);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout_2 = new QVBoxLayout(centralWidget);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         previewLabel = new QLabel(centralWidget);
         previewLabel->setObjectName(QStringLiteral("previewLabel"));
         previewLabel->setMinimumSize(QSize(0, 0));
         previewLabel->setMaximumSize(QSize(16777215, 16777215));
         previewLabel->setAlignment(Qt::AlignCenter);
 
-        verticalLayout->addWidget(previewLabel);
+        verticalLayout_2->addWidget(previewLabel);
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy);
+
+        verticalLayout->addWidget(label_2);
+
         formLayout = new QFormLayout();
         formLayout->setSpacing(6);
         formLayout->setObjectName(QStringLiteral("formLayout"));
@@ -94,8 +112,21 @@ public:
 
         formLayout->setWidget(1, QFormLayout::FieldRole, antiAliasCheckBox);
 
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
 
-        horizontalLayout_2->addLayout(formLayout);
+        formLayout->setWidget(2, QFormLayout::LabelRole, label);
+
+        colorSwatch = new ColorSwatch(centralWidget);
+        colorSwatch->setObjectName(QStringLiteral("colorSwatch"));
+
+        formLayout->setWidget(2, QFormLayout::FieldRole, colorSwatch);
+
+
+        verticalLayout->addLayout(formLayout);
+
+
+        horizontalLayout_2->addLayout(verticalLayout);
 
         canvas = new cCanvas(centralWidget);
         canvas->setObjectName(QStringLiteral("canvas"));
@@ -103,7 +134,7 @@ public:
         horizontalLayout_2->addWidget(canvas);
 
 
-        verticalLayout->addLayout(horizontalLayout_2);
+        verticalLayout_2->addLayout(horizontalLayout_2);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -119,18 +150,18 @@ public:
         horizontalLayout->addWidget(stopButton);
 
 
-        verticalLayout->addLayout(horizontalLayout);
+        verticalLayout_2->addLayout(horizontalLayout);
 
         graphicsView = new cCustomGraphicsView(centralWidget);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
-        graphicsView->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
+        graphicsView->setSizePolicy(sizePolicy1);
         graphicsView->setMaximumSize(QSize(16777215, 200));
 
-        verticalLayout->addWidget(graphicsView);
+        verticalLayout_2->addWidget(graphicsView);
 
         cMainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(cMainWindow);
@@ -153,8 +184,11 @@ public:
     {
         cMainWindow->setWindowTitle(QApplication::translate("cMainWindow", "cMainWindow", nullptr));
         previewLabel->setText(QApplication::translate("cMainWindow", "PREVIEW", nullptr));
+        label_2->setText(QApplication::translate("cMainWindow", "ToolConfig", nullptr));
         penSizeLabel->setText(QApplication::translate("cMainWindow", "PenSize", nullptr));
         antiAliasLabel->setText(QApplication::translate("cMainWindow", "AntiAlias", nullptr));
+        label->setText(QApplication::translate("cMainWindow", "Color", nullptr));
+        colorSwatch->setText(QString());
         playButton->setText(QApplication::translate("cMainWindow", "Play", nullptr));
         stopButton->setText(QApplication::translate("cMainWindow", "Stop", nullptr));
     } // retranslateUi
