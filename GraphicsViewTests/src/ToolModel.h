@@ -26,6 +26,9 @@ public:
     Qt::ItemFlags   flags( const QModelIndex& iIndex ) const override;
 
 
+    int             getSize() const;
+    void            setSize( int iSize );
+
     QColor          getColor() const;
     void            setColor( const QColor& iColor );
 

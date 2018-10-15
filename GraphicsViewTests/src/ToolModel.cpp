@@ -94,6 +94,20 @@ cToolModel::flags( const QModelIndex & iIndex ) const
 }
 
 
+int
+cToolModel::getSize() const
+{
+    return  data( createIndex( 0, 0 ) ).toInt();
+}
+
+
+void
+cToolModel::setSize( int iSize )
+{
+    setData( createIndex( 0, 0 ), iSize );
+}
+
+
 QColor
 cToolModel::getColor() const
 {
