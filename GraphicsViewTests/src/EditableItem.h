@@ -26,7 +26,11 @@ protected:
 
     void        contextMenuEvent( QGraphicsSceneContextMenuEvent* iEvent ) override;
 
+public:
+    QPixmap*    mpixmap;
+
 private:
     std::filesystem::path  mFileToEdit;
+
 };
 

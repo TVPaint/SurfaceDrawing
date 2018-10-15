@@ -55,7 +55,7 @@ private:
     cEditableItem*      mEditableItem;
     cGridItem*          mGridItem;
     QPointF             mClickPos;
-    QPixmap             mItemPixmap;
+    QPixmap*            mItemPixmap;
 
     cToolModel*         mToolModel;
     QPainter*           mPainter;

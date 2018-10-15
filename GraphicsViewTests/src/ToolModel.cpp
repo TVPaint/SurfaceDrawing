@@ -22,6 +22,8 @@ cToolModel::cToolModel( QObject * iParent ) :
     mPen  = new QPen();
     mPen->setWidth( mToolSize );
     mPen->setBrush( *mBrush );
+    mPen->setCapStyle( Qt::RoundCap );
+    mPen->setJoinStyle( Qt::RoundJoin );
 }
 
 

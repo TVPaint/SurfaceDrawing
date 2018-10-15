@@ -4,6 +4,7 @@
 #include "EditableItem.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QColorDialog>
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -95,11 +96,17 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     }
     else if( iEvent->key() == Qt::Key_C )
     {
-        QColorDialog dialog( mToolModel->getColor(), this );
-        if( dialog.exec() )
-        {
-            mToolModel->setColor( dialog.selectedColor() );
-        }
+        QClipboard* clipboard = QApplication::clipboard();
+        clipboard->setPixmap( *mItemPixmap );
+    }
+    else if( iEvent->key() == Qt::Key_V )
+    {
+        QPainter pp( mItemPixmap );
+        QClipboard* clipboard = QApplication::clipboard();
+        auto px = clipboard->pixmap();
+
+        pp.drawPixmap( 0, 0, px );
+        mEditableItem->update();
     }
 
     QGraphicsView::keyPressEvent( iEvent );
@@ -115,10 +122,10 @@ cCanvas::keyReleaseEvent( QKeyEvent * iEvent )
     }
     else if( iEvent->key() == Qt::Key_Delete )
     {
-        mItemPixmap = mEditableItem->pixmap();
-        mItemPixmap.fill( Qt::transparent );
-        mEditableItem->setPixmap( mItemPixmap );
-        currentFrameGotPainted( mItemPixmap );
+        mItemPixmap = mEditableItem->mpixmap;
+        mItemPixmap->fill( Qt::transparent );
+        currentFrameGotPainted( *mItemPixmap );
+        mEditableItem->update();
     }
 
     QGraphicsView::keyReleaseEvent( iEvent );
@@ -137,8 +144,8 @@ cCanvas::mousePressEvent( QMouseEvent * iEvent )
     else
     {
         mState = kDrawing;
-        mItemPixmap = mEditableItem->pixmap();
-        mPainter = mToolModel->getNewPainter( &mItemPixmap );
+        mItemPixmap = mEditableItem->mpixmap;
+        mPainter = mToolModel->getNewPainter( mItemPixmap );
     }
 
     QGraphicsView::mousePressEvent( iEvent );
@@ -160,7 +167,7 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
         QPointF originInItemCoordinate = mEditableItem->mapFromScene( mapToScene( mClickPos.x(), mClickPos.y() ) );
         QPointF newPointInItemCoordinate = mEditableItem->mapFromScene( mapToScene( iEvent->pos().x(), iEvent->pos().y() ) );
         mPainter->drawLine( originInItemCoordinate, newPointInItemCoordinate );
-        mEditableItem->setPixmap( mItemPixmap );
+        mEditableItem->update();
     }
 
     mClickPos = iEvent->pos();
@@ -174,8 +181,7 @@ cCanvas::mouseReleaseEvent( QMouseEvent * iEvent )
     if( mState == kDrawing )
     {
         delete  mPainter;
-        mEditableItem->setPixmap( mItemPixmap );
-        currentFrameGotPainted( mItemPixmap );
+        currentFrameGotPainted( *mItemPixmap );
     }
 
     mState = kIdle;
@@ -204,7 +210,9 @@ cCanvas::wheelEvent( QWheelEvent * iEvent )
 void
 cCanvas::SetPixmap( const QPixmap & iPixmap )
 {
-    mEditableItem->setPixmap( iPixmap );
+    delete  mEditableItem->mpixmap;
+    mEditableItem->mpixmap = new QPixmap( iPixmap );
+    mEditableItem->update();
 }
 
 

@@ -7,7 +7,8 @@
 
 
 cEditableItem::cEditableItem( QGraphicsItem *parent ) :
-    QGraphicsPixmapItem ( parent )
+    QGraphicsPixmapItem ( parent ),
+    mpixmap( 0 )
 {
     setAcceptHoverEvents( true );
 }
@@ -16,14 +17,21 @@ cEditableItem::cEditableItem( QGraphicsItem *parent ) :
 QRectF
 cEditableItem::boundingRect() const
 {
-    return QRectF( 0, 0, 32, 32 );
+    if( mpixmap )
+        return QRectF( 0, 0, mpixmap->width(), mpixmap->height() );
+
+    return  QRectF( 0, 0, 32, 32 );
 }
 
 
 void
 cEditableItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-    QGraphicsPixmapItem::paint( painter, option, widget );
+    if( mpixmap )
+    {
+        painter->setRenderHint( QPainter::SmoothPixmapTransform, (transformationMode() == Qt::SmoothTransformation) );
+        painter->drawPixmap( offset(), *mpixmap );
+    }
 
     QPen pen( Qt::black );
     pen.setWidth( 1 );

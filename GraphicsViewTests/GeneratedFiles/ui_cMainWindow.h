@@ -99,6 +99,7 @@ public:
 
         penSizeSpinBox = new QSpinBox(centralWidget);
         penSizeSpinBox->setObjectName(QStringLiteral("penSizeSpinBox"));
+        penSizeSpinBox->setMaximum(9999);
 
         formLayout->setWidget(0, QFormLayout::FieldRole, penSizeSpinBox);
 

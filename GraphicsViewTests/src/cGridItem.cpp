@@ -25,7 +25,7 @@ cGridItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 {
     if( psize > 10 )
     {
-        painter->setBrush( Qt::white );
+        painter->setPen( QColor( 200, 200, 200, 180 ) );
 
         int numbOfLines = size.width() / psize;
         for( int i = 0; i < numbOfLines; ++i )
