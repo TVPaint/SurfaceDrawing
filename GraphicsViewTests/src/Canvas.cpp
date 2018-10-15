@@ -11,7 +11,8 @@
 
 
 cCanvas::cCanvas( QWidget *parent ) :
-    QGraphicsView( parent )
+    QGraphicsView( parent ),
+    cursorPixmap( 0 )
 {
     // Config
     setAcceptDrops( true );
@@ -29,7 +30,6 @@ cCanvas::cCanvas( QWidget *parent ) :
 
     QRectF sceneRect = geometry();
     setSceneRect( sceneRect );
-
 
     setStyleSheet( "background-color: #555555");
 }
@@ -84,15 +84,15 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     if( iEvent->key() == Qt::Key_Alt && QApplication::mouseButtons() & Qt::MouseButton::LeftButton )
         mState = kPan;
 
-    if( iEvent->key() == Qt::Key_Plus )
+    if( iEvent->key() == Qt::Key_B )
     {
-        mEditableItem->setScale( mEditableItem->scale() * 1.5 );
-        UpdateGridItem();
+        mTool = kBrush;
+        DrawCursor();
     }
-    else if( iEvent->key() == Qt::Key_Minus )
+    else if( iEvent->key() == Qt::Key_E )
     {
-        mEditableItem->setScale( mEditableItem->scale() * (1/1.5) );
-        UpdateGridItem();
+        mTool = kEraser;
+        DrawCursor();
     }
     else if( iEvent->key() == Qt::Key_C )
     {
@@ -146,6 +146,9 @@ cCanvas::mousePressEvent( QMouseEvent * iEvent )
         mState = kDrawing;
         mItemPixmap = mEditableItem->mpixmap;
         mPainter = mToolModel->getNewPainter( mItemPixmap );
+
+        if( mTool == kEraser )
+            mPainter->setCompositionMode( QPainter::CompositionMode_Clear );
     }
 
     QGraphicsView::mousePressEvent( iEvent );
@@ -196,10 +199,11 @@ cCanvas::wheelEvent( QWheelEvent * iEvent )
     if( QApplication::keyboardModifiers() & Qt::AltModifier )
     {
         if( delta > 0 )
-            mEditableItem->setScale( mEditableItem->scale() * 2.5 );
+            mEditableItem->setScale( mEditableItem->scale() * 1.5 );
         else
             mEditableItem->setScale( mEditableItem->scale() / 1.5 );
 
+        UpCursor();
         UpdateGridItem();
     }
 
@@ -220,6 +224,7 @@ void
 cCanvas::SetToolModel( cToolModel* iToolModel )
 {
     mToolModel = iToolModel;
+    DrawCursor();
 }
 
 
@@ -230,5 +235,24 @@ cCanvas::UpdateGridItem()
 
     mGridItem->psize = pixelSize;
     mGridItem->size = mEditableItem->sceneBoundingRect().size();
+}
+
+
+void
+cCanvas::UpCursor()
+{
+    if( cursorPixmap->height() * mEditableItem->scale() > width() )
+        setCursor( Qt::ArrowCursor );
+    else
+        setCursor( QCursor( cursorPixmap->scaledToHeight( cursorPixmap->height() * mEditableItem->scale() ) ) );
+}
+
+
+void
+cCanvas::DrawCursor()
+{
+    delete  cursorPixmap;
+    cursorPixmap = mToolModel->getToolHUD();
+    UpCursor();
 }
 

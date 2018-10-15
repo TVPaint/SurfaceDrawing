@@ -135,3 +135,22 @@ cToolModel::getBrush()
 {
     return  mBrush;
 }
+
+
+QPixmap*
+cToolModel::getToolHUD()
+{
+    QPixmap* brushHUD = new QPixmap( mToolSize, mToolSize );
+    brushHUD->fill( Qt::transparent );
+    QPainter painter( brushHUD );
+
+    painter.setBrush( Qt::transparent );
+    painter.setPen( Qt::lightGray );
+
+    if( mToolSize == 1 )
+        painter.drawPoint( 0, 0 );
+    else
+        painter.drawEllipse( 0, 0, mToolSize-1, mToolSize-1 );
+
+    return  brushHUD;
+}

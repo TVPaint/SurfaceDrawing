@@ -37,6 +37,8 @@ public:
     void  SetToolModel( cToolModel* iToolModel );
 
     void  UpdateGridItem();
+    void  UpCursor();
+    void  DrawCursor();
 
 signals:
     void  currentFrameGotPainted( const QPixmap& iPixmap );
@@ -51,13 +53,22 @@ private:
         kDrawing
     };
 
+    enum  eTool
+    {
+        kBrush,
+        kEraser
+    };
+
     eState              mState;
     cEditableItem*      mEditableItem;
     cGridItem*          mGridItem;
     QPointF             mClickPos;
     QPixmap*            mItemPixmap;
 
+    eTool               mTool;
     cToolModel*         mToolModel;
     QPainter*           mPainter;
+
+    QPixmap*            cursorPixmap;
 };
 

@@ -33,6 +33,8 @@ public:
     QPen*           getPen();
     QBrush*         getBrush();
 
+    QPixmap*        getToolHUD();
+
 private:
     // Tools
     QPen*           mPen;
