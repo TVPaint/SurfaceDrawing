@@ -3,6 +3,9 @@
 
 #include "EditableItem.h"
 
+#include "colorPickerDialog.h"
+
+
 #include <QApplication>
 #include <QClipboard>
 #include <QColorDialog>
@@ -137,18 +140,29 @@ cCanvas::mousePressEvent( QMouseEvent * iEvent )
 {
     mClickPos = iEvent->pos();
 
-    if( QApplication::keyboardModifiers() & Qt::AltModifier )
+    if( iEvent->button() == Qt::LeftButton )
     {
-        mState = kPan;
-    }
-    else
-    {
-        mState = kDrawing;
-        mItemPixmap = mEditableItem->mpixmap;
-        mPainter = mToolModel->getNewPainter( mItemPixmap );
+        if( QApplication::keyboardModifiers() & Qt::AltModifier )
+        {
+            mState = kPan;
+        }
+        else
+        {
+            mState = kDrawing;
+            mItemPixmap = mEditableItem->mpixmap;
+            mPainter = mToolModel->getNewPainter( mItemPixmap );
 
-        if( mTool == kEraser )
-            mPainter->setCompositionMode( QPainter::CompositionMode_Clear );
+            if( mTool == kEraser )
+                mPainter->setCompositionMode( QPainter::CompositionMode_Clear );
+        }
+    }
+    else if( iEvent->button() == Qt::RightButton )
+    {
+        if( QApplication::keyboardModifiers() & Qt::ControlModifier )
+        {
+            auto test = new colorPickerDialog( this );
+            test->openAtPosition( iEvent->screenPos() - QPointF( test->size().width()/2, test->size().height()/2 ) );
+        }
     }
 
     QGraphicsView::mousePressEvent( iEvent );
