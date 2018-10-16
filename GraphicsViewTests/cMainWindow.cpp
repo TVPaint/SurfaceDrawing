@@ -39,6 +39,8 @@ cMainWindow::cMainWindow(QWidget *parent) :
 
     connect( ui.colorSwatch, &ColorSwatch::swatchClicked, this, &cMainWindow::AskColor );
 
+    connect( mToolModel, &QAbstractItemModel::dataChanged, this, &cMainWindow::toolDataChanged );
+
     CurrentFrameChanged( 0 );
 }
 
@@ -94,6 +96,7 @@ cMainWindow::CurrentFrameChanged( int iNewIndex )
 void
 cMainWindow::UpdateColor()
 {
+    ui.colorSwatch->SetColor( mToolModel->getColor() );
 }
 
 
@@ -104,6 +107,14 @@ cMainWindow::AskColor()
     if( dialog.exec() )
     {
         mToolModel->setColor( dialog.selectedColor() );
-        ui.colorSwatch->SetColor( mToolModel->getColor() );
+        UpdateColor();
     }
+}
+
+
+void
+cMainWindow::toolDataChanged( const QModelIndex & iLeft, const QModelIndex & iRight, const QVector<int>& iRoles )
+{
+    if( iLeft.row() == 2 )
+        UpdateColor();
 }

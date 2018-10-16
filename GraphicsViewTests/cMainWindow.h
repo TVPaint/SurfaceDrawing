@@ -30,6 +30,8 @@ public:
     void UpdateColor();
     void AskColor();
 
+    void toolDataChanged( const QModelIndex& iLeft, const QModelIndex& iRight, const QVector< int >& iRoles );
+
 signals:
     void  currentFrameChangeAsked( int iCurrentFrame );
 

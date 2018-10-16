@@ -70,16 +70,19 @@ cToolModel::setData( const QModelIndex & iIndex, const QVariant & iValue, int iR
         {
             mToolSize = iValue.toInt();
             mPen->setWidth( mToolSize );
+            dataChanged( iIndex, iIndex );
         }
         else if( iIndex.row() == 1 )
         {
             mAntiAliasingOn = iValue.toBool();
+            dataChanged( iIndex, iIndex );
         }
         else if( iIndex.row() == 2 )
         {
             mAPen = iValue.value<QColor>();
             mBrush->setColor( mAPen );
             mPen->setBrush( *mBrush );
+            dataChanged( iIndex, iIndex );
         }
     }
 
