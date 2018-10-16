@@ -1,6 +1,20 @@
 #include "colorPickerDialog.h"
 
 
+static
+float
+Smooth( float value, float max )
+{
+    return  max  * std::powf(value / max, 4.0);
+}
+
+static
+float
+SmoothInverse( float value, float max )
+{
+    return  max * std::powf(value/max, 1.0/4.0);
+}
+
 
 colorPickerDialog::~colorPickerDialog()
 {
@@ -18,14 +32,12 @@ colorPickerDialog::colorPickerDialog( cToolModel* model, QWidget* iParent ) :
     _ToolModel( model )
 {
     setWindowFlags( Qt::Widget | Qt::FramelessWindowHint | Qt::Popup );
-    setAttribute( Qt::WA_NoSystemBackground, true );
-    setAttribute( Qt::WA_TranslucentBackground, true );
     setAttribute( Qt::WA_DeleteOnClose );
 
     _slider = new QSlider( this );
     _slider->setOrientation( Qt::Horizontal );
     _slider->setRange( 1, 5000 );
-    _slider->setValue( _ToolModel->getSize() );
+    _slider->setValue( int(SmoothInverse(_ToolModel->getSize(), 5000 )) );
 
     _container = new QWidget( this );
     _colorPicker = new colorPicker( this );
@@ -44,7 +56,6 @@ colorPickerDialog::colorPickerDialog( cToolModel* model, QWidget* iParent ) :
     _horlayout->addWidget( _colorPicker );
     _horlayout->addWidget( _slider2 );
     _container->setLayout( _horlayout );
-
 
     _mainLayout = new QVBoxLayout( this );
     _mainLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -83,7 +94,10 @@ colorPickerDialog::size() const
 void
 colorPickerDialog::sliderChanged( double iValue )
 {
-    _ToolModel->setSize( int(iValue) );
+    int value = int(Smooth( iValue, 5000 ));
+    if( value == 0 )
+        value = 1;
+    _ToolModel->setSize( value );
 }
 
 

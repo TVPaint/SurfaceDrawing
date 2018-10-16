@@ -46,6 +46,9 @@
     <Filter Include="src\Picker">
       <UniqueIdentifier>{89f22c04-84b3-4c90-8fe8-bd4fec784ed8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Gadget">
+      <UniqueIdentifier>{5146365f-077c-4980-94f3-ddae92b09e38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,6 +90,9 @@
     <ClCompile Include="colorPicker.cpp">
       <Filter>src\Picker</Filter>
     </ClCompile>
+    <ClCompile Include="powerslider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="cMainWindow.h">
@@ -103,6 +109,9 @@
     </QtMoc>
     <QtMoc Include="colorPicker.h">
       <Filter>src\Picker</Filter>
+    </QtMoc>
+    <QtMoc Include="powerslider.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

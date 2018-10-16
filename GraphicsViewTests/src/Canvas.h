@@ -39,6 +39,7 @@ public:
     void  UpdateGridItem();
     void  UpCursor();
     void  DrawCursor();
+    void  toolChanged( const QModelIndex& Left, const QModelIndex& Right, const QVector< int >& Roles );
 
 signals:
     void  currentFrameGotPainted( const QPixmap& iPixmap );

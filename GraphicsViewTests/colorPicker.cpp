@@ -42,6 +42,7 @@ colorPicker::mousePressEvent( QMouseEvent * event )
     _hudPos = event->pos() - QPoint( 10, 10 );
     _selColor = _image->pixel( event->pos() );
     drawHUDCircle();
+    update();
 }
 
 

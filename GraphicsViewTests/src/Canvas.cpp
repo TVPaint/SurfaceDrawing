@@ -15,7 +15,8 @@
 
 cCanvas::cCanvas( QWidget *parent ) :
     QGraphicsView( parent ),
-    cursorPixmap( 0 )
+    cursorPixmap( 0 ),
+    mToolModel( 0 )
 {
     // Config
     setAcceptDrops( true );
@@ -237,8 +238,12 @@ cCanvas::SetPixmap( const QPixmap & iPixmap )
 void
 cCanvas::SetToolModel( cToolModel* iToolModel )
 {
+    if( mToolModel )
+        disconnect( mToolModel, &QAbstractItemModel::dataChanged, this, &cCanvas::toolChanged );
+
     mToolModel = iToolModel;
     DrawCursor();
+    connect( mToolModel, &QAbstractItemModel::dataChanged, this, &cCanvas::toolChanged );
 }
 
 
@@ -268,5 +273,13 @@ cCanvas::DrawCursor()
     delete  cursorPixmap;
     cursorPixmap = mToolModel->getToolHUD();
     UpCursor();
+}
+
+
+void
+cCanvas::toolChanged( const QModelIndex & Left, const QModelIndex & Right, const QVector<int>& Roles )
+{
+    if( Left.row() == 0 )
+        DrawCursor();
 }
 
