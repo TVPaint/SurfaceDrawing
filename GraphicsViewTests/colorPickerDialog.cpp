@@ -28,11 +28,14 @@ colorPickerDialog::~colorPickerDialog()
 
 
 colorPickerDialog::colorPickerDialog( cToolModel* model, QWidget* iParent ) :
-    QWidget( iParent ),
+    QFrame( iParent ),
     _ToolModel( model )
 {
-    setWindowFlags( Qt::Widget | Qt::FramelessWindowHint | Qt::Popup );
+    setWindowFlags( Qt::Popup );
     setAttribute( Qt::WA_DeleteOnClose );
+    setFrameShape( QFrame::StyledPanel );
+    setFrameShadow( QFrame::Plain );
+
 
     _slider = new QSlider( this );
     _slider->setOrientation( Qt::Horizontal );
@@ -58,7 +61,7 @@ colorPickerDialog::colorPickerDialog( cToolModel* model, QWidget* iParent ) :
     _container->setLayout( _horlayout );
 
     _mainLayout = new QVBoxLayout( this );
-    _mainLayout->setContentsMargins( 0, 0, 0, 0 );
+    _mainLayout->setContentsMargins( 5, 5, 5, 5 );
     _mainLayout->addWidget( _slider );
     _mainLayout->addWidget( _container );
 

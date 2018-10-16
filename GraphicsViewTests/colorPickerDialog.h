@@ -4,13 +4,13 @@
 
 #include "ToolModel.h"
 
-#include  <QWidget>
+#include  <QFrame>
 #include  <QVBoxLayout>
 #include  <QSlider>
 
 
 class colorPickerDialog :
-    public  QWidget
+    public  QFrame
 {
 
 public:
@@ -26,16 +26,16 @@ public:
     void  colorPicked( const QColor& color );
 
 private:
-    colorPicker* _colorPicker;
-    QVBoxLayout* _mainLayout;
+    colorPicker*    _colorPicker;
+    QVBoxLayout*    _mainLayout;
 
-    QHBoxLayout* _horlayout;
+    QHBoxLayout*    _horlayout;
 
     QWidget*        _container;
 
-    QSlider*     _slider;
-    QSlider*     _slider2;
+    QSlider*        _slider;
+    QSlider*        _slider2;
 
-    cToolModel*  _ToolModel;
+    cToolModel*     _ToolModel;
 };
 
