@@ -186,6 +186,7 @@ cCanvas::mouseMoveEvent( QMouseEvent * iEvent )
         QPointF newPointInItemCoordinate = mEditableItem->mapFromScene( mapToScene( iEvent->pos().x(), iEvent->pos().y() ) );
         mPainter->drawLine( originInItemCoordinate, newPointInItemCoordinate );
         mEditableItem->update();
+        currentFrameGotPainted( *mItemPixmap );
     }
 
     mClickPos = iEvent->pos();
@@ -229,9 +230,21 @@ cCanvas::wheelEvent( QWheelEvent * iEvent )
 void
 cCanvas::SetPixmap( const QPixmap & iPixmap )
 {
+    if( mState == kDrawing )
+    {
+        delete  mPainter;
+        //previousFrameGotPainted( *mItemPixmap );
+    }
+
     delete  mEditableItem->mpixmap;
     mEditableItem->mpixmap = new QPixmap( iPixmap );
     mEditableItem->update();
+
+    if( mState == kDrawing )
+    {
+        mItemPixmap = mEditableItem->mpixmap;
+        mPainter = mToolModel->getNewPainter( mItemPixmap );
+    }
 }
 
 

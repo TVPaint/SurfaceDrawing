@@ -253,6 +253,16 @@ cCustomGraphicsView::CurrentFrameGotPainted( const QPixmap & iNewPixmap )
 }
 
 
+void
+cCustomGraphicsView::PreviousFrameGotPainted( const QPixmap & iNewPixmap )
+{
+    int prev = mCurrentFrame - 1;
+    if( prev < 0 )
+        prev = mAnimationImages.size() - 1;
+    mAnimationImages[ prev ]->setPixmap( iNewPixmap );
+}
+
+
 void cCustomGraphicsView::_SortItems()
 {
     mAnimationImages.clear();

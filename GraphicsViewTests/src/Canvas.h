@@ -43,6 +43,7 @@ public:
 
 signals:
     void  currentFrameGotPainted( const QPixmap& iPixmap );
+    void  previousFrameGotPainted( const QPixmap& iPixmap );
 
 
 private:
