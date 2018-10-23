@@ -18,13 +18,19 @@ public:
     cPaperLogic();
 
 public:
-    enum  ePaperEnum
+    struct  eDataCell
     {
-        kEmpty = 100,
-        kWall,
-        // Then its user based let's say :
-        // 1-9 == user from 1 to 9
-        // 11-19 is user's trace
+        eDataCell() : mPlayer( 0 ), mTrail(0), mGround(0){};
+        char  mPlayer;
+        char  mTrail;
+        char  mGround;
+    };
+
+    enum eDataType
+    {
+        kPlayer,
+        kTrail,
+        kGround
     };
 
 
@@ -44,9 +50,11 @@ public:
 public:
     void Update();
 
-    void  AddGridChangedCB( std::function< void( int, int, int ) > iCB );
+    void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 
-    void  ChangeGridValueAt( int x, int y, int value );
+    void  SetPlayerValueAt( int x, int y, int value );
+    void  SetTrailValueAt( int x, int y, int value );
+    void  SetGroundValueAt( int x, int y, int value );
 
     void  FillZone( int iIndex );
 
@@ -55,13 +63,15 @@ public:
 
 private:
     bool  SanityChecks() const;
-    void  _CallCB( int, int, int );
+    void  _CallCB( int, int, int, eDataType );
+    void  _AddTrailAtIndex( int iX, int iY, int iIndex );
 
 
 public:
-    QVector< QVector< int > >   mPaperGrid;
-    QVector< cUser* >           mAllUsers;
+    QVector< QVector< eDataCell > >     mPaperGrid;
+    QVector< cUser* >                   mAllUsers;
+    QList< QPoint >                     mTrailPoints;
 
-    QList< std::function< void( int, int, int ) > > mCBList;
+    QList< std::function< void( int, int, int, eDataType ) > > mCBList;
 };
 

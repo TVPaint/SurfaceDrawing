@@ -38,20 +38,21 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
     mPaperLogic->AddGridChangedCB(
 
-        [ this ]( int x, int y, int newValue )
+        [ this ]( int x, int y, int newValue, cPaperLogic::eDataType iType )
         {
-            if( newValue < 10 )
+            if( iType == cPaperLogic::kPlayer )
                 return;
 
             int singleIndex = x + y*GRIDSIZE;
             QColor color = cPaperLogic::GetColorByIndex( 0 );
 
-            if( newValue == 11 )
+            if( iType == cPaperLogic::kTrail )
                 color = color.lighter( 170 );
-            else if( newValue > 20 && newValue < 30 )
+            else if( iType == cPaperLogic::kGround )
                 color = color.darker( 170 );
 
             mAllTiles[ singleIndex ]->mColor = color;
+            mAllTiles[ singleIndex ]->update();
         }
     );
 }
@@ -126,5 +127,8 @@ cCanvas::Update()
         ++counter;
     }
 
-    ensureVisible( mAllUserItems[ 0 ], width()/2-CELLSIZE, height()/2-CELLSIZE  );
+    ensureVisible( mAllUserItems[ 0 ], width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
+    QRegion A;
+    QRegion B;
+    QRegion C = B - A;
 }

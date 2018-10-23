@@ -9,7 +9,8 @@ cUser::~cUser()
 
 cUser::cUser( const QColor& iColor ) :
     mColor( iColor ),
-    mAskDirectionChange( false )
+    mAskDirectionChange( false ),
+    mIsOutOfGround( false )
 {
     // Points are in grid coordinates
     setPosition( QPoint( 5, 5 ) );
@@ -33,6 +34,9 @@ cUser::setPosition( QPoint iPosition )
 void
 cUser::setGUIPosition( QPoint iPosition )
 {
+    auto debug = iPosition.x();
+    if( debug == 104 )
+        int bp = 8;
     mGUIPosition = iPosition;
 
     if( mPosition != cPaperLogic::MapToGrid( iPosition ) && mAskDirectionChange )

@@ -19,18 +19,19 @@ public:
     void setMovementVector( QPoint iMovementVector );
 
 public:
-    QColor    mColor;
-    QPoint    mPosition;
-    QSize     mSize;
+    QColor      mColor;
+    QPoint      mPosition;
+    QSize       mSize;
 
 
-    QPoint    mGUIPosition;
-    QSize     mGUISize;
-    QPoint    mGUIMovementVector;
+    QPoint      mGUIPosition;
+    QSize       mGUISize;
+    QPoint      mGUIMovementVector;
 
-    QPoint    mGUICurrentMovementVector;
+    QPoint      mGUICurrentMovementVector;
 
-    bool      mAskDirectionChange;
+    bool        mAskDirectionChange;
+    bool        mIsOutOfGround;
 };
 
 
