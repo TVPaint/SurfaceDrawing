@@ -113,7 +113,7 @@ cPaperLogic::Update()
         }
 
 
-        if( /*mPaperGrid[ oldX ][ oldY ].mPlayer != index &&*/ mPaperGrid[ oldX ][ oldY ].mGround != index )
+        if( mPaperGrid[ oldX ][ oldY ].mGround != index )
         {
             _AddTrailAtIndex( oldX, oldY, index );
         }
