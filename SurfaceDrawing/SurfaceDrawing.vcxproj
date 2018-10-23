@@ -113,6 +113,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cPaperLogic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SurfaceDrawing.cpp" />
   </ItemGroup>
@@ -124,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="SurfaceDrawing.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cPaperLogic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

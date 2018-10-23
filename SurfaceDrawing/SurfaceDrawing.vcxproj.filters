@@ -1,23 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
-      <Extensions>qrc;*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -28,28 +11,46 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{0668c54c-3fb8-46d9-88e4-d8ef6fc6a693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\MainWindow">
+      <UniqueIdentifier>{b56e63c6-aefc-4104-8f4e-7fe4356503e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Canvas">
+      <UniqueIdentifier>{17d40e6e-d476-49cd-adcd-8db40a64d858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PaperLogic">
+      <UniqueIdentifier>{213b6edb-bcc9-4bee-a349-e449b972c490}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SurfaceDrawing.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src\MainWindow</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="cPaperLogic.cpp">
+      <Filter>src\PaperLogic</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="SurfaceDrawing.qrc">
+      <Filter>src\MainWindow</Filter>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="SurfaceDrawing.h">
-      <Filter>Header Files</Filter>
+      <Filter>src\MainWindow</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="SurfaceDrawing.ui">
-      <Filter>Form Files</Filter>
+      <Filter>src\MainWindow</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="SurfaceDrawing.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
+    <ClInclude Include="cPaperLogic.h">
+      <Filter>src\PaperLogic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
