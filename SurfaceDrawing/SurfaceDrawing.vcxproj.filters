@@ -23,6 +23,19 @@
     <Filter Include="src\PaperLogic">
       <UniqueIdentifier>{213b6edb-bcc9-4bee-a349-e449b972c490}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="src\TickerTimer">
+      <UniqueIdentifier>{030a22ea-5fd2-4afc-85f1-c8197d105c41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SurfaceDrawing.cpp">
@@ -31,6 +44,18 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="cPaperLogic.cpp">
       <Filter>src\PaperLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="cUser.cpp">
+      <Filter>src\PaperLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="cCanvas.cpp">
+      <Filter>src\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="cItemUser.cpp">
+      <Filter>src\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="cBasicTile.cpp">
+      <Filter>src\Canvas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +67,9 @@
     <QtMoc Include="SurfaceDrawing.h">
       <Filter>src\MainWindow</Filter>
     </QtMoc>
+    <QtMoc Include="cCanvas.h">
+      <Filter>src\Canvas</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="SurfaceDrawing.ui">
@@ -51,6 +79,18 @@
   <ItemGroup>
     <ClInclude Include="cPaperLogic.h">
       <Filter>src\PaperLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="cUser.h">
+      <Filter>src\PaperLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="TickerTimer.h">
+      <Filter>src\TickerTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="cItemUser.h">
+      <Filter>src\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="cBasicTile.h">
+      <Filter>src\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
