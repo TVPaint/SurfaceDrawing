@@ -7,14 +7,15 @@ cUser::~cUser()
 }
 
 
-cUser::cUser( const QColor& iColor ) :
+cUser::cUser( int iIndex, const QColor& iColor ) :
+    mIndex( iIndex ),
     mColor( iColor ),
     mAskDirectionChange( false ),
     mIsOutOfGround( false )
 {
     // Points are in grid coordinates
     setPosition( QPoint( 5, 5 ) );
-    setSize( QSize( 1, 1 ) );
+    setSize( QPoint( 1, 1 ) );
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
 }
@@ -32,31 +33,32 @@ cUser::setPosition( QPoint iPosition )
 
 
 void
-cUser::setGUIPosition( QPoint iPosition )
+cUser::Update()
 {
-    auto debug = iPosition.x();
-    if( debug == 104 )
-        int bp = 8;
-    mGUIPosition = iPosition;
+    mGUIPosition += mGUICurrentMovementVector;
 
-    if( mPosition != cPaperLogic::MapToGrid( iPosition ) && mAskDirectionChange )
+    QPoint newCenter = mGUIPosition + mGUISize * 0.5;
+    QPoint newCell   = cPaperLogic::MapToGrid( newCenter );
+    mPosition = newCell;
+
+    if( mAskDirectionChange )
     {
-        mPosition = cPaperLogic::MapToGrid( iPosition );
-        mGUICurrentMovementVector = mGUIMovementVector;
-        mAskDirectionChange = false;
-        mGUIPosition = cPaperLogic::MapFromGrid( mPosition );
+        QPoint centerNewCell = newCell * CELLSIZE + QPoint( CELLSIZE / 2, CELLSIZE / 2 );
+        QPoint delta = centerNewCell - newCenter;
+        if( std::abs( delta.x() ) < 2 && std::abs( delta.y() ) < 2 )
+        {
+            mGUICurrentMovementVector = mGUIMovementVector;
+            mAskDirectionChange = false;
+            mGUIPosition = cPaperLogic::MapFromGrid( mPosition );
+        }
     }
-    else
-    {
-        mPosition = cPaperLogic::MapToGrid( iPosition );
-    }
+
 }
 
 
 void
-cUser::setSize( QSize iSize )
+cUser::setSize( QPoint iSize )
 {
-    mSize = iSize;
     mGUISize = iSize * CELLSIZE;
 }
 
@@ -69,6 +71,12 @@ cUser::setMovementVector( QPoint iMovementVector )
 
     mGUIMovementVector = iMovementVector;
     mAskDirectionChange = true;
+}
+
+
+void
+cUser::Kill()
+{
 }
 
 

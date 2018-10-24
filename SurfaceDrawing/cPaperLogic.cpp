@@ -4,6 +4,10 @@
 #include "cUser.h"
 
 
+#define  CELLAT( point ) mPaperGrid[ point.x()][point.y()]
+
+
+
 cPaperLogic::~cPaperLogic()
 {
 }
@@ -53,72 +57,68 @@ cPaperLogic::GetColorByIndex( int iIndex )
 void
 cPaperLogic::AddUser( cUser * iUser )
 {
-    mAllUsers.push_back( iUser );
+    mAllUsers.insert( iUser->mIndex, iUser );
 
-    int x = iUser->mPosition.x();
-    int y = iUser->mPosition.y();
-    int userIndex = 1;
+    SetPlayerValueAt( iUser->mPosition,                     iUser->mIndex );
 
-    SetPlayerValueAt( x,   y,       userIndex );
-    SetGroundValueAt( x,   y,       userIndex );
-    SetGroundValueAt( x-1, y,       userIndex );
-    SetGroundValueAt( x+1, y,       userIndex );
-    SetGroundValueAt( x,   y-1,     userIndex );
-    SetGroundValueAt( x-1, y-1,     userIndex );
-    SetGroundValueAt( x+1, y-1,     userIndex );
-    SetGroundValueAt( x,   y+1,     userIndex );
-    SetGroundValueAt( x-1, y+1,     userIndex );
-    SetGroundValueAt( x+1, y+1,     userIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, -1 ),  iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, 0 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, 1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, -1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, 0 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, 1 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, -1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, 0 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
 }
 
 
 void
 cPaperLogic::Update()
 {
-    int index = 1;
     for( auto user : mAllUsers )
     {
-        // PLAYER
-        int oldX = user->mPosition.x();
-        int oldY = user->mPosition.y();
+        if( !user )
+            continue;
 
-        SetPlayerValueAt( oldX, oldY, 0 );
+        // USER
+        QPoint oldPosition = user->mPosition;
+
+        SetPlayerValueAt( oldPosition, -1 );
 
         // User movement
-        user->setGUIPosition( user->mGUIPosition + user->mGUICurrentMovementVector );
-        int newX = user->mPosition.x();
-        int newY = user->mPosition.y();
+        user->Update();
+        QPoint newPosition = user->mPosition;
 
-        SetPlayerValueAt( newX, newY, index );
+        SetPlayerValueAt( newPosition, user->mIndex );
 
 
+        if( oldPosition != newPosition && CELLAT(oldPosition).mGround != user->mIndex )
+        {
+            _AddTrailAtIndex( oldPosition, user->mIndex );
+        }
 
         // TRAILS
-        if( mPaperGrid[ newX ][ newY ].mGround == index && user->mIsOutOfGround == true ) // if we land back on our ground
+        if( CELLAT(newPosition).mGround == user->mIndex && user->mIsOutOfGround == true ) // if we land back on our ground
         {
             user->mIsOutOfGround = false;
-            user->mColor = GetColorByIndex( index );
-            _AddTrailAtIndex( oldX, oldY, index ); // Add the last trail to close the path
-            FillZone( index );
+            FillZone( user->mIndex );
         }
-        else if( mPaperGrid[ newX ][ newY ].mGround != index && user->mIsOutOfGround == false ) // If we leave our land
+        else if( CELLAT(newPosition).mGround != user->mIndex && user->mIsOutOfGround == false ) // If we leave our land
         {
             user->mIsOutOfGround = true;
-            user->mColor = Qt::red;
         }
-        else if( mPaperGrid[ newX ][ newY ].mTrail == index ) // If we leave our land
+        else if( CELLAT( newPosition ).mTrail != -1 )
         {
-            //user->mIsOutOfGround = true;
-            //user->mColor = Qt::red;
+            if( CELLAT(newPosition).mTrail != user->mIndex ) // If we leave our land
+            {
+                mAllUsers[ CELLAT(newPosition).mTrail ]->Kill();
+            }
+            else if( CELLAT(newPosition).mTrail == user->mIndex ) // If we leave our land
+            {
+                user->Kill();
+            }
         }
-
-
-        if( mPaperGrid[ oldX ][ oldY ].mGround != index )
-        {
-            _AddTrailAtIndex( oldX, oldY, index );
-        }
-
-        ++index;
     }
 }
 
@@ -139,26 +139,26 @@ cPaperLogic::AddGridChangedCB( std::function<void( int, int, int, eDataType )> i
 
 
 void
-cPaperLogic::SetPlayerValueAt( int x, int y, int value )
+cPaperLogic::SetPlayerValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ x ][ y ].mPlayer = value;
-    _CallCB( x, y, value, kPlayer );
+    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mPlayer = value;
+    _CallCB( iPoint.x(), iPoint.y(), value, kPlayer );
 }
 
 
 void
-cPaperLogic::SetTrailValueAt( int x, int y, int value )
+cPaperLogic::SetTrailValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ x ][ y ].mTrail = value;
-    _CallCB( x, y, value, kTrail );
+    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mTrail = value;
+    _CallCB( iPoint.x(), iPoint.y(), value, kTrail );
 }
 
 
 void
-cPaperLogic::SetGroundValueAt( int x, int y, int value )
+cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ x ][ y ].mGround = value;
-    _CallCB( x, y, value, kGround );
+    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mGround = value;
+    _CallCB( iPoint.x(), iPoint.y(), value, kGround );
 }
 
 
@@ -170,8 +170,8 @@ cPaperLogic::FillZone( int iIndex )
 {
     for( auto& point : mTrailPoints )
     {
-        SetTrailValueAt( point.x(), point.y(), 0 );
-        SetGroundValueAt( point.x(), point.y(), iIndex );
+        SetTrailValueAt( point, 0 );
+        SetGroundValueAt( point, iIndex );
     }
 
     mTrailPoints.clear();
@@ -212,12 +212,10 @@ cPaperLogic::_CallCB( int x, int y, int newValue, eDataType iDataType )
 
 
 void
-cPaperLogic::_AddTrailAtIndex( int iX, int iY, int iIndex )
+cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, int iIndex )
 {
-    SetTrailValueAt( iX, iY, iIndex );
+    SetTrailValueAt( iPoint, iIndex );
 
-    QPoint userPosAsQPoint( iX, iY );
-    if( !mTrailPoints.contains( userPosAsQPoint ) )
-        mTrailPoints.append( userPosAsQPoint );
-
+    if( !mTrailPoints.contains( iPoint ) )
+        mTrailPoints.append( iPoint );
 }

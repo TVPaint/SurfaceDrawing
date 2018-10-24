@@ -2,6 +2,7 @@
 
 
 #include <QVector>
+#include <QMap>
 #include <QColor>
 
 #include <functional>
@@ -20,7 +21,7 @@ public:
 public:
     struct  eDataCell
     {
-        eDataCell() : mPlayer( 0 ), mTrail(0), mGround(0){};
+        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ){};
         char  mPlayer;
         char  mTrail;
         char  mGround;
@@ -52,9 +53,9 @@ public:
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 
-    void  SetPlayerValueAt( int x, int y, int value );
-    void  SetTrailValueAt( int x, int y, int value );
-    void  SetGroundValueAt( int x, int y, int value );
+    void  SetPlayerValueAt( const QPoint& iPoint, int value );
+    void  SetTrailValueAt( const QPoint& iPoint, int value );
+    void  SetGroundValueAt( const QPoint& iPoint, int value );
 
     void  FillZone( int iIndex );
 
@@ -64,12 +65,12 @@ public:
 private:
     bool  SanityChecks() const;
     void  _CallCB( int, int, int, eDataType );
-    void  _AddTrailAtIndex( int iX, int iY, int iIndex );
+    void  _AddTrailAtIndex( const QPoint& iPoint, int iIndex );
 
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
-    QVector< cUser* >                   mAllUsers;
+    QMap< int, cUser* >                 mAllUsers;
     QList< QPoint >                     mTrailPoints;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;

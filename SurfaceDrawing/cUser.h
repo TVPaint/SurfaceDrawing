@@ -10,23 +10,27 @@ class cUser
 {
 public:
     ~cUser();
-    cUser( const QColor& iColor );
+    cUser( int iIndex, const QColor& iColor );
 
 public:
     void setPosition( QPoint iPosition );
-    void setGUIPosition( QPoint iPosition );
-    void setSize( QSize iSize );
+    void Update();
+    void setSize( QPoint iSize );
     void setMovementVector( QPoint iMovementVector );
 
+    void Kill();
+
 public:
+    int         mIndex;
+
     QColor      mColor;
     QPoint      mPosition;
-    QSize       mSize;
-
 
     QPoint      mGUIPosition;
-    QSize       mGUISize;
+    QPoint      mGUISize;
     QPoint      mGUIMovementVector;
+
+    QPoint      mGUICenter;
 
     QPoint      mGUICurrentMovementVector;
 

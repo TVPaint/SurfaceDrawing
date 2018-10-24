@@ -39,10 +39,10 @@ SurfaceDrawing::Init()
 
     connect( sgTickerTimer, &QTimer::timeout, this, &SurfaceDrawing::Update );
 
-    mAllUsers.push_back( new cUser( cPaperLogic::GetColorByIndex( 0 ) ) );
+    mAllUsers.push_back( new cUser( 0, cPaperLogic::GetColorByIndex( 0 ) ) );
 
-    mPaperLogic->AddUser( mAllUsers.back() );
     mCanvas->AddUser( mAllUsers.back() );
+    mPaperLogic->AddUser( mAllUsers.back() );
 }
 
 

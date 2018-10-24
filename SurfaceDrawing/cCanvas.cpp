@@ -40,10 +40,33 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
         [ this ]( int x, int y, int newValue, cPaperLogic::eDataType iType )
         {
-            if( iType == cPaperLogic::kPlayer )
-                return;
-
             int singleIndex = x + y*GRIDSIZE;
+            auto tile = mAllTiles[ singleIndex ];
+
+            if( iType == cPaperLogic::kPlayer )
+            {
+                if( newValue == -1 )
+                {
+                    tile->mHalf = false;
+                }
+                else
+                {
+                    if( mPaperLogic->mPaperGrid[x][y].mGround == -1 )
+                    {
+                        tile->mHalf = true;
+                        if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() > 0 )
+                            tile->mDirection = cBasicTile::kEast;
+                        else if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() < 0 )
+                            tile->mDirection = cBasicTile::kWest;
+                        else if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.y() > 0 )
+                            tile->mDirection = cBasicTile::kSouth;
+                        else if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.y() < 0 )
+                            tile->mDirection = cBasicTile::kNorth;
+                    }
+                }
+                return;
+            }
+
             QColor color = cPaperLogic::GetColorByIndex( 0 );
 
             if( iType == cPaperLogic::kTrail )
@@ -51,8 +74,8 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
             else if( iType == cPaperLogic::kGround )
                 color = color.darker( 170 );
 
-            mAllTiles[ singleIndex ]->mColor = color;
-            mAllTiles[ singleIndex ]->update();
+            tile->mColor = color;
+            tile->update();
         }
     );
 }
@@ -85,6 +108,31 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 }
 
 
+void
+cCanvas::paintEvent( QPaintEvent * iEvent )
+{
+    QGraphicsView::paintEvent( iEvent );
+
+    //auto painter = QPainter( scene() );
+
+    //QPointF test = mapToScene( 0, 0 );
+
+    //int first_col = test.x() / CELLSIZE;
+    //int first_row = test.y() / CELLSIZE;
+    //int last_col  = 1 + (test.x() + width() ) / CELLSIZE;
+    //int last_row  = 1 + (test.y() + height() ) / CELLSIZE;
+
+    //for( int x = first_col; x <= last_col; ++x )
+    //{
+    //    painter.drawLine( x, 0, x, height() );
+    //}
+    //for( int y = first_row; y <= last_row; ++y )
+    //{
+    //    painter.drawLine( 0, y, width(), y );
+    //}
+}
+
+
 // ==================================================================================
 // ==================================================================================
 // ==================================================================================
@@ -93,42 +141,17 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 void
 cCanvas::AddUser( cUser* iUser )
 {
-    mAllUserItems.push_back( new cItemUser( iUser ) );
-    scene()->addItem( mAllUserItems.back() );
-
-    //QPoint userPosition = iUser->mPosition;
-    //int singleIndex = userPosition.x() + userPosition.y() * GRIDSIZE;
-
-    //// Middle row
-    //for( int i = singleIndex - 1; i < singleIndex+1 ; ++i )
-    //    mAllTiles[ i ]->mColor = mAllUserItems[ 0 ]->mUser->mColor.darker( 170 );
-
-    //// Top Row
-    //singleIndex -= GRIDSIZE;
-    //for( int i = singleIndex - 1; i < singleIndex+1 ; ++i )
-    //    mAllTiles[ i ]->mColor = mAllUserItems[ 0 ]->mUser->mColor.darker( 170 );
-
-    //// BottomRow
-    //singleIndex += 2*GRIDSIZE;
-    //for( int i = singleIndex - 1; i < singleIndex+1 ; ++i )
-    //    mAllTiles[ i ]->mColor = mAllUserItems[ 0 ]->mUser->mColor.darker( 170 );
-
-
+    auto userItem = new cItemUser( iUser );
+    mAllUserItems.insert( iUser->mIndex, userItem );
+    scene()->addItem( userItem );
 }
 
 
 void
 cCanvas::Update()
 {
-    int counter = 0;
     for( auto item : mAllUserItems )
-    {
-        item->setPos( mAllUserItems[ counter ]->mUser->mGUIPosition );
-        ++counter;
-    }
+        item->setPos( item->mUser->mGUIPosition );
 
     ensureVisible( mAllUserItems[ 0 ], width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
-    QRegion A;
-    QRegion B;
-    QRegion C = B - A;
 }

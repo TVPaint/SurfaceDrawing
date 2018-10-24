@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QMap>
 
 
 class cItemUser;
@@ -20,6 +21,7 @@ public:
 
 public:
     void  keyPressEvent( QKeyEvent* iEvent ) override;
+    void  paintEvent( QPaintEvent* iEvent ) override;
 
 
 
@@ -30,7 +32,7 @@ public:
     void  Update();
 
 public:
-    QVector< cItemUser* >       mAllUserItems;
+    QMap< int, cItemUser* >       mAllUserItems;
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;
 };
