@@ -107,6 +107,8 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
         mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
     }
 
+
+
     if( iEvent->key() == Qt::Key_Q )
     {
         mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( -1, 0 ) );
@@ -127,34 +129,9 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 
 
 void
-cCanvas::paintEvent( QPaintEvent * iEvent )
-{
-    QGraphicsView::paintEvent( iEvent );
-
-    //auto painter = QPainter( scene() );
-
-    //QPointF test = mapToScene( 0, 0 );
-
-    //int first_col = test.x() / CELLSIZE;
-    //int first_row = test.y() / CELLSIZE;
-    //int last_col  = 1 + (test.x() + width() ) / CELLSIZE;
-    //int last_row  = 1 + (test.y() + height() ) / CELLSIZE;
-
-    //for( int x = first_col; x <= last_col; ++x )
-    //{
-    //    painter.drawLine( x, 0, x, height() );
-    //}
-    //for( int y = first_row; y <= last_row; ++y )
-    //{
-    //    painter.drawLine( 0, y, width(), y );
-    //}
-}
-
-
-void
 cCanvas::resizeEvent( QResizeEvent* event )
 {
-    mGrid->mSize = size() + QSize(CELLSIZE, CELLSIZE);
+    mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
     mGrid->update();
 }
 

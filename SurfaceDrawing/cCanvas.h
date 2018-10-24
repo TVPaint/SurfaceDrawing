@@ -22,7 +22,6 @@ public:
 
 public:
     void  keyPressEvent( QKeyEvent* iEvent ) override;
-    void  paintEvent( QPaintEvent* iEvent ) override;
     void  resizeEvent( QResizeEvent* event ) override;
 
 
@@ -33,7 +32,7 @@ public:
     void  Update();
 
 public:
-    QMap< int, cItemUser* >       mAllUserItems;
+    QMap< int, cItemUser* >     mAllUserItems;
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;
     cItemGrid*                  mGrid;
