@@ -10,6 +10,7 @@ class cUser
 {
 public:
     ~cUser();
+    cUser( int iIndex );
     cUser( int iIndex, const QColor& iColor );
 
 public:
@@ -36,6 +37,9 @@ public:
 
     bool        mAskDirectionChange;
     bool        mIsOutOfGround;
+    bool        mIsDead;
+
+    QList< QPoint >  mTrailPoints;
 };
 
 

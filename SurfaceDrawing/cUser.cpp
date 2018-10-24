@@ -7,6 +7,22 @@ cUser::~cUser()
 }
 
 
+cUser::cUser( int iIndex ) :
+    mIndex( iIndex ),
+    mColor( Qt::transparent ),
+    mAskDirectionChange( false ),
+    mIsOutOfGround( false )
+{
+    // Points are in grid coordinates
+    setPosition( QPoint( 10, 10 ) );
+    setSize( QPoint( 1, 1 ) );
+    setMovementVector( QPoint( 0, 0 ) );
+    mGUICurrentMovementVector = mGUIMovementVector;
+    mIsDead = true;
+}
+
+
+
 cUser::cUser( int iIndex, const QColor& iColor ) :
     mIndex( iIndex ),
     mColor( iColor ),
@@ -14,10 +30,11 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     mIsOutOfGround( false )
 {
     // Points are in grid coordinates
-    setPosition( QPoint( 5, 5 ) );
+    setPosition( QPoint( 5 * (iIndex+1), 5 * (iIndex + 1) ) );
     setSize( QPoint( 1, 1 ) );
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
+    mIsDead = false;
 }
 
 

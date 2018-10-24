@@ -60,6 +60,8 @@ public:
     void  FillZone( int iIndex );
 
 
+    void KillUser( cUser*  iUser );
+
 
 
 private:
@@ -71,7 +73,6 @@ private:
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
     QMap< int, cUser* >                 mAllUsers;
-    QList< QPoint >                     mTrailPoints;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
 };

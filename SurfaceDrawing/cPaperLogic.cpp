@@ -47,6 +47,15 @@ cPaperLogic::MapFromGrid( const QPoint & iPoint )
 QColor
 cPaperLogic::GetColorByIndex( int iIndex )
 {
+    if( iIndex < 0 )
+        return  Qt::transparent;
+
+
+    if( iIndex == 0 )
+        return  Qt::red;
+    else
+        return  Qt::blue;
+
     return  QColor( (iIndex * 50)       % 256,
                     ((iIndex + 7) * 50) % 256,
                     (iIndex * 120)      % 256
@@ -78,7 +87,7 @@ cPaperLogic::Update()
 {
     for( auto user : mAllUsers )
     {
-        if( !user )
+        if( !user || user->mIsDead )
             continue;
 
         // USER
@@ -110,13 +119,9 @@ cPaperLogic::Update()
         }
         else if( CELLAT( newPosition ).mTrail != -1 )
         {
-            if( CELLAT(newPosition).mTrail != user->mIndex ) // If we leave our land
+            if( CELLAT(newPosition).mTrail >= 0 )
             {
-                mAllUsers[ CELLAT(newPosition).mTrail ]->Kill();
-            }
-            else if( CELLAT(newPosition).mTrail == user->mIndex ) // If we leave our land
-            {
-                user->Kill();
+                KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
             }
         }
     }
@@ -168,14 +173,47 @@ cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 void
 cPaperLogic::FillZone( int iIndex )
 {
-    for( auto& point : mTrailPoints )
+    for( auto& point : mAllUsers[ iIndex ]->mTrailPoints )
     {
-        SetTrailValueAt( point, 0 );
+        SetTrailValueAt( point, -1 );
         SetGroundValueAt( point, iIndex );
     }
 
-    mTrailPoints.clear();
+    mAllUsers[ iIndex ]->mTrailPoints.clear();
     //TODO
+}
+
+
+void
+cPaperLogic::KillUser( cUser* iUser )
+{
+    iUser->mColor = Qt::transparent;
+    iUser->mIsDead = true;
+    iUser->mGUICurrentMovementVector = QPoint( 0, 0 );
+    iUser->mGUIMovementVector = QPoint( 0, 0 );
+
+    for( auto row = 0; row < GRIDSIZE; ++row )
+    {
+        for( auto col = 0; col < GRIDSIZE; ++col )
+        {
+            QPoint pos( row, col );
+            if( CELLAT( pos ).mGround == iUser->mIndex )
+            {
+                SetGroundValueAt( pos, -2 );
+                SetGroundValueAt( pos, -1 );
+            }
+            if( CELLAT( pos ).mPlayer == iUser->mIndex )
+            {
+                SetPlayerValueAt( pos, -2 );
+                SetPlayerValueAt( pos, -1 );
+            }
+            if( CELLAT( pos ).mTrail == iUser->mIndex )
+            {
+                SetTrailValueAt( pos, -2 );
+                SetTrailValueAt( pos, -1 );
+            }
+        }
+    }
 }
 
 
@@ -216,6 +254,7 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, int iIndex )
 {
     SetTrailValueAt( iPoint, iIndex );
 
-    if( !mTrailPoints.contains( iPoint ) )
-        mTrailPoints.append( iPoint );
+    if( !mAllUsers[ iIndex ]->mTrailPoints.contains( iPoint ) )
+        mAllUsers[ iIndex ]->mTrailPoints.append( iPoint );
 }
+

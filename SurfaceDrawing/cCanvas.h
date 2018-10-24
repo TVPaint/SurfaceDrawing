@@ -8,6 +8,7 @@ class cItemUser;
 class cBasicTile;
 class cUser;
 class cPaperLogic;
+class cItemGrid;
 
 class cCanvas :
     public QGraphicsView
@@ -22,7 +23,7 @@ public:
 public:
     void  keyPressEvent( QKeyEvent* iEvent ) override;
     void  paintEvent( QPaintEvent* iEvent ) override;
-
+    void  resizeEvent( QResizeEvent* event ) override;
 
 
 public:
@@ -35,4 +36,5 @@ public:
     QMap< int, cItemUser* >       mAllUserItems;
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;
+    cItemGrid*                  mGrid;
 };

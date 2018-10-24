@@ -12,4 +12,7 @@ public:
     QRectF boundingRect() const override;
 
     void   paint( QPainter* iPainter, const QStyleOptionGraphicsItem*  iOptions, QWidget* iWidget = 0 )  override;
+
+public:
+    QSize  mSize;
 };

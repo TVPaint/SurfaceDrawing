@@ -4,6 +4,7 @@
 #include "cUser.h"
 #include "cItemUser.h"
 #include "cBasicTile.h"
+#include "cItemGrid.h"
 #include "cPaperLogic.h"
 
 
@@ -24,6 +25,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
     scene->setSceneRect( 0, 0, GRIDSIZE * CELLSIZE, GRIDSIZE * CELLSIZE );
     setScene( scene );
 
+    mGrid = new cItemGrid( 0 );
+    mGrid->mSize = size();
+    scene->addItem( mGrid );
 
     for( int i = 0; i < GRIDSIZE * GRIDSIZE; ++i )
     {
@@ -40,19 +44,24 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
         [ this ]( int x, int y, int newValue, cPaperLogic::eDataType iType )
         {
-            int singleIndex = x + y*GRIDSIZE;
+            int singleIndex = x + y * GRIDSIZE;
             auto tile = mAllTiles[ singleIndex ];
+            tile->mHalf = false;
+
+            QColor color = Qt::transparent;
+            if( mPaperLogic->mPaperGrid[x][y].mGround >= 0 )
+                color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
+
+            if( mPaperLogic->mPaperGrid[x][y].mTrail >= 0 )
+                color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
 
             if( iType == cPaperLogic::kPlayer )
             {
-                if( newValue == -1 )
+                if( newValue >= 0 )
                 {
-                    tile->mHalf = false;
-                }
-                else
-                {
-                    if( mPaperLogic->mPaperGrid[x][y].mGround == -1 )
+                    if( mPaperLogic->mPaperGrid[x][y].mGround < 0 )
                     {
+                        color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mPlayer ).lighter( 170 );
                         tile->mHalf = true;
                         if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() > 0 )
                             tile->mDirection = cBasicTile::kEast;
@@ -64,15 +73,7 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
                             tile->mDirection = cBasicTile::kNorth;
                     }
                 }
-                return;
             }
-
-            QColor color = cPaperLogic::GetColorByIndex( 0 );
-
-            if( iType == cPaperLogic::kTrail )
-                color = color.lighter( 170 );
-            else if( iType == cPaperLogic::kGround )
-                color = color.darker( 170 );
 
             tile->mColor = color;
             tile->update();
@@ -105,6 +106,23 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
     }
+
+    if( iEvent->key() == Qt::Key_Q )
+    {
+        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( -1, 0 ) );
+    }
+    else if( iEvent->key() == Qt::Key_D )
+    {
+        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 1, 0 ) );
+    }
+    else if( iEvent->key() == Qt::Key_Z )
+    {
+        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 0, -1 ) );
+    }
+    else if( iEvent->key() == Qt::Key_S )
+    {
+        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
+    }
 }
 
 
@@ -133,6 +151,15 @@ cCanvas::paintEvent( QPaintEvent * iEvent )
 }
 
 
+void
+cCanvas::resizeEvent( QResizeEvent* event )
+{
+    mGrid->mSize = size() + QSize(CELLSIZE, CELLSIZE);
+    mGrid->update();
+}
+
+
+
 // ==================================================================================
 // ==================================================================================
 // ==================================================================================
@@ -150,6 +177,11 @@ cCanvas::AddUser( cUser* iUser )
 void
 cCanvas::Update()
 {
+    QPointF firstPos = mapToScene( 0, 0 );
+    firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
+    firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
+    mGrid->setPos( firstPos );
+
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );
 
