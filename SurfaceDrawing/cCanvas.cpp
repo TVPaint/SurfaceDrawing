@@ -48,12 +48,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
             auto tile = mAllTiles[ singleIndex ];
             tile->mHalf = false;
 
-            QColor color = Qt::transparent;
-            if( mPaperLogic->mPaperGrid[x][y].mGround >= 0 )
-                color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
 
-            if( mPaperLogic->mPaperGrid[x][y].mTrail >= 0 )
-                color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
+            tile->mGroundColor  = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
+            tile->mTrailColor   = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
 
             if( iType == cPaperLogic::kPlayer )
             {
@@ -61,8 +58,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
                 {
                     if( mPaperLogic->mPaperGrid[x][y].mGround < 0 )
                     {
-                        color = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mPlayer ).lighter( 170 );
                         tile->mHalf = true;
+                        tile->mTrailColor   = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mPlayer ).lighter( 170 );
+
                         if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() > 0 )
                             tile->mDirection = cBasicTile::kEast;
                         else if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() < 0 )
@@ -75,7 +73,6 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
                 }
             }
 
-            tile->mColor = color;
             tile->update();
         }
     );

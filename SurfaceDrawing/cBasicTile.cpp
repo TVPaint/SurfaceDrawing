@@ -17,7 +17,9 @@ cBasicTile::~cBasicTile()
 cBasicTile::cBasicTile( QGraphicsItem* iParent ) :
     QGraphicsItem( iParent ),
     mHalf( false ),
-    mDirection( kNorth )
+    mDirection( kNorth ),
+    mGroundColor( Qt::transparent ),
+    mTrailColor( Qt::transparent )
 {
 }
 
@@ -32,9 +34,14 @@ cBasicTile::boundingRect() const
 void
 cBasicTile::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptions, QWidget * iWidget )
 {
-    iPainter->setBrush( QBrush( mColor ) );
-    iPainter->setPen( QPen( mColor ) );
     QRectF bbox = boundingRect();
+
+    // Ground
+    iPainter->setBrush( mGroundColor );
+    iPainter->setPen( mGroundColor );
+    iPainter->drawRect( bbox );
+
+    // Trails
     if( mHalf )
     {
         switch( mDirection )
@@ -56,6 +63,9 @@ cBasicTile::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOption
         }
     }
 
+    iPainter->setBrush( mTrailColor );
+    iPainter->setPen( mTrailColor );
+    iPainter->setCompositionMode( QPainter::CompositionMode_Multiply );
     iPainter->drawRect( bbox );
 }
 

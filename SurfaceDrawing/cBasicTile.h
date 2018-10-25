@@ -26,4 +26,7 @@ public:
     QColor      mColor;
     bool        mHalf;
     eDirection  mDirection;
+
+    QColor      mGroundColor;
+    QColor      mTrailColor;
 };
