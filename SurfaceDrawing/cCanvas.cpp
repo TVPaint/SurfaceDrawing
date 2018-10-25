@@ -4,7 +4,7 @@
 #include "cUser.h"
 #include "cItemUser.h"
 #include "cBasicTile.h"
-#include "cItemGrid.h"
+//#include "cItemGrid.h"
 #include "cPaperLogic.h"
 
 
@@ -25,9 +25,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
     scene->setSceneRect( 0, 0, GRIDSIZE * CELLSIZE, GRIDSIZE * CELLSIZE );
     setScene( scene );
 
-    mGrid = new cItemGrid( 0 );
-    mGrid->mSize = size();
-    scene->addItem( mGrid );
+    //mGrid = new cItemGrid( 0 );
+    //mGrid->mSize = size();
+    //scene->addItem( mGrid );
 
     for( int i = 0; i < GRIDSIZE * GRIDSIZE; ++i )
     {
@@ -103,6 +103,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
     }
+    else if( iEvent->key() == Qt::Key_Space )
+    {
+        mPaperLogic->TryRespawningPlayer( mAllUserItems[ 0 ]->mUser );
+    }
 
 
 
@@ -128,8 +132,9 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 void
 cCanvas::resizeEvent( QResizeEvent* event )
 {
-    mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
-    mGrid->update();
+    //mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
+    //mGrid->update();
+    QGraphicsView::resizeEvent( event );
 }
 
 
@@ -142,6 +147,9 @@ cCanvas::resizeEvent( QResizeEvent* event )
 void
 cCanvas::AddUser( cUser* iUser )
 {
+    if( iUser->mIndex < 0 )
+        return;
+
     auto userItem = new cItemUser( iUser );
     mAllUserItems.insert( iUser->mIndex, userItem );
     scene()->addItem( userItem );
@@ -151,10 +159,10 @@ cCanvas::AddUser( cUser* iUser )
 void
 cCanvas::Update()
 {
-    QPointF firstPos = mapToScene( 0, 0 );
-    firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
-    firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
-    mGrid->setPos( firstPos );
+    //QPointF firstPos = mapToScene( 0, 0 );
+    //firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
+    //firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
+    //mGrid->setPos( firstPos );
 
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );

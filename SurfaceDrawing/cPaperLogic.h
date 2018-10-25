@@ -21,10 +21,12 @@ public:
 public:
     struct  eDataCell
     {
-        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ){};
+        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ), mSpawnIsImpossibleHere( false ){};
         char  mPlayer;
         char  mTrail;
         char  mGround;
+
+        bool  mSpawnIsImpossibleHere; // To check if spawn is available, just to avoid having a whole different array
     };
 
     enum eDataType
@@ -62,12 +64,15 @@ public:
 
     void KillUser( cUser*  iUser );
 
-
+    void TryRespawningPlayer( cUser*  iUser );
+    void SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
 
 private:
     bool  SanityChecks() const;
     void  _CallCB( int, int, int, eDataType );
     void  _AddTrailAtIndex( const QPoint& iPoint, int iIndex );
+
+    bool  _IsAvailableSpaceAtPoint( const QPoint& iPoint ) const;
 
 
 public:

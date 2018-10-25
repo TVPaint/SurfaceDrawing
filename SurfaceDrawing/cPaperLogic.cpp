@@ -5,7 +5,7 @@
 
 
 #define  CELLAT( point ) mPaperGrid[ point.x()][point.y()]
-
+#define  SPAWNINGAREAREQUIRED 5 // 5x5 ( spawns are 3x3, here we let a little room )
 
 
 cPaperLogic::~cPaperLogic()
@@ -68,17 +68,7 @@ cPaperLogic::AddUser( cUser * iUser )
 {
     mAllUsers.insert( iUser->mIndex, iUser );
 
-    SetPlayerValueAt( iUser->mPosition,                     iUser->mIndex );
-
-    SetGroundValueAt( iUser->mPosition + QPoint( -1, -1 ),  iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( -1, 0 ),   iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( -1, 1 ),   iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 0, -1 ),   iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 0, 0 ),    iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 0, 1 ),    iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 1, -1 ),   iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 1, 0 ),    iUser->mIndex );
-    SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
+    SpawnUserAtPoint( iUser, iUser->mPosition );
 }
 
 
@@ -99,6 +89,13 @@ cPaperLogic::Update()
         user->Update();
         QPoint newPosition = user->mPosition;
 
+        if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
+            || newPosition.y() < 0 || newPosition.y() >= GRIDSIZE )
+        {
+            KillUser( user );
+            return;
+        }
+
         SetPlayerValueAt( newPosition, user->mIndex );
 
 
@@ -117,12 +114,9 @@ cPaperLogic::Update()
         {
             user->mIsOutOfGround = true;
         }
-        else if( CELLAT( newPosition ).mTrail != -1 )
+        else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
         {
-            if( CELLAT(newPosition).mTrail >= 0 )
-            {
-                KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
-            }
+            KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
         }
     }
 }
@@ -191,6 +185,7 @@ cPaperLogic::KillUser( cUser* iUser )
     iUser->mIsDead = true;
     iUser->mGUICurrentMovementVector = QPoint( 0, 0 );
     iUser->mGUIMovementVector = QPoint( 0, 0 );
+    iUser->mTrailPoints.clear();
 
     for( auto row = 0; row < GRIDSIZE; ++row )
     {
@@ -212,8 +207,60 @@ cPaperLogic::KillUser( cUser* iUser )
                 SetTrailValueAt( pos, -2 );
                 SetTrailValueAt( pos, -1 );
             }
+
+            CELLAT( pos ).mSpawnIsImpossibleHere = false;
         }
     }
+}
+
+
+void
+cPaperLogic::TryRespawningPlayer( cUser*  iUser )
+{
+    if( !iUser->mIsDead )
+        return;
+
+    for( int x = SPAWNINGAREAREQUIRED / 2; x < GRIDSIZE - SPAWNINGAREAREQUIRED / 2; ++x )
+    {
+        for( int y = SPAWNINGAREAREQUIRED / 2; y < GRIDSIZE - SPAWNINGAREAREQUIRED / 2; ++y )
+        {
+            QPoint cellPos( x, y );
+
+            if( CELLAT( cellPos ).mSpawnIsImpossibleHere )
+                continue;
+
+            if( _IsAvailableSpaceAtPoint( cellPos ) )
+            {
+                SpawnUserAtPoint( iUser, cellPos );
+                return;
+            }
+        }
+    }
+}
+
+
+void
+cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
+{
+    iUser->mColor = GetColorByIndex( iUser->mIndex );
+    iUser->setPosition( iPoint );
+    iUser->mIsDead = false;
+    iUser->mGUIMovementVector = QPoint( 1, 0 );
+    iUser->mGUICurrentMovementVector = QPoint( 1, 0 );
+    iUser->mIsOutOfGround = false;
+
+    SetPlayerValueAt( iUser->mPosition,                     iUser->mIndex );
+
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, -1 ),  iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, 0 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( -1, 1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, -1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, 0 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 0, 1 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, -1 ),   iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, 0 ),    iUser->mIndex );
+    SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
+
 }
 
 
@@ -256,5 +303,35 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, int iIndex )
 
     if( !mAllUsers[ iIndex ]->mTrailPoints.contains( iPoint ) )
         mAllUsers[ iIndex ]->mTrailPoints.append( iPoint );
+}
+
+
+bool
+cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint & iPoint ) const
+{
+    bool result = true;
+    for( int x = iPoint.x() - SPAWNINGAREAREQUIRED / 2; x < iPoint.x() + SPAWNINGAREAREQUIRED / 2; ++x )
+    {
+        for( int y = iPoint.y() - SPAWNINGAREAREQUIRED / 2; y < iPoint.y() + SPAWNINGAREAREQUIRED / 2; ++y )
+        {
+            eDataCell cell = mPaperGrid[ x ][ y ];
+            if( cell.mSpawnIsImpossibleHere )
+                continue;
+
+            if( result == false )
+            {
+                cell.mSpawnIsImpossibleHere = true;
+            }
+            else if( cell.mGround >= 0 || cell.mTrail >= 0 )
+            {
+                result = false;
+                // We reset the loop, to set all cells at impossible spawn
+                x = iPoint.x() - SPAWNINGAREAREQUIRED / 2;
+                y = iPoint.y() - SPAWNINGAREAREQUIRED / 2;
+            }
+        }
+    }
+
+    return  result;
 }
 

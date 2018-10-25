@@ -2,6 +2,9 @@
 
 #include  "cPaperLogic.h"
 
+#include <time.h>
+
+
 cUser::~cUser()
 {
 }
@@ -29,8 +32,12 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     mAskDirectionChange( false ),
     mIsOutOfGround( false )
 {
+    int randX = (rand() % (GRIDSIZE - 2)) + 1; // Between 1 and GRIDSIZE - 1
+    int randY = (rand() % (GRIDSIZE - 2)) + 1; // Between 1 and GRIDSIZE - 1
+
+
     // Points are in grid coordinates
-    setPosition( QPoint( 5 * (iIndex+1), 5 * (iIndex + 1) ) );
+    setPosition( QPoint( randX, randY ) );
     setSize( QPoint( 1, 1 ) );
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
@@ -84,6 +91,9 @@ void
 cUser::setMovementVector( QPoint iMovementVector )
 {
     if( iMovementVector == mGUICurrentMovementVector )
+        return;
+
+    if( iMovementVector == -mGUICurrentMovementVector ) // Can't go at opposite direction
         return;
 
     mGUIMovementVector = iMovementVector;
