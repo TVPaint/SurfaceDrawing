@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QMap>
+#include <QPoint>
 #include <QColor>
 
 #include <functional>
