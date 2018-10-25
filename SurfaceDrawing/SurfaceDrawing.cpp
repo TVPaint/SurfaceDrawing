@@ -9,6 +9,7 @@
 SurfaceDrawing::~SurfaceDrawing()
 {
     delete  mPaperLogic;
+    delete  mTimer;
 }
 
 
@@ -25,20 +26,16 @@ SurfaceDrawing::SurfaceDrawing(QWidget *parent)
 void
 SurfaceDrawing::Init()
 {
-    sgTickerTimer->start( 1000/60 ); // 60FPmS ticks
-
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
 
+    mTimer = new  QTimer();
+    mTimer->start( 1000/60 );
 
     mCanvas = new cCanvas( mPaperLogic, this );
     mMainLayout = new QVBoxLayout();
     mMainLayout->addWidget( mCanvas );
     ui.centralWidget->setLayout( mMainLayout );
-
-
-    connect( sgTickerTimer, &QTimer::timeout, this, &SurfaceDrawing::Update );
-
 
     auto userInvalidA = new cUser( -2 );
     auto userInvalidB = new cUser( -1 );
@@ -48,7 +45,6 @@ SurfaceDrawing::Init()
     mPaperLogic->AddUser( userInvalidB );
 
 
-
     mAllUsers.push_back( new cUser( 0, cPaperLogic::GetColorByIndex( 0 ) ) );
     mCanvas->AddUser( mAllUsers.back() );
     mPaperLogic->AddUser( mAllUsers.back() );
@@ -56,6 +52,11 @@ SurfaceDrawing::Init()
     mAllUsers.push_back( new cUser( 1, cPaperLogic::GetColorByIndex( 1 ) ) );
     mCanvas->AddUser( mAllUsers.back() );
     mPaperLogic->AddUser( mAllUsers.back() );
+
+    connect( mTimer, &QTimer::timeout, this, &SurfaceDrawing::Update );
+
+    mClientSocket = new cClient();
+    mClientSocket->AskConnection();
 }
 
 

@@ -375,7 +375,7 @@ cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint & iPoint ) const
             {
                 cell.mSpawnIsImpossibleHere = true;
             }
-            else if( cell.mGround >= 0 || cell.mTrail >= 0 )
+            else if( cell.mGround >= 0 || cell.mTrail >= 0 ) // If there is a player's ground or trail, we can't spawn here
             {
                 result = false;
                 // We reset the loop, to set all cells at impossible spawn

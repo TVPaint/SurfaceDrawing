@@ -36,6 +36,12 @@
     <Filter Include="src\TickerTimer">
       <UniqueIdentifier>{030a22ea-5fd2-4afc-85f1-c8197d105c41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Network">
+      <UniqueIdentifier>{f587582e-bd39-4a4b-8605-e5ce5df98f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Dialog">
+      <UniqueIdentifier>{711b1791-1be3-4b39-b2bd-6ff17d49e6eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SurfaceDrawing.cpp">
@@ -60,6 +66,15 @@
     <ClCompile Include="cItemGrid.cpp">
       <Filter>src\Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="cServer.cpp">
+      <Filter>src\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="cClient.cpp">
+      <Filter>src\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="cConnectionDialog.cpp">
+      <Filter>src\Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="SurfaceDrawing.qrc">
@@ -73,10 +88,19 @@
     <QtMoc Include="cCanvas.h">
       <Filter>src\Canvas</Filter>
     </QtMoc>
+    <QtMoc Include="cClient.h">
+      <Filter>src\Network</Filter>
+    </QtMoc>
+    <QtMoc Include="cServer.h">
+      <Filter>src\Network</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="SurfaceDrawing.ui">
       <Filter>src\MainWindow</Filter>
+    </QtUic>
+    <QtUic Include="ConnectionDialog.ui">
+      <Filter>src\Dialog</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="cItemGrid.h">
       <Filter>src\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="cConnectionDialog.h">
+      <Filter>src\Dialog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,8 @@
 #include "cCanvas.h"
 
 
+#include "cClient.h"
+
 #include <QMainWindow>
 #include <QBoxLayout>
 
@@ -31,10 +33,14 @@ public:
 private:
     Ui::SurfaceDrawingClass     ui;
     cPaperLogic*                mPaperLogic;
+    QTimer*                     mTimer;
 
     QVector< cUser* >           mAllUsers;
 
     // GUI
     QVBoxLayout*    mMainLayout;
     cCanvas*        mCanvas;
+
+    // NETWORK
+    cClient*     mClientSocket;
 };
