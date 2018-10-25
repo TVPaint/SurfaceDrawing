@@ -60,7 +60,7 @@ public:
     void  SetTrailValueAt( const QPoint& iPoint, int value );
     void  SetGroundValueAt( const QPoint& iPoint, int value );
 
-    void  FillZone( int iIndex );
+    void  FillZone( cUser*  iUser );
 
 
     void KillUser( cUser*  iUser );
@@ -71,7 +71,7 @@ public:
 private:
     bool  SanityChecks() const;
     void  _CallCB( int, int, int, eDataType );
-    void  _AddTrailAtIndex( const QPoint& iPoint, int iIndex );
+    void  _AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser );
 
     bool  _IsAvailableSpaceAtPoint( const QPoint& iPoint ) const;
 

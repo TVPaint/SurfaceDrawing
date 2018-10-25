@@ -3,6 +3,7 @@
 
 #include "cUser.h"
 
+#include <stack>
 
 #define  CELLAT( point ) mPaperGrid[ point.x()][point.y()]
 #define  SPAWNINGAREAREQUIRED 5 // 5x5 ( spawns are 3x3, here we let a little room )
@@ -98,17 +99,16 @@ cPaperLogic::Update()
 
         SetPlayerValueAt( newPosition, user->mIndex );
 
-
         if( oldPosition != newPosition && CELLAT(oldPosition).mGround != user->mIndex )
         {
-            _AddTrailAtIndex( oldPosition, user->mIndex );
+            _AddTrailAtIndex( oldPosition, user );
         }
 
         // TRAILS
         if( CELLAT(newPosition).mGround == user->mIndex && user->mIsOutOfGround == true ) // if we land back on our ground
         {
             user->mIsOutOfGround = false;
-            FillZone( user->mIndex );
+            FillZone( user );
         }
         else if( CELLAT(newPosition).mGround != user->mIndex && user->mIsOutOfGround == false ) // If we leave our land
         {
@@ -165,16 +165,69 @@ cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 
 
 void
-cPaperLogic::FillZone( int iIndex )
+cPaperLogic::FillZone( cUser*  iUser )
 {
-    for( auto& point : mAllUsers[ iIndex ]->mTrailPoints )
+    for( auto& point : iUser->mTrailPoints )
     {
         SetTrailValueAt( point, -1 );
-        SetGroundValueAt( point, iIndex );
+        SetGroundValueAt( point, iUser->mIndex );
+    }
+    iUser->mTrailPoints.clear();
+
+    // add 1 row to be sure to be outside of user ground
+    const int MASKWIDTH = GRIDSIZE;
+    const int MASKHEIGHT = GRIDSIZE + 1;
+
+    std::vector< bool >  mask( MASKWIDTH * MASKHEIGHT, false );
+
+    #define POINT2MASK( point ) point.x() + (point.y() + 1) * MASKWIDTH
+    #define IS_MASK_VALID( index ) index >= 0 && index < mask.size()
+
+    for( int y = 0; y < GRIDSIZE; ++y )
+    {
+        for( int x = 0; x < GRIDSIZE; ++x )
+        {
+            QPoint point(x, y);
+            mask[POINT2MASK(point)] = CELLAT(point).mGround == iUser->mIndex;
+        }
     }
 
-    mAllUsers[ iIndex ]->mTrailPoints.clear();
-    //TODO
+    // we need to find the first point outside of player area : 0 -1 should be ok!
+    std::stack< QPoint >  stack;
+    QPoint empty(0, -1);
+    if( !mask[POINT2MASK(empty)] )
+        stack.push( empty );
+
+    while( !stack.empty() )
+    {
+        auto p = stack.top();
+        stack.pop();
+
+        mask[POINT2MASK(p)] = true;
+        auto NEIGHBORHOOD = {
+            p + QPoint( -1,  0 ),
+            p + QPoint( +1,  0 ),
+            p + QPoint(  0, +1 ),
+            p + QPoint(  0, -1 ),
+        };
+        for( auto n: NEIGHBORHOOD )
+        {
+            if( IS_MASK_VALID(POINT2MASK(n)) && !mask[POINT2MASK(n)] )
+                stack.push(n);
+        }        
+    }
+
+    for( int y = 0; y < GRIDSIZE; ++y )
+    {
+        for( int x = 0; x < GRIDSIZE; ++x )
+        {
+            QPoint point(x, y);
+            if( !mask[POINT2MASK(point)] )
+            {
+                SetGroundValueAt( point, iUser->mIndex );
+            }
+        }
+    }
 }
 
 
@@ -297,12 +350,12 @@ cPaperLogic::_CallCB( int x, int y, int newValue, eDataType iDataType )
 
 
 void
-cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, int iIndex )
+cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser )
 {
-    SetTrailValueAt( iPoint, iIndex );
+    SetTrailValueAt( iPoint, iUser->mIndex );
 
-    if( !mAllUsers[ iIndex ]->mTrailPoints.contains( iPoint ) )
-        mAllUsers[ iIndex ]->mTrailPoints.append( iPoint );
+    if( !iUser->mTrailPoints.contains( iPoint ) )
+        iUser->mTrailPoints.append( iPoint );
 }
 
 
