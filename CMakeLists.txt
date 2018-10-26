@@ -32,6 +32,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5Widgets)
 find_package(Qt5Core)
+find_package(Qt5Network)
 
 ##################################################
 
@@ -62,5 +63,5 @@ set_source_files_properties(${PROJECT_NAME}_HEADER_FILES PROPERTIES HEADER_FILE_
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC_FILES} ${${PROJECT_NAME}_HEADER_FILES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC ${Combattant_DEFINITIONS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets Qt5::Network)
 
