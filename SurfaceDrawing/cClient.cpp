@@ -79,13 +79,13 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    //mDataStream.startTransaction();
+    mDataStream.startTransaction();
 
     //cPaperLogic data;
     //mDataStream >> data;
 
-    //if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
-    //    return;
+    if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+        return;
 
     //qDebug() << data;
 
@@ -96,7 +96,13 @@ cClient::GetData()
 
     while( bytesAvailable() > 0 )
     {
+        mDataStream.startTransaction();
+
         mDataStream >> data;
+
+        if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+            return;
+
         qDebug() << data;
 
         //ReadNewUser( dataString );

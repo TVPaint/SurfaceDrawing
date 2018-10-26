@@ -87,7 +87,7 @@ cServer::NewClientConnected( )
 
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
-    SendDataToAllClients("");
+    SendDataToAllClients(""); ;
 
     // Telling clients a new one arrived
     //SendDataToAllClients( "other-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
