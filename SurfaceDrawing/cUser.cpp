@@ -102,6 +102,27 @@ operator<<( std::ostream& oStream, const cUser& iUser )
     return oStream;
 }
 
+
+QDebug&
+operator<<( QDebug& oStream, const cUser& iUser )
+{
+    oStream << "cUser (" << compute_hash("cUser") << "):";
+    oStream << "\tIndex: " << iUser.mIndex
+        << "\tColor: " << QVariant(iUser.mColor).toString()
+        << "\tPosition: " << iUser.mPosition.x() << "," << iUser.mPosition.y()
+        << "\tGUIPosition: " << iUser.mGUIPosition.x() << "," << iUser.mGUIPosition.y()
+        << "\tGUISize: " << iUser.mGUISize.x() << "," << iUser.mGUISize.y()
+        << "\tGUIMovementVector: " << iUser.mGUIMovementVector.x() << "," << iUser.mGUIMovementVector.y()
+        << "\tGUICenter: " << iUser.mGUICenter.x() << "," << iUser.mGUICenter.y()
+        << "\tGUICurrentMovementVector: " << iUser.mGUICurrentMovementVector.x() << "," << iUser.mGUICurrentMovementVector.y()
+        << "\tAskDirectionChange: " << iUser.mAskDirectionChange
+        << "\tIsOutOfGround: " << iUser.mIsOutOfGround
+        << "\tIsDead: " << iUser.mIsDead
+        << "\tTrailPoints: " << iUser.mTrailPoints.size();
+    return oStream;
+}
+
+
 QDataStream&
 operator<<(QDataStream& oStream, const cUser& iUser )
 {

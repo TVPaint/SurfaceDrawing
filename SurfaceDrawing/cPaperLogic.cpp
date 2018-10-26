@@ -435,6 +435,17 @@ operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic )
     return  oStream;
 }
 
+QDebug&
+operator<<( QDebug& oStream, const cPaperLogic& iPaperLogic )
+{
+    oStream << "cPaperGrid (" << compute_hash( "cPaperGrid" ) << "):";
+    oStream << "User number: " << iPaperLogic.mAllUsers.size();
+    for( auto user: iPaperLogic.mAllUsers )
+        oStream << *user;
+    return  oStream;
+}
+
+
 
 QDataStream&
 operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic )

@@ -85,6 +85,7 @@ public:
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic );
+QDebug& operator<<( QDebug& oStream, const cPaperLogic& iPaperLogic );
 
 QDataStream& operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell );
 QDataStream& operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell );

@@ -30,10 +30,10 @@ signals:
     void  quit();
 
 private:
-    cPaperLogic*            mPaperLogic;
-    QMap< int, QTcpSocket* >  mClients;
-    QTimer*                 mTimer;
+    cPaperLogic*                mPaperLogic;
+    QMap< int, QTcpSocket* >    mClients;
+    QTimer*                     mTimer;
 
-    bool                    mQuit = false;
+    bool                        mQuit = false;
 };
 

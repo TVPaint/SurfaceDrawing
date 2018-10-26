@@ -2,6 +2,7 @@
 
 
 #include <QColor>
+#include <QDebug>
 #include <QPoint>
 #include <QSize>
 #include <ostream>
@@ -42,6 +43,7 @@ public:
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );
+QDebug& operator<<( QDebug& oStream, const cUser& iUser );
 
 
 QDataStream& operator<<(QDataStream& oStream, const cUser& iUser );
