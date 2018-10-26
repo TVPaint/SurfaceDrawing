@@ -17,8 +17,6 @@ SurfaceDrawing::SurfaceDrawing(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi( this );
-
-
     Init();
 }
 
@@ -34,8 +32,6 @@ SurfaceDrawing::Init()
     mMainLayout = new QVBoxLayout();
     mMainLayout->addWidget( mCanvas );
     ui.centralWidget->setLayout( mMainLayout );
-
-
 
     mClientSocket = new cClient();
     mClientSocket->AskConnection();
