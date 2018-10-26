@@ -31,7 +31,7 @@ cServer::cServer() :
 void
 cServer::Run()
 {
-    if( !listen() )
+    if( !listen( QHostAddress::Any, 55666 ) )
         qDebug() << "Error";
 
     qDebug() << "Listening on port :  " << serverPort();
@@ -48,9 +48,7 @@ cServer::SendDataToAllClients( const QString & iData )
     stream << iData;
 
     for( auto client : mClients )
-    {
         client->write( data );
-    }
 }
 
 

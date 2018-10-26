@@ -32,6 +32,12 @@ public:
 
     void  Start();
 
+
+public slots:
+    void  NewUserArrived( cUser* iUser );
+
+
+
 private:
     Ui::SurfaceDrawingClass     ui;
     cPaperLogic*                mPaperLogic;

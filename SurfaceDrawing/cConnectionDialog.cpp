@@ -11,6 +11,7 @@ cConnectionDialog::cConnectionDialog( const QString& ipAddress, QWidget* iParent
 {
     ui.setupUi( this );
     ui.iPLineEdit->setText( ipAddress );
+    ui.portSpinBox->setValue( 55666 );
 }
 
 

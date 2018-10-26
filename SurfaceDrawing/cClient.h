@@ -1,5 +1,8 @@
 #pragma once
 
+#include "cUser.h"
+
+#include <QDataStream>
 
 #include <QTcpSocket>
 
@@ -15,12 +18,19 @@ public:
 public:
     void  AskConnection();
 
+    void  ReadNewUser( const QString& iUserSerialized );
+
 public slots:
     void  Connected();
     void  ConnectionError( QAbstractSocket::SocketError );
     void  GetData();
 
+
+signals:
+    void  newUserArrived( cUser* iUser );
+
 private:
-    bool mConnectedToServer = false;
+    bool            mConnectedToServer = false;
+    QDataStream     mDataStream;
 };
 
