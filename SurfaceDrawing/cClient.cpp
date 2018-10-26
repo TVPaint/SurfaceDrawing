@@ -2,10 +2,11 @@
 
 
 #include "cConnectionDialog.h"
+#include "cPaperLogic.h"
 
 #include <QHostAddress>
 
-
+#include <iostream>
 
 cClient::~cClient()
 {
@@ -80,13 +81,15 @@ cClient::GetData()
 {
     mDataStream.startTransaction();
 
-    QString dataString;
-    mDataStream >> dataString;
+    cPaperLogic data;
+    mDataStream >> data;
 
     if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
         return;
 
-    ReadNewUser( dataString );
+    std::cout << data << std::endl;
+
+    // ReadNewUser( dataString );
 }
 
 

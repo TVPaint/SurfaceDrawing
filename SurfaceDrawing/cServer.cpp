@@ -45,7 +45,7 @@ cServer::SendDataToAllClients( const QString & iData )
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
-    stream << iData;
+    stream << *mPaperLogic;
 
     for( auto client : mClients )
         client->write( data );

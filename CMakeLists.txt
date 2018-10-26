@@ -21,9 +21,9 @@ ELSE()
 ENDIF()
 
 if( LINUX )
-    set(Combattant_DEFINITIONS LINUX)
+    set(${PROJECT_NAME}_DEFINITIONS LINUX)
 elseif(WINDOWS)
-    set(Combattant_DEFINITIONS WINDOWS)
+    set(${PROJECT_NAME}_DEFINITIONS WINDOWS)
 endif()
 
 set(CMAKE_AUTOMOC ON)
@@ -60,8 +60,12 @@ extract_include_dirs("${${PROJECT_NAME}_HEADER_FILES}" ${PROJECT_NAME}_INCLUDE_D
 set( ${PROJECT_NAME}_INCLUDE_DIRECTORIES ${INCLUDE_DIRECTORIES} ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
 
 set_source_files_properties(${PROJECT_NAME}_HEADER_FILES PROPERTIES HEADER_FILE_ONLY TRUE)
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC_FILES} ${${PROJECT_NAME}_HEADER_FILES})
-target_compile_definitions(${PROJECT_NAME} PUBLIC ${Combattant_DEFINITIONS})
-target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Widgets Qt5::Network)
+add_executable(${PROJECT_NAME}_CLIENT ${${PROJECT_NAME}_SRC_FILES} ${${PROJECT_NAME}_HEADER_FILES})
+target_compile_definitions(${PROJECT_NAME}_CLIENT PUBLIC ${${PROJECT_NAME}_DEFINITIONS} CLIENTSIDE)
+target_include_directories(${PROJECT_NAME}_CLIENT PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
+target_link_libraries(${PROJECT_NAME}_CLIENT Qt5::Core Qt5::Widgets Qt5::Network)
 
+add_executable(${PROJECT_NAME}_SERVER ${${PROJECT_NAME}_SRC_FILES} ${${PROJECT_NAME}_HEADER_FILES})
+target_compile_definitions(${PROJECT_NAME}_SERVER PUBLIC ${${PROJECT_NAME}_DEFINITIONS} SERVERSIDE)
+target_include_directories(${PROJECT_NAME}_SERVER PUBLIC ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
+target_link_libraries(${PROJECT_NAME}_SERVER Qt5::Core Qt5::Widgets Qt5::Network)

@@ -424,6 +424,18 @@ operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
     return  iStream;
 }
 
+
+std::ostream&
+operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic )
+{
+    oStream << "cPaperGrid (" << compute_hash( "cPaperGrid" ) << "):" << std::endl;
+    oStream << "User number: " << iPaperLogic.mAllUsers.size() << std::endl;
+    for( auto user: iPaperLogic.mAllUsers )
+        oStream << *user << std::endl;
+    return  oStream;
+}
+
+
 QDataStream&
 operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic )
 {

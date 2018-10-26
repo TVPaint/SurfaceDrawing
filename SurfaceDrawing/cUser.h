@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QPoint>
 #include <QSize>
+#include <ostream>
 
 #include "cHash.h"
 
@@ -40,10 +41,12 @@ public:
     QList< QPoint >  mTrailPoints;
 };
 
+std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );
+
 
 QDataStream& operator<<(QDataStream& oStream, const cUser& iUser );
 QDataStream& operator>>(QDataStream& iStream, cUser& oUser );
 
 QDataStream& operator<<(QDataStream& oStream, const cUser* iUser );
-QDataStream& operator>>(QDataStream& iStream, cUser* oUser );
+QDataStream& operator>>(QDataStream& iStream, cUser*& oUser );
 

@@ -7,6 +7,7 @@
 #include <QColor>
 
 #include <functional>
+#include <ostream>
 
 class cUser;
 
@@ -82,6 +83,8 @@ public:
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
 };
+
+std::ostream& operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic );
 
 QDataStream& operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell );
 QDataStream& operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell );
