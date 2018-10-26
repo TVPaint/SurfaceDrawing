@@ -99,6 +99,7 @@ operator<<( std::ostream& oStream, const cUser& iUser )
             << "\tIsOutOfGround: " << iUser.mIsOutOfGround << std::endl
             << "\tIsDead: " << iUser.mIsDead << std::endl
             << "\tTrailPoints: " << iUser.mTrailPoints.size() << std::endl;
+    return oStream;
 }
 
 QDataStream&
