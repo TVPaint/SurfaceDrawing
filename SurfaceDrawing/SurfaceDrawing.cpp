@@ -65,8 +65,10 @@ SurfaceDrawing::Start()
 void
 SurfaceDrawing::NewUserArrived( cUser* iUser )
 {
-    mPaperLogic->AddUser( iUser );
     mCanvas->AddUser( iUser );
+    mPaperLogic->AddUser( iUser );
+
+    Start();
 }
 
 
