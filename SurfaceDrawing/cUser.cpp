@@ -4,6 +4,8 @@
 
 #include <time.h>
 
+#include <QDataStream>
+#include <QDebug>
 
 cUser::~cUser()
 {
@@ -81,3 +83,63 @@ cUser::setMovementVector( QPoint iMovementVector )
 }
 
 
+QDataStream&
+operator<<(QDataStream& oStream, const cUser& iUser )
+{
+    oStream << compute_hash("cUser");
+    oStream << iUser.mIndex
+            << iUser.mColor
+            << iUser.mPosition
+            << iUser.mGUIPosition
+            << iUser.mGUISize
+            << iUser.mGUIMovementVector
+            << iUser.mGUICenter
+            << iUser.mGUICurrentMovementVector
+            << iUser.mAskDirectionChange
+            << iUser.mIsOutOfGround
+            << iUser.mIsDead
+            << iUser.mTrailPoints;
+
+    return  oStream;
+}
+
+QDataStream&
+operator>>(QDataStream& iStream, cUser& oUser )
+{
+    uint32_t  id;
+    iStream >> id;
+    if( id != compute_hash("cUser") )
+    {
+        qDebug() << "Invalid user object!";
+        return iStream;
+    }
+
+    iStream >> oUser.mIndex
+            >> oUser.mColor
+            >> oUser.mPosition
+            >> oUser.mGUIPosition
+            >> oUser.mGUISize
+            >> oUser.mGUIMovementVector
+            >> oUser.mGUICenter
+            >> oUser.mGUICurrentMovementVector
+            >> oUser.mAskDirectionChange
+            >> oUser.mIsOutOfGround
+            >> oUser.mIsDead
+            >> oUser.mTrailPoints;
+    return  iStream;
+}
+
+QDataStream&
+operator<<(QDataStream& oStream, const cUser* iUser )
+{
+    oStream << *iUser;
+    return oStream;
+}
+
+
+QDataStream&
+operator>>(QDataStream& iStream, cUser* oUser )
+{
+    iStream >> *oUser;
+    return iStream;
+}

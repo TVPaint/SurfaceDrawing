@@ -5,6 +5,9 @@
 
 #include <stack>
 
+#include <QDebug>
+#include <QDataStream>
+
 #define  CELLAT( point ) mPaperGrid[ point.x()][point.y()]
 #define  SPAWNINGAREAREQUIRED 5 // 5x5 ( spawns are 3x3, here we let a little room )
 
@@ -388,3 +391,64 @@ cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint & iPoint ) const
     return  result;
 }
 
+
+QDataStream&
+operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell )
+{
+    oStream << compute_hash( "cPaperGrid::eDataCell" );
+    oStream << iDataCell.mPlayer
+            << iDataCell.mTrail
+            << iDataCell.mGround
+            << iDataCell.mSpawnIsImpossibleHere;
+
+    return  oStream;
+}
+
+
+QDataStream&
+operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
+{
+    uint32_t  id;
+    iStream >> id;
+    if( id != compute_hash( "cPaperGrid::eDataCell" ) )
+    {
+        qDebug() << "Invalid cPaperLogic::eDataCell object!";
+        return  iStream;
+    }
+
+    iStream >> oDataCell.mPlayer
+            >> oDataCell.mTrail
+            >> oDataCell.mGround
+            >> oDataCell.mSpawnIsImpossibleHere;
+
+    return  iStream;
+}
+
+QDataStream&
+operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic )
+{
+    oStream << compute_hash( "cPaperGrid" );
+    oStream << iPaperLogic.mPaperGrid
+            << iPaperLogic.mAllUsers;
+
+    return  oStream;
+}
+
+
+QDataStream&
+operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic )
+{
+    uint32_t  id;
+    iStream >> id;
+    if( id != compute_hash( "cPaperGrid" ) )
+    {
+        qDebug() << "Invalid cPaperLogic object!";
+        return  iStream;
+    }
+
+    iStream >> oPaperLogic.mPaperGrid
+            >> oPaperLogic.mAllUsers;
+
+
+    return  iStream;
+}

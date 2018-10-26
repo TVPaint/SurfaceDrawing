@@ -5,6 +5,7 @@
 #include <QPoint>
 #include <QSize>
 
+#include "cHash.h"
 
 class cUser
 {
@@ -40,5 +41,9 @@ public:
 };
 
 
+QDataStream& operator<<(QDataStream& oStream, const cUser& iUser );
+QDataStream& operator>>(QDataStream& iStream, cUser& oUser );
 
+QDataStream& operator<<(QDataStream& oStream, const cUser* iUser );
+QDataStream& operator>>(QDataStream& iStream, cUser* oUser );
 

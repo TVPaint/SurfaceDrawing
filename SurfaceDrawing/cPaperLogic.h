@@ -23,9 +23,9 @@ public:
     struct  eDataCell
     {
         eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ), mSpawnIsImpossibleHere( false ){};
-        char  mPlayer;
-        char  mTrail;
-        char  mGround;
+        int8_t  mPlayer;
+        int8_t  mTrail;
+        int8_t  mGround;
 
         bool  mSpawnIsImpossibleHere; // To check if spawn is available, just to avoid having a whole different array
     };
@@ -82,4 +82,11 @@ public:
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
 };
+
+QDataStream& operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell );
+QDataStream& operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell );
+
+QDataStream& operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic );
+QDataStream& operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic );
+
 
