@@ -30,6 +30,8 @@ public:
     void  Init();
     void  Update();
 
+    void  Start();
+
 private:
     Ui::SurfaceDrawingClass     ui;
     cPaperLogic*                mPaperLogic;

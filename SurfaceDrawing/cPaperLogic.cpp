@@ -214,7 +214,7 @@ cPaperLogic::FillZone( cUser*  iUser )
         {
             if( IS_MASK_VALID(POINT2MASK(n)) && !mask[POINT2MASK(n)] )
                 stack.push(n);
-        }        
+        }
     }
 
     for( int y = 0; y < GRIDSIZE; ++y )

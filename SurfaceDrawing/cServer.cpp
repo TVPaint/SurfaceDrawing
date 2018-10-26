@@ -1,6 +1,11 @@
 #include "cServer.h"
 
+#include "cUser.h"
+
+#include <QDataStream>
 #include <QHostAddress>
+
+
 
 cServer::~cServer()
 {
@@ -19,8 +24,7 @@ cServer::cServer() :
     connect( this, &QTcpServer::newConnection, this, &cServer::NewClientConnected );
 
     mPaperLogic = new cPaperLogic();
-    auto port = serverPort();
-    auto port2 = serverPort();
+    mPaperLogic->Init();
 }
 
 
@@ -31,6 +35,22 @@ cServer::Run()
         qDebug() << "Error";
 
     qDebug() << "Listening on port :  " << serverPort();
+}
+
+
+void
+cServer::SendDataToAllClients( const QString & iData )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << iData;
+
+    for( auto client : mClients )
+    {
+        client->write( data );
+    }
 }
 
 
@@ -47,8 +67,14 @@ cServer::Update()
 void
 cServer::NewClientConnected( )
 {
-    mClients.push_back( nextPendingConnection() );
     qDebug() << "New client connected";
+
+    mClients.push_back( nextPendingConnection() );
+
+    auto newUser = new cUser( mPaperLogic->mAllUsers.size() );
+    mPaperLogic->AddUser( newUser );
+
+    SendDataToAllClients( QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
 }
 
 

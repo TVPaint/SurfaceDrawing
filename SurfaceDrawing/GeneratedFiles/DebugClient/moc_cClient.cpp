@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_cClient_t {
     QByteArrayData data[6];
-    char stringdata0[74];
+    char stringdata0[72];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,13 +34,13 @@ static const qt_meta_stringdata_cClient_t qt_meta_stringdata_cClient = {
 QT_MOC_LITERAL(0, 0, 7), // "cClient"
 QT_MOC_LITERAL(1, 8, 9), // "Connected"
 QT_MOC_LITERAL(2, 18, 0), // ""
-QT_MOC_LITERAL(3, 19, 9), // "HostFound"
-QT_MOC_LITERAL(4, 29, 15), // "ConnectionError"
-QT_MOC_LITERAL(5, 45, 28) // "QAbstractSocket::SocketError"
+QT_MOC_LITERAL(3, 19, 15), // "ConnectionError"
+QT_MOC_LITERAL(4, 35, 28), // "QAbstractSocket::SocketError"
+QT_MOC_LITERAL(5, 64, 7) // "GetData"
 
     },
-    "cClient\0Connected\0\0HostFound\0"
-    "ConnectionError\0QAbstractSocket::SocketError"
+    "cClient\0Connected\0\0ConnectionError\0"
+    "QAbstractSocket::SocketError\0GetData"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,13 +59,13 @@ static const uint qt_meta_data_cClient[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    0,   29,    2, 0x0a /* Public */,
-       3,    0,   30,    2, 0x0a /* Public */,
-       4,    1,   31,    2, 0x0a /* Public */,
+       3,    1,   30,    2, 0x0a /* Public */,
+       5,    0,   33,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 4,    2,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 5,    2,
 
        0        // eod
 };
@@ -77,14 +77,14 @@ void cClient::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->Connected(); break;
-        case 1: _t->HostFound(); break;
-        case 2: _t->ConnectionError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
+        case 1: _t->ConnectionError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
+        case 2: _t->GetData(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 2:
+        case 1:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:

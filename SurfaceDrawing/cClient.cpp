@@ -14,7 +14,7 @@ cClient::cClient() :
     QTcpSocket()
 {
     connect( this, &QTcpSocket::connected, this, &cClient::Connected );
-    connect( this, &QTcpSocket::hostFound, this, &cClient::HostFound );
+    connect( this, &QTcpSocket::readyRead, this, &cClient::GetData );
 
     connect( this, SLOT( error(QAbstractSocket::SocketError)), this, SIGNAL(ConnectionError(QAbstractSocket::SocketError)) );
 }
@@ -24,23 +24,15 @@ void
 cClient::AskConnection()
 {
     cConnectionDialog cdial( "LocalHost" );
-    if( cdial.exec() )
+    while( !mConnectedToServer )
     {
-        connectToHost( cdial.GetIP(), cdial.GetPort() );
-        if( !waitForConnected( 5000 ) )
+        if( cdial.exec() )
         {
-            qDebug() << "TimedOut " << errorString();
+            connectToHost( cdial.GetIP(), cdial.GetPort() );
+            if( !waitForConnected( 5000 ) )
+                qDebug() << "TimedOut " << errorString();
         }
     }
-
-}
-
-
-void
-cClient::HostFound()
-{
-    int a = 0;
-    qDebug() << "Connected to server";
 }
 
 
@@ -52,9 +44,21 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 
 
 void
+cClient::GetData()
+{
+    QDataStream data;
+    data.startTransaction();
+
+    QString dataString;
+    data >> dataString;
+    int bp = 0;
+}
+
+
+void
 cClient::Connected()
 {
-    int a = 0;
+    mConnectedToServer = true;
     qDebug() << "Connected to server";
 }
 

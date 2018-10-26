@@ -17,7 +17,10 @@ public:
 
 public slots:
     void  Connected();
-    void  HostFound();
     void  ConnectionError( QAbstractSocket::SocketError );
+    void  GetData();
+
+private:
+    bool mConnectedToServer = false;
 };
 
