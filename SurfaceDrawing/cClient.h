@@ -28,6 +28,7 @@ public slots:
 
 signals:
     void  newUserArrived( cUser* iUser );
+    void  myUserAssigned( cUser* iUser );
 
 private:
     bool            mConnectedToServer = false;

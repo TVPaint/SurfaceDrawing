@@ -44,16 +44,25 @@ cClient::AskConnection()
 void
 cClient::ReadNewUser( const QString & iUserSerialized )
 {
-    QStringList indexPosition = iUserSerialized.split( "-" );
-    int index = indexPosition[ 0 ].toInt();
+    QStringList package = iUserSerialized.split( "-" );
 
-    QStringList position = indexPosition[ 1 ].split( "," );
+    QString type = package[ 0 ];
+    int index = package[ 1 ].toInt();
+    QStringList position = package[ 2 ].split( "," );
+
     QPoint userPos( position[0].toInt(), position[1].toInt() );
 
-    auto newUser = new cUser( index );
+    auto  newUser = new cUser( index );
     newUser->setPosition( userPos );
 
-    emit newUserArrived( newUser );
+    if( type == "assign" )
+    {
+        emit myUserAssigned( newUser );
+    }
+    else
+    {
+        emit newUserArrived( newUser );
+    }
 }
 
 

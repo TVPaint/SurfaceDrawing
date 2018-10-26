@@ -20,6 +20,7 @@ public:
 
 
     void  SendDataToAllClients( const QString& iData );
+    void  SendDataToSpecificClients( const QString& iData, QTcpSocket* iClient );
 
 public slots:
     void  NewClientConnected();

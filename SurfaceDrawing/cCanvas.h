@@ -15,6 +15,14 @@ class cCanvas :
 {
     Q_OBJECT
 
+
+public:
+    enum eUserType
+    {
+        kMyself,
+        kOther
+    };
+
 public:
     ~cCanvas();
     cCanvas( cPaperLogic* iPaperLogic, QWidget* parent );
@@ -26,12 +34,14 @@ public:
 
 
 public:
-    void  AddUser( cUser* iUser );
+    void  AddUser( cUser* iUser, eUserType iUserType );
 
 public:
     void  Update();
 
 public:
+    cItemUser*                  mMyself = 0;
+
     QMap< int, cItemUser* >     mAllUserItems;
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;

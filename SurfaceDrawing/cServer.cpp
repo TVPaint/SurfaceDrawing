@@ -53,6 +53,18 @@ cServer::SendDataToAllClients( const QString & iData )
 
 
 void
+cServer::SendDataToSpecificClients( const QString & iData, QTcpSocket * iClient )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << iData;
+    iClient->write( data );
+}
+
+
+void
 cServer::Update()
 {
     mPaperLogic->Update();
@@ -67,12 +79,14 @@ cServer::NewClientConnected( )
 {
     qDebug() << "New client connected";
 
-    mClients.push_back( nextPendingConnection() );
-
     auto newUser = new cUser( mPaperLogic->mAllUsers.size() );
     mPaperLogic->AddUser( newUser );
 
-    SendDataToAllClients( QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
+    SendDataToAllClients( "other-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
+
+    mClients.push_back( nextPendingConnection() );
+
+    SendDataToSpecificClients( "assign-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ), mClients.back() );
 }
 
 

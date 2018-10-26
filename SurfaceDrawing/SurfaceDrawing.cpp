@@ -41,6 +41,7 @@ SurfaceDrawing::Init()
     mClientSocket->AskConnection();
 
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
+    connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
 }
 
 
@@ -63,12 +64,19 @@ SurfaceDrawing::Start()
 
 
 void
+SurfaceDrawing::MyUserAssigned( cUser * iUser )
+{
+    mCanvas->AddUser( iUser, cCanvas::kMyself );
+    mPaperLogic->AddUser( iUser );
+    Start();
+}
+
+
+void
 SurfaceDrawing::NewUserArrived( cUser* iUser )
 {
-    mCanvas->AddUser( iUser );
+    mCanvas->AddUser( iUser, cCanvas::kOther );
     mPaperLogic->AddUser( iUser );
-
-    Start();
 }
 
 

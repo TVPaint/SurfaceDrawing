@@ -89,42 +89,23 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 {
     if( iEvent->key() == Qt::Key_Left )
     {
-        mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( -1, 0 ) );
+        mMyself->mUser->setMovementVector( QPoint( -1, 0 ) );
     }
     else if( iEvent->key() == Qt::Key_Right )
     {
-        mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 1, 0 ) );
+        mMyself->mUser->setMovementVector( QPoint( 1, 0 ) );
     }
     else if( iEvent->key() == Qt::Key_Up )
     {
-        mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 0, -1 ) );
+        mMyself->mUser->setMovementVector( QPoint( 0, -1 ) );
     }
     else if( iEvent->key() == Qt::Key_Down )
     {
-        mAllUserItems[ 0 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
+        mMyself->mUser->setMovementVector( QPoint( 0, 1 ) );
     }
     else if( iEvent->key() == Qt::Key_Space )
     {
-        mPaperLogic->TryRespawningPlayer( mAllUserItems[ 0 ]->mUser );
-    }
-
-
-
-    if( iEvent->key() == Qt::Key_Q )
-    {
-        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( -1, 0 ) );
-    }
-    else if( iEvent->key() == Qt::Key_D )
-    {
-        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 1, 0 ) );
-    }
-    else if( iEvent->key() == Qt::Key_Z )
-    {
-        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 0, -1 ) );
-    }
-    else if( iEvent->key() == Qt::Key_S )
-    {
-        mAllUserItems[ 1 ]->mUser->setMovementVector( QPoint( 0, 1 ) );
+        mPaperLogic->TryRespawningPlayer( mMyself->mUser );
     }
 }
 
@@ -145,7 +126,7 @@ cCanvas::resizeEvent( QResizeEvent* event )
 
 
 void
-cCanvas::AddUser( cUser* iUser )
+cCanvas::AddUser( cUser* iUser, eUserType iUserType )
 {
     if( iUser->mIndex < 0 )
         return;
@@ -153,6 +134,9 @@ cCanvas::AddUser( cUser* iUser )
     auto userItem = new cItemUser( iUser );
     mAllUserItems.insert( iUser->mIndex, userItem );
     scene()->addItem( userItem );
+
+    if( iUserType == kMyself )
+        mMyself = mAllUserItems[ iUser->mIndex ];
 }
 
 
@@ -167,5 +151,5 @@ cCanvas::Update()
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );
 
-    ensureVisible( mAllUserItems[ 0 ], width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
+    ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 }
