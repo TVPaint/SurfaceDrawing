@@ -31,7 +31,7 @@ signals:
 
 private:
     cPaperLogic*            mPaperLogic;
-    QVector< QTcpSocket* >  mClients;
+    QMap< int, QTcpSocket* >  mClients;
     QTimer*                 mTimer;
 
     bool                    mQuit = false;

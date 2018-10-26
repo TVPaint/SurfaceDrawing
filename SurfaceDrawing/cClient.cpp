@@ -57,10 +57,12 @@ cClient::ReadNewUser( const QString & iUserSerialized )
 
     if( type == "assign" )
     {
+        qDebug() << "MyUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
         emit myUserAssigned( newUser );
     }
     else
     {
+        qDebug() << "OtherUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
         emit newUserArrived( newUser );
     }
 }

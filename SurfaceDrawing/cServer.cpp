@@ -82,11 +82,27 @@ cServer::NewClientConnected( )
     auto newUser = new cUser( mPaperLogic->mAllUsers.size() );
     mPaperLogic->AddUser( newUser );
 
+    // Telling clients a new one arrived
     SendDataToAllClients( "other-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
 
-    mClients.push_back( nextPendingConnection() );
 
-    SendDataToSpecificClients( "assign-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ), mClients.back() );
+
+    // Getting the new client
+    auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
+    auto newClient = it.value();
+
+    // Assigning him its user
+    SendDataToSpecificClients( "assign-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ), newClient );
+
+    // Send other users to new client
+    for( auto client : mClients )
+    {
+        if( client == newClient ) // Don't send you own  user as an "enemy" user
+            continue;
+
+        auto user = mPaperLogic->mAllUsers[ it.key() ];
+        SendDataToSpecificClients( "other-" + QString::number( user->mIndex ) + "-" + QString::number( user->mPosition.x() ) + "," + QString::number( user->mPosition.y() ), newClient );
+    }
 }
 
 
