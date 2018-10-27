@@ -79,9 +79,6 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    qDebug() << "enter";
-    qDebug() << bytesAvailable();
-
     if( mDataReadingState == kNone )
     {
         QString header;
@@ -97,10 +94,6 @@ cClient::GetData()
             mDataReadingState = kGRID;
         else if( header == 1 )
             mDataReadingState = kSIMPLE;
-
-        qDebug() << "header is read";
-        qDebug() << bytesAvailable();
-
     }
 
     if( mDataReadingState == kGRID )
@@ -127,9 +120,6 @@ cClient::GetData()
         ReadNewUser( dataString );
         mDataReadingState = kNone;
     }
-
-    qDebug() << bytesAvailable();
-    //Q_ASSERT( bytesAvailable() == 0 );
 }
 
 
