@@ -18,8 +18,8 @@ cUser::cUser( int iIndex ) :
     mAskDirectionChange( false ),
     mIsOutOfGround( false )
 {
-    int randX = (rand() % (GRIDSIZE - 2)) + 1; // Between 1 and GRIDSIZE - 1
-    int randY = (rand() % (GRIDSIZE - 2)) + 1; // Between 1 and GRIDSIZE - 1
+    int randX = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
+    int randY = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
                                                // Points are in grid coordinates
     setPosition( QPoint( randX, randY ) );
     setSize( QPoint( 1, 1 ) );
@@ -173,7 +173,7 @@ operator>>(QDataStream& iStream, cUser& oUser )
     iStream >> id;
     if( id != compute_hash("cUser") )
     {
-        qDebug() << "Invalid user object!";
+        //qDebug() << "Invalid user object!";
         return iStream;
     }
 

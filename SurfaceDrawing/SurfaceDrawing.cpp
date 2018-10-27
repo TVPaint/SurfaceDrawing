@@ -38,6 +38,7 @@ SurfaceDrawing::Init()
 
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
+    connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
 }
 
 

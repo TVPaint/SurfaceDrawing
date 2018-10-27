@@ -264,6 +264,7 @@ cPaperLogic::KillUser( cUser* iUser )
     iUser->mGUICurrentMovementVector = QPoint( 0, 0 );
     iUser->mGUIMovementVector = QPoint( 0, 0 );
     iUser->mTrailPoints.clear();
+    iUser->setPosition( QPoint( 1, 1 ) );
 
     for( auto row = 0; row < GRIDSIZE; ++row )
     {
@@ -434,7 +435,7 @@ operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
     iStream >> id;
     if( id != compute_hash( "cPaperGrid::eDataCell" ) )
     {
-        qDebug() << "Invalid cPaperLogic::eDataCell object!";
+        //qDebug() << "Invalid cPaperLogic::eDataCell object!";
         return  iStream;
     }
 
@@ -487,7 +488,7 @@ operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic )
     iStream >> id;
     if( id != compute_hash( "cPaperGrid" ) )
     {
-        qDebug() << "Invalid cPaperLogic object!";
+        //qDebug() << "Invalid cPaperLogic object!";
         return  iStream;
     }
 

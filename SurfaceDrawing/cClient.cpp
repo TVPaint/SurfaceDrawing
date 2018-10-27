@@ -104,7 +104,7 @@ cClient::GetData()
         if( !mDataStream.commitTransaction() )
             return;
 
-        qDebug() << data;
+        //qDebug() << data;
         emit  paperLogicArrived( data );
 
         mDataReadingState = kNone;
@@ -118,7 +118,7 @@ cClient::GetData()
         if( !mDataStream.commitTransaction() )
             return;
 
-        qDebug() << dataString;
+        //qDebug() << dataString;
         ReadNewUser( dataString );
         mDataReadingState = kNone;
     }

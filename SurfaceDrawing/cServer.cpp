@@ -102,6 +102,9 @@ cServer::NewClientConnected( )
     // Tell new client about others
     for( auto client : mClients )
     {
+        if( client == newClient )
+            continue;
+
         cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
         SendSimpleUserPositionToClient( newClient, user, kOtherUser );
     }
