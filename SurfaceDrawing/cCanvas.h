@@ -39,6 +39,9 @@ public:
 public:
     void  Update();
 
+signals:
+    void  directionChanged( int iDirection );
+
 public:
     cItemUser*                  mMyself = 0;
 

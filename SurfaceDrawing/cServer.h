@@ -2,8 +2,9 @@
 
 #include  "cPaperLogic.h"
 
-#include <QTcpSocket>
+#include <QDataStream>
 #include <QTcpServer>
+#include <QTcpSocket>
 #include <QTimer>
 
 class cServer :
@@ -36,6 +37,7 @@ public:
 public slots:
     void  NewClientConnected();
     void  Update();
+    void  GetData();
 
 signals:
     void  quit();
@@ -44,6 +46,7 @@ private:
     cPaperLogic*                mPaperLogic;
     QMap< int, QTcpSocket* >    mClients;
     QTimer*                     mTimer;
+    QMap< int, QDataStream* >   mDataStream;
 
     bool                        mQuit = false;
 };

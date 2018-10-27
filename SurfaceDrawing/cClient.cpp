@@ -70,6 +70,18 @@ cClient::ReadNewUser( const QString & iUserSerialized )
 
 
 void
+cClient::SendNewDirection( int iDirection )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( iDirection );
+    write( data );
+}
+
+
+void
 cClient::ConnectionError( QAbstractSocket::SocketError iError )
 {
     qDebug() << "Connection Error : " << iError;

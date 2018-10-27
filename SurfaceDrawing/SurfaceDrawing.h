@@ -37,6 +37,7 @@ public slots:
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
     void  PaperLogicArrived( cPaperLogic& iPaper );
+    void  DirectionChanged( int iDirection );
 
 
 

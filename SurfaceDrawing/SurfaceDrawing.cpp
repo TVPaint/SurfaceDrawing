@@ -39,6 +39,7 @@ SurfaceDrawing::Init()
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
+    connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
 }
 
 
@@ -90,6 +91,13 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper )
     //}
 
     mPaperLogic->CopyFromPaper( iPaper );
+}
+
+
+void
+SurfaceDrawing::DirectionChanged( int iDirection )
+{
+    mClientSocket->SendNewDirection( iDirection );
 }
 
 

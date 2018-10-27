@@ -30,6 +30,7 @@ public:
     void  AskConnection();
 
     void  ReadNewUser( const QString& iUserSerialized );
+    void SendNewDirection( int iDirection );
 
 public slots:
     void  Connected();

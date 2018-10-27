@@ -2,9 +2,7 @@
 
 #include "cUser.h"
 
-#include <QDataStream>
 #include <QHostAddress>
-
 
 
 cServer::~cServer()
@@ -22,6 +20,7 @@ cServer::cServer() :
 
     connect( mTimer, &QTimer::timeout, this, &cServer::Update );
     connect( this, &QTcpServer::newConnection, this, &cServer::NewClientConnected );
+
 
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
@@ -81,6 +80,52 @@ cServer::Update()
 
 
 void
+cServer::GetData()
+{
+    int header;
+
+    int index = -1;
+
+    for( auto stream : mDataStream )
+    {
+        stream->startTransaction();
+        *stream >> header;
+        if( !stream->commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+            continue;
+
+        index = mDataStream.key( stream );
+        break;
+    }
+
+    if( index == -1 )
+        return;
+
+    switch( header )
+    {
+        case 1:
+            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
+            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( -1, 0 );
+            break;
+        case 2:
+            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
+            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 1, 0 );
+            break;
+        case 3:
+            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
+            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 0, -1 );
+            break;
+        case 4:
+            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
+            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 0, 1 );
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+void
 cServer::NewClientConnected( )
 {
     qDebug() << "New client connected";
@@ -95,6 +140,11 @@ cServer::NewClientConnected( )
     // Add new client
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
+    connect( newClient, &QTcpSocket::readyRead, this, &cServer::GetData );
+
+    auto dstream = new QDataStream( newClient );
+    dstream->setVersion( QDataStream::Qt_5_10 );
+    mDataStream.insert( newUser->mIndex, dstream );
 
     // Tell him his own position ( so client knows which player its controlling )
     SendSimpleUserPositionToClient( newClient, newUser, kSelfUser );
