@@ -22,6 +22,9 @@ public:
     void  SendDataToAllClients( const QString& iData );
     void  SendDataToSpecificClients( const QString& iData, QTcpSocket* iClient );
 
+    void  SendGridToClient( QTcpSocket* iClient );
+    void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser );
+
 public slots:
     void  NewClientConnected();
     void  Update();

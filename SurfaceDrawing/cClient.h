@@ -12,6 +12,14 @@ class cClient :
     Q_OBJECT
 
 public:
+    enum eDataReadingState
+    {
+        kNone,
+        kGRID,
+        kSIMPLE
+    };
+
+public:
     ~cClient();
     cClient();
 
@@ -31,7 +39,8 @@ signals:
     void  myUserAssigned( cUser* iUser );
 
 private:
-    bool            mConnectedToServer = false;
-    QDataStream     mDataStream;
+    eDataReadingState   mDataReadingState = kNone;
+    bool                mConnectedToServer = false;
+    QDataStream         mDataStream;
 };
 

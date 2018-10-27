@@ -79,34 +79,57 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    mDataStream.startTransaction();
+    qDebug() << "enter";
+    qDebug() << bytesAvailable();
 
-    //cPaperLogic data;
-    //mDataStream >> data;
-
-    if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
-        return;
-
-    //qDebug() << data;
-
-    // ReadNewUser( dataString );
-
-
-    cPaperLogic data;
-
-    while( bytesAvailable() > 0 )
+    if( mDataReadingState == kNone )
     {
+        QString header;
+
         mDataStream.startTransaction();
 
-        mDataStream >> data;
+        mDataStream >> header;
 
         if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
             return;
 
-        qDebug() << data;
+        if( header == 0 )
+            mDataReadingState = kGRID;
+        else if( header == 1 )
+            mDataReadingState = kSIMPLE;
 
-        //ReadNewUser( dataString );
+        qDebug() << "header is read";
+        qDebug() << bytesAvailable();
+
     }
+
+    if( mDataReadingState == kGRID )
+    {
+        cPaperLogic data;
+        mDataStream.startTransaction();
+        mDataStream >> data;
+        if( !mDataStream.commitTransaction() )
+            return;
+
+        qDebug() << data;
+        mDataReadingState = kNone;
+    }
+    else if( mDataReadingState == kSIMPLE )
+    {
+        QString dataString;
+        mDataStream.startTransaction();
+        mDataStream >> dataString;
+
+        if( !mDataStream.commitTransaction() )
+            return;
+
+        qDebug() << dataString;
+        ReadNewUser( dataString );
+        mDataReadingState = kNone;
+    }
+
+    qDebug() << bytesAvailable();
+    //Q_ASSERT( bytesAvailable() == 0 );
 }
 
 

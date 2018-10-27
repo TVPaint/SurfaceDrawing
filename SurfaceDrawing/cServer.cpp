@@ -68,6 +68,33 @@ cServer::SendDataToSpecificClients( const QString & iData, QTcpSocket * iClient 
 
 
 void
+cServer::SendGridToClient( QTcpSocket * iClient )
+{
+    QByteArray data;
+
+        QDataStream stream( &data, QIODevice::WriteOnly );
+        stream.setVersion( QDataStream::Qt_5_10 );
+        stream.setDevice( iClient );
+
+        stream << char(0);
+        stream << *mPaperLogic;
+}
+
+
+void
+cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient);
+
+    stream << char(1);
+    stream << QString( "other-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
+}
+
+
+void
 cServer::Update()
 {
     mPaperLogic->Update();
@@ -87,7 +114,9 @@ cServer::NewClientConnected( )
 
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
-    SendDataToAllClients(""); ;
+    SendGridToClient( newClient );
+    SendGridToClient( newClient );
+    //SendSimpleUserPositionToClient( newClient, newUser );
 
     // Telling clients a new one arrived
     //SendDataToAllClients( "other-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
