@@ -72,8 +72,8 @@ void
 cServer::Update()
 {
     mPaperLogic->Update();
-    //for( auto client : mClients )
-    //    SendGridToClient( client );
+    for( auto client : mClients )
+        SendGridToClient( client );
 
     if( mQuit )
         emit quit();
