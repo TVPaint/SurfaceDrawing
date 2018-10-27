@@ -16,6 +16,9 @@ public:
     cUser( int iIndex );
 
 public:
+    void copyFromUser( const cUser* iUser );
+
+public:
     void setPosition( QPoint iPosition );
     void Update();
     void setSize( QPoint iSize );

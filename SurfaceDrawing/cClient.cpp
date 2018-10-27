@@ -56,12 +56,12 @@ cClient::ReadNewUser( const QString & iUserSerialized )
     auto  newUser = new cUser( index );
     newUser->setPosition( userPos );
 
-    if( type == "assign" )
+    if( type == "self" )
     {
         qDebug() << "MyUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
         emit myUserAssigned( newUser );
     }
-    else
+    else if( type == "other" )
     {
         qDebug() << "OtherUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
         emit newUserArrived( newUser );
@@ -81,7 +81,7 @@ cClient::GetData()
 {
     if( mDataReadingState == kNone )
     {
-        QString header;
+        quint8 header;
 
         mDataStream.startTransaction();
 
@@ -105,6 +105,8 @@ cClient::GetData()
             return;
 
         qDebug() << data;
+        emit  paperLogicArrived( data );
+
         mDataReadingState = kNone;
     }
     else if( mDataReadingState == kSIMPLE )

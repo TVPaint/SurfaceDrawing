@@ -39,35 +39,6 @@ cServer::Run()
 
 
 void
-cServer::SendDataToAllClients( const QString & iData )
-{
-    QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
-    stream.setVersion( QDataStream::Qt_5_10 );
-
-    stream << *mPaperLogic;
-
-    for( auto client : mClients )
-    {
-        if( !client->write( data ) )
-            qDebug() << "DataWritting failed";
-    }
-}
-
-
-void
-cServer::SendDataToSpecificClients( const QString & iData, QTcpSocket * iClient )
-{
-    QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
-    stream.setVersion( QDataStream::Qt_5_10 );
-    stream.setDevice( iClient );
-
-    stream << iData;
-}
-
-
-void
 cServer::SendGridToClient( QTcpSocket * iClient )
 {
     QByteArray data;
@@ -76,21 +47,24 @@ cServer::SendGridToClient( QTcpSocket * iClient )
         stream.setVersion( QDataStream::Qt_5_10 );
         stream.setDevice( iClient );
 
-        stream << char(0);
+        stream << quint8(0);
         stream << *mPaperLogic;
 }
 
 
 void
-cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser )
+cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eType iType )
 {
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient);
 
-    stream << char(1);
-    stream << QString( "other-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
+    stream << quint8(1);
+    if( iType == kOtherUser )
+        stream << QString( "other-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
+    else if( iType == kSelfUser )
+        stream << QString( "self-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
 }
 
 
@@ -98,6 +72,8 @@ void
 cServer::Update()
 {
     mPaperLogic->Update();
+    //for( auto client : mClients )
+    //    SendGridToClient( client );
 
     if( mQuit )
         emit quit();
@@ -112,32 +88,24 @@ cServer::NewClientConnected( )
     auto newUser = new cUser( mPaperLogic->mAllUsers.size() );
     mPaperLogic->AddUser( newUser );
 
+    // Tell all users a new one came
+    for( auto client : mClients )
+        SendSimpleUserPositionToClient( client, newUser, kOtherUser );
+
+    // Add new client
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
-    SendGridToClient( newClient );
-    SendGridToClient( newClient );
-    //SendSimpleUserPositionToClient( newClient, newUser );
 
-    // Telling clients a new one arrived
-    //SendDataToAllClients( "other-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ) );
+    // Tell him his own position ( so client knows which player its controlling )
+    SendSimpleUserPositionToClient( newClient, newUser, kSelfUser );
 
+    // Tell new client about others
+    for( auto client : mClients )
+    {
+        cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
+        SendSimpleUserPositionToClient( newClient, user, kOtherUser );
+    }
 
-    //// Getting the new client
-    //auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
-    //auto newClient = it.value();
-
-    //// Assigning him its user
-    //SendDataToSpecificClients( "assign-" + QString::number( newUser->mIndex ) + "-" + QString::number( newUser->mPosition.x() ) + "," + QString::number( newUser->mPosition.y() ), newClient );
-
-    //// Send other users to new client
-    //for( auto client : mClients )
-    //{
-    //    if( client == newClient ) // Don't send you own  user as an "enemy" user
-    //        continue;
-
-    //    auto user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
-    //    SendDataToSpecificClients( "other-" + QString::number( user->mIndex ) + "-" + QString::number( user->mPosition.x() ) + "," + QString::number( user->mPosition.y() ), newClient );
-    //}
 }
 
 

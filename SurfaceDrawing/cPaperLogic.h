@@ -24,6 +24,12 @@ public:
     struct  eDataCell
     {
         eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ), mSpawnIsImpossibleHere( false ){};
+
+        bool  operator==( const eDataCell& iRHS )
+        {
+            return  mPlayer == iRHS.mPlayer && mTrail == iRHS.mTrail && mGround == iRHS.mGround;
+        }
+
         int8_t  mPlayer;
         int8_t  mTrail;
         int8_t  mGround;
@@ -37,6 +43,10 @@ public:
         kTrail,
         kGround
     };
+
+
+public:
+    void  CopyFromPaper( const cPaperLogic& iPaper );
 
 
 public:

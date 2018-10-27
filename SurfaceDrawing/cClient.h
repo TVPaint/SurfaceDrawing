@@ -6,6 +6,9 @@
 
 #include <QTcpSocket>
 
+
+class cPaperLogic;
+
 class cClient :
     public QTcpSocket
 {
@@ -37,6 +40,7 @@ public slots:
 signals:
     void  newUserArrived( cUser* iUser );
     void  myUserAssigned( cUser* iUser );
+    void  paperLogicArrived( cPaperLogic& iPaper );
 
 private:
     eDataReadingState   mDataReadingState = kNone;

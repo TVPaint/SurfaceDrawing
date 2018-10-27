@@ -36,6 +36,7 @@ public:
 public slots:
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
+    void  PaperLogicArrived( cPaperLogic& iPaper );
 
 
 

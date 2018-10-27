@@ -29,6 +29,29 @@ cUser::cUser( int iIndex ) :
 }
 
 
+void
+cUser::copyFromUser( const cUser * iUser )
+{
+    mPosition = iUser->mPosition;
+    mColor = iUser->mColor;
+
+    mGUICenter = iUser->mGUICenter;
+    mGUICurrentMovementVector = iUser->mGUICurrentMovementVector;
+    mGUIMovementVector = iUser->mGUIMovementVector;
+    mGUIPosition = iUser->mGUIPosition;
+    mGUISize = iUser->mGUISize;
+
+    mAskDirectionChange = iUser->mAskDirectionChange;
+    mIsOutOfGround = iUser->mIsOutOfGround;
+    mIsDead = iUser->mIsDead;
+
+    if( mTrailPoints.size() != iUser->mTrailPoints.size() )
+    {
+        mTrailPoints = iUser->mTrailPoints;
+    }
+}
+
+
 
 
 void

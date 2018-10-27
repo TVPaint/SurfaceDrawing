@@ -23,6 +23,28 @@ cPaperLogic::cPaperLogic()
 
 
 void
+cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper )
+{
+    for( auto user : mAllUsers )
+    {
+        int index = mAllUsers.key( user );
+        user->copyFromUser( iPaper.mAllUsers[ index ] );
+    }
+
+    for( int x = 0; x < GRIDSIZE; ++x )
+        for( int y = 0; y < GRIDSIZE; ++y )
+        {
+            auto cell = CELLAT( QPoint( x, y ) );
+            if( cell == iPaper.mPaperGrid[ x ][ y ] )
+                continue;
+
+            CELLAT( QPoint( x, y ) ) = iPaper.mPaperGrid[ x ][ y ];
+            _CallCB( x, y, -5, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
+        }
+}
+
+
+void
 cPaperLogic::Init()
 {
     for( int i = 0; i < GRIDSIZE; ++i )

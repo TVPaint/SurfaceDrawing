@@ -11,6 +11,14 @@ class cServer :
 {
     Q_OBJECT
 
+
+public:
+    enum eType
+    {
+        kOtherUser,
+        kSelfUser
+    };
+
 public:
     ~cServer();
     cServer();
@@ -23,7 +31,7 @@ public:
     void  SendDataToSpecificClients( const QString& iData, QTcpSocket* iClient );
 
     void  SendGridToClient( QTcpSocket* iClient );
-    void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser );
+    void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
 
 public slots:
     void  NewClientConnected();
