@@ -66,6 +66,9 @@
     <ClCompile Include="cItemGrid.cpp">
       <Filter>src\Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="cBordersItem.cpp">
+      <Filter>src\Canvas</Filter>
+    </ClCompile>
     <ClCompile Include="cServer.cpp">
       <Filter>src\Network</Filter>
     </ClCompile>
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="cConnectionDialog.h">
       <Filter>src\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="cBordersItem.h">
+      <Filter>src\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

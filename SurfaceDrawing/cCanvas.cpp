@@ -6,6 +6,7 @@
 #include "cBasicTile.h"
 //#include "cItemGrid.h"
 #include "cPaperLogic.h"
+#include "cBordersItem.h"
 
 
 #include <QGraphicsScene>
@@ -28,6 +29,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
     //mGrid = new cItemGrid( 0 );
     //mGrid->mSize = size();
     //scene->addItem( mGrid );
+
+    mBordersItem = new cBordersItem();
+    scene->addItem( mBordersItem );
 
     for( int i = 0; i < GRIDSIZE * GRIDSIZE; ++i )
     {

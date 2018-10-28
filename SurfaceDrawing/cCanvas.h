@@ -8,7 +8,8 @@ class cItemUser;
 class cBasicTile;
 class cUser;
 class cPaperLogic;
-class cItemGrid;
+//class cItemGrid;
+class  cBordersItem;
 
 class cCanvas :
     public QGraphicsView
@@ -48,5 +49,6 @@ public:
     QMap< int, cItemUser* >     mAllUserItems;
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;
-    cItemGrid*                  mGrid;
+    //cItemGrid*                  mGrid;
+    cBordersItem*               mBordersItem;
 };
