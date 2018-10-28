@@ -69,10 +69,10 @@
     <ClCompile Include="cBordersItem.cpp">
       <Filter>src\Canvas</Filter>
     </ClCompile>
-    <ClCompile Include="cServer.cpp">
+    <ClCompile Include="cClient.cpp">
       <Filter>src\Network</Filter>
     </ClCompile>
-    <ClCompile Include="cClient.cpp">
+    <ClCompile Include="cServer.cpp">
       <Filter>src\Network</Filter>
     </ClCompile>
     <ClCompile Include="cConnectionDialog.cpp">
@@ -125,11 +125,14 @@
     <ClInclude Include="cItemGrid.h">
       <Filter>src\Canvas</Filter>
     </ClInclude>
+    <ClInclude Include="cBordersItem.h">
+      <Filter>src\Canvas</Filter>
+    </ClInclude>
     <ClInclude Include="cConnectionDialog.h">
       <Filter>src\Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="cBordersItem.h">
-      <Filter>src\Canvas</Filter>
+    <ClInclude Include="cHash.h">
+      <Filter>src\PaperLogic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
