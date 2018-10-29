@@ -96,11 +96,18 @@ cClient::GetData()
 
     if( mDataReadingState == kGRID )
     {
-        cPaperLogic data;
+        QByteArray dataCompressed;
+
+
         mDataStream.startTransaction();
-        mDataStream >> data;
+        mDataStream >> dataCompressed;
         if( !mDataStream.commitTransaction() )
             return;
+
+        cPaperLogic data;
+        dataCompressed = qUncompress( dataCompressed );
+        QDataStream streamTemp( &dataCompressed, QIODevice::ReadOnly );
+        streamTemp >> data;
 
         emit  paperLogicArrived( data );
 

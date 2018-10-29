@@ -43,14 +43,18 @@ cServer::Run()
 void
 cServer::SendGridToClient( QTcpSocket * iClient )
 {
+    QByteArray dataCompressed;
+    QDataStream streamComp( &dataCompressed, QIODevice::WriteOnly );
+    streamComp << *mPaperLogic;
+
     QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
 
-        QDataStream stream( &data, QIODevice::WriteOnly );
-        stream.setVersion( QDataStream::Qt_5_10 );
-        stream.setDevice( iClient );
 
-        stream << quint8(0);
-        stream << *mPaperLogic;
+    stream << quint8(0);
+    stream << qCompress( dataCompressed, 1 );
 }
 
 
@@ -135,7 +139,6 @@ void
 cServer::NewClientConnected( )
 {
     qDebug() << "New client connected";
-
 
     int R = rand() % 126;
     int G = rand() % 126;
