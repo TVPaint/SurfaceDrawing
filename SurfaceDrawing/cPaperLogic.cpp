@@ -432,8 +432,8 @@ operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell )
     oStream << compute_hash( "cPaperGrid::eDataCell" );
     oStream << iDataCell.mPlayer
             << iDataCell.mTrail
-            << iDataCell.mGround
-            << iDataCell.mSpawnIsImpossibleHere;
+            << iDataCell.mGround;
+            //<< iDataCell.mSpawnIsImpossibleHere;
 
     return  oStream;
 }
@@ -452,8 +452,8 @@ operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
 
     iStream >> oDataCell.mPlayer
             >> oDataCell.mTrail
-            >> oDataCell.mGround
-            >> oDataCell.mSpawnIsImpossibleHere;
+            >> oDataCell.mGround;
+            //>> oDataCell.mSpawnIsImpossibleHere;
 
     return  iStream;
 }

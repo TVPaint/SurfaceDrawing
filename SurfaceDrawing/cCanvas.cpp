@@ -22,9 +22,14 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
     QGraphicsView( parent ),
     mPaperLogic( iPaperLogic )
 {
+    int offset = 600;
     QGraphicsScene* scene = new QGraphicsScene();
-    scene->setSceneRect( 0, 0, GRIDSIZE * CELLSIZE, GRIDSIZE * CELLSIZE );
+    int size = GRIDSIZE * CELLSIZE + offset*2;
+    scene->setSceneRect( -offset, -offset, size, size );
     setScene( scene );
+
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     //mGrid = new cItemGrid( 0 );
     //mGrid->mSize = size();

@@ -153,13 +153,13 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             << iUser.mColor
             << iUser.mPosition
             << iUser.mGUIPosition
-            << iUser.mGUISize
+            //<< iUser.mGUISize
             << iUser.mGUIMovementVector
             << iUser.mGUICurrentMovementVector
             << iUser.mAskDirectionChange
-            << iUser.mIsOutOfGround
-            << iUser.mIsDead
-            << iUser.mTrailPoints;
+            //<< iUser.mIsOutOfGround
+            << iUser.mIsDead;
+            //<< iUser.mTrailPoints;
 
     return  oStream;
 }
@@ -179,14 +179,18 @@ operator>>(QDataStream& iStream, cUser& oUser )
             >> oUser.mColor
             >> oUser.mPosition
             >> oUser.mGUIPosition
-            >> oUser.mGUISize
+            //>> oUser.mGUISize
             >> oUser.mGUIMovementVector
             >> oUser.mGUICurrentMovementVector
             >> oUser.mAskDirectionChange
-            >> oUser.mIsOutOfGround
+            //>> oUser.mIsOutOfGround
             >> oUser.mIsDead;
-    oUser.mTrailPoints.clear();
-    iStream >> oUser.mTrailPoints;
+
+    //oUser.mTrailPoints.clear();
+    //iStream >> oUser.mTrailPoints;
+
+    //oUser.mPosition = cPaperLogic::MapToGrid( oUser.mGUIPosition );
+
     return  iStream;
 }
 

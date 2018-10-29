@@ -31,7 +31,7 @@ public:
     void  SendDataToAllClients( const QString& iData );
     void  SendDataToSpecificClients( const QString& iData, QTcpSocket* iClient );
 
-    void  SendGridToClient( QTcpSocket* iClient );
+    void  SendGridToAllClient();
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
 
 public slots:

@@ -19,7 +19,7 @@ cServer::cServer() :
     mUpdateTimer->start( 1000/60 );
 
     mPacketTimer = new  QTimer();
-    mPacketTimer->start( 1000/10 );
+    mPacketTimer->start( 1000/5 );
 
     connect( mUpdateTimer, &QTimer::timeout, this, &cServer::Update );
     connect( mPacketTimer, &QTimer::timeout, this, &cServer::NetworkTick );
@@ -41,20 +41,22 @@ cServer::Run()
 
 
 void
-cServer::SendGridToClient( QTcpSocket * iClient )
+cServer::SendGridToAllClient()
 {
     QByteArray dataCompressed;
     QDataStream streamComp( &dataCompressed, QIODevice::WriteOnly );
     streamComp << *mPaperLogic;
+    //dataCompressed = qCompress( dataCompressed, 1 );
 
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
-    stream.setDevice( iClient );
-
 
     stream << quint8(0);
-    stream << qCompress( dataCompressed, 1 );
+    stream << dataCompressed;
+
+    for( auto client : mClients )
+        client->write( data );
 }
 
 
@@ -84,8 +86,7 @@ cServer::Update()
 void
 cServer::NetworkTick()
 {
-    for( auto client : mClients )
-        SendGridToClient( client );
+    SendGridToAllClient();
 }
 
 

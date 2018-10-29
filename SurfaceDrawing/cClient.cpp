@@ -101,11 +101,14 @@ cClient::GetData()
 
         mDataStream.startTransaction();
         mDataStream >> dataCompressed;
+
+        qDebug() << mDataStream.status();
+
         if( !mDataStream.commitTransaction() )
             return;
 
         cPaperLogic data;
-        dataCompressed = qUncompress( dataCompressed );
+        //dataCompressed = qUncompress( dataCompressed );
         QDataStream streamTemp( &dataCompressed, QIODevice::ReadOnly );
         streamTemp >> data;
 
