@@ -19,7 +19,8 @@ public:
     {
         kNone,
         kGRID,
-        kSIMPLE
+        kSIMPLE,
+        kACTION
     };
 
 public:
@@ -42,6 +43,9 @@ signals:
     void  newUserArrived( cUser* iUser );
     void  myUserAssigned( cUser* iUser );
     void  paperLogicArrived( cPaperLogic& iPaper );
+
+    void  userChangedDirection( cUser* iUser );
+    void  userRequestedRespawn( cUser* iUser );
 
 private:
     eDataReadingState   mDataReadingState = kNone;

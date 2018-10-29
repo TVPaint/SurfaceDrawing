@@ -40,6 +40,8 @@ public slots:
     void  DirectionChanged( int iDirection );
     void  RespawnRequest();
 
+    void  UserDirectionChanged( cUser* iUser );
+
 
 
 private:

@@ -18,11 +18,11 @@ cServer::cServer() :
     mUpdateTimer = new  QTimer();
     mUpdateTimer->start( 1000/60 );
 
-    mPacketTimer = new  QTimer();
-    mPacketTimer->start( 1000/5 );
+    //mPacketTimer = new  QTimer();
+    //mPacketTimer->start( 1000/5 );
 
     connect( mUpdateTimer, &QTimer::timeout, this, &cServer::Update );
-    connect( mPacketTimer, &QTimer::timeout, this, &cServer::NetworkTick );
+    //connect( mPacketTimer, &QTimer::timeout, this, &cServer::NetworkTick );
     connect( this, &QTcpServer::newConnection, this, &cServer::NewClientConnected );
 
     mPaperLogic = new cPaperLogic();
@@ -69,7 +69,26 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setDevice( iClient);
 
     stream << quint8(1);
-    stream << iType << *iUser;
+    stream << iType;
+    stream << *iUser;
+
+    iClient->flush();
+}
+
+
+void
+cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iAction )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
+
+    stream << quint8(2);
+    stream << iAction;
+    stream << *iUser;
+
+    iClient->flush();
 }
 
 
@@ -113,10 +132,10 @@ cServer::GetData()
 
     switch( header )
     {
-        case 1: // Right
+        case 1: // Left
             mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( -1, 0 ) );
             break;
-        case 2: // Left
+        case 2: // Right
             mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 1, 0 ) );
             break;
         case 3: // Top
@@ -132,6 +151,17 @@ cServer::GetData()
 
         default:
             break;
+    }
+
+    qDebug() << "User : " + QString::number( index ) + " did an action " + QString::number( header );
+
+    for( auto client : mClients )
+    {
+        if( index == mClients.key( client ) )
+            continue;
+
+        qDebug() << "Sending action to user : " + QString::number( mClients.key( client ) );
+        SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
     }
 }
 

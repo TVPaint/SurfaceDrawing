@@ -77,64 +77,123 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    if( mDataReadingState == kNone )
+    qDebug() << "Data inc";
+
+    while( bytesAvailable() > 0 )
     {
-        quint8 header;
+        if( mDataReadingState == kNone )
+        {
+            quint8 header;
 
-        mDataStream.startTransaction();
+            mDataStream.startTransaction();
 
-        mDataStream >> header;
+            mDataStream >> header;
 
-        if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
-            return;
+            if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+                return;
 
-        if( header == 0 )
-            mDataReadingState = kGRID;
-        else if( header == 1 )
-            mDataReadingState = kSIMPLE;
-    }
+            if( header == 0 )
+                mDataReadingState = kGRID;
+            else if( header == 1 )
+                mDataReadingState = kSIMPLE;
+            else if( header == 2 )
+                mDataReadingState = kACTION;
+        }
 
-    if( mDataReadingState == kGRID )
-    {
-        QByteArray dataCompressed;
+        if( mDataReadingState == kGRID )
+        {
+            QByteArray dataCompressed;
 
 
-        mDataStream.startTransaction();
-        mDataStream >> dataCompressed;
+            mDataStream.startTransaction();
+            mDataStream >> dataCompressed;
 
-        qDebug() << mDataStream.status();
+            if( !mDataStream.commitTransaction() )
+                return;
 
-        if( !mDataStream.commitTransaction() )
-            return;
+            cPaperLogic data;
+            //dataCompressed = qUncompress( dataCompressed );
+            QDataStream streamTemp( &dataCompressed, QIODevice::ReadOnly );
+            streamTemp >> data;
 
-        cPaperLogic data;
-        //dataCompressed = qUncompress( dataCompressed );
-        QDataStream streamTemp( &dataCompressed, QIODevice::ReadOnly );
-        streamTemp >> data;
+            emit  paperLogicArrived( data );
 
-        emit  paperLogicArrived( data );
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == kSIMPLE )
+        {
+            qDebug() << "SIMPLE";
 
-        mDataReadingState = kNone;
-    }
-    else if( mDataReadingState == kSIMPLE )
-    {
-        int type;
-        cUser* newUser = new cUser( -1, Qt::transparent );
+            int type;
+            cUser* newUser = new cUser( -1, Qt::transparent );
 
-        mDataStream.startTransaction();
-        mDataStream >> type;
-        mDataStream >> *newUser;
+            mDataStream.startTransaction();
+            mDataStream >> type;
+            mDataStream >> *newUser;
 
-        if( !mDataStream.commitTransaction() )
-            return;
+            if( !mDataStream.commitTransaction() )
+                return;
 
-        auto ttttype = cServer::eType( type );
-        if( ttttype == cServer::kSelfUser )
-            emit myUserAssigned( newUser );
-        else
-            emit newUserArrived( newUser );
+            auto typeAsEnum = cServer::eType( type );
+            if( typeAsEnum == cServer::kSelfUser )
+            {
+                qDebug() << "SELF";
+                emit myUserAssigned( newUser );
+            }
+            else
+            {
+                qDebug() << "OTHER";
+                emit newUserArrived( newUser );
+            }
 
-        mDataReadingState = kNone;
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == kACTION )
+        {
+            qDebug() << "ACTION";
+
+            int action;
+            cUser* newUser = new cUser( -1, Qt::transparent );
+
+            mDataStream.startTransaction();
+            mDataStream >> action;
+            mDataStream >> *newUser;
+
+            if( !mDataStream.commitTransaction() )
+                return;
+
+            qDebug() << "User : " + QString::number( newUser->mIndex ) + " did an action " + QString::number( action );
+
+            switch( action )
+            {
+                case 1: // Right
+                    newUser->setMovementVector( QPoint( -1, 0 ) );
+                    emit  userChangedDirection( newUser );
+                    break;
+                case 2: // Left
+                    newUser->setMovementVector( QPoint( 1, 0 ) );
+                    emit  userChangedDirection( newUser );
+                    break;
+                case 3: // Top
+                    newUser->setMovementVector( QPoint( 0, -1 ) );
+                    emit  userChangedDirection( newUser );
+                    break;
+                case 4: // Bottom
+                    newUser->setMovementVector( QPoint( 0, 1 ) );
+                    emit  userChangedDirection( newUser );
+                    break;
+
+                case 10 : // Respawn
+                    emit userRequestedRespawn( newUser );
+                    break;
+
+                default:
+                    break;
+            }
+
+            delete  newUser;
+            mDataReadingState = kNone;
+        }
     }
 }
 

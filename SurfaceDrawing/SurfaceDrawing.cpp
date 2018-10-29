@@ -36,11 +36,14 @@ SurfaceDrawing::Init()
     mClientSocket = new cClient();
     mClientSocket->AskConnection();
 
+    connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
+    connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
+
+
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
-    connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
-    connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
+    connect( mClientSocket, &cClient::userChangedDirection, this, &SurfaceDrawing::UserDirectionChanged );
 }
 
 
@@ -106,6 +109,13 @@ void
 SurfaceDrawing::RespawnRequest()
 {
     mClientSocket->SendRespawnRequest();
+}
+
+
+void
+SurfaceDrawing::UserDirectionChanged( cUser * iUser )
+{
+    mPaperLogic->mAllUsers[ iUser->mIndex ]->setMovementVector( iUser->mGUIMovementVector );
 }
 
 
