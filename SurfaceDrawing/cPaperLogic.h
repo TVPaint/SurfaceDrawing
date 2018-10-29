@@ -11,7 +11,7 @@
 
 class cUser;
 
-#define GRIDSIZE 50
+#define GRIDSIZE 75
 #define CELLSIZE 16
 
 class cPaperLogic
