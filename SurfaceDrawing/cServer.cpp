@@ -7,7 +7,7 @@
 
 cServer::~cServer()
 {
-    delete  mTimer;
+    delete  mUpdateTimer;
     delete  mPaperLogic;
 }
 
@@ -15,12 +15,15 @@ cServer::~cServer()
 cServer::cServer() :
     QTcpServer()
 {
-    mTimer = new  QTimer();
-    mTimer->start( 1000/60 );
+    mUpdateTimer = new  QTimer();
+    mUpdateTimer->start( 1000/60 );
 
-    connect( mTimer, &QTimer::timeout, this, &cServer::Update );
+    mPacketTimer = new  QTimer();
+    mPacketTimer->start( 1000/10 );
+
+    connect( mUpdateTimer, &QTimer::timeout, this, &cServer::Update );
+    connect( mPacketTimer, &QTimer::timeout, this, &cServer::NetworkTick );
     connect( this, &QTcpServer::newConnection, this, &cServer::NewClientConnected );
-
 
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
@@ -60,10 +63,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setDevice( iClient);
 
     stream << quint8(1);
-    if( iType == kOtherUser )
-        stream << QString( "other-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
-    else if( iType == kSelfUser )
-        stream << QString( "self-" + QString::number( iUser->mIndex ) + "-" + QString::number( iUser->mPosition.x() ) + "," + QString::number( iUser->mPosition.y() ) );
+    stream << iType << *iUser;
 }
 
 
@@ -71,11 +71,17 @@ void
 cServer::Update()
 {
     mPaperLogic->Update();
-    for( auto client : mClients )
-        SendGridToClient( client );
 
     if( mQuit )
         emit quit();
+}
+
+
+void
+cServer::NetworkTick()
+{
+    for( auto client : mClients )
+        SendGridToClient( client );
 }
 
 
@@ -102,21 +108,21 @@ cServer::GetData()
 
     switch( header )
     {
-        case 1:
-            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
-            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( -1, 0 );
+        case 1: // Right
+            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( -1, 0 ) );
             break;
-        case 2:
-            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
-            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 1, 0 );
+        case 2: // Left
+            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 1, 0 ) );
             break;
-        case 3:
-            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
-            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 0, -1 );
+        case 3: // Top
+            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, -1 ) );
             break;
-        case 4:
-            mPaperLogic->mAllUsers[ index ]->mAskDirectionChange = true;
-            mPaperLogic->mAllUsers[ index ]->mGUIMovementVector = QPoint( 0, 1 );
+        case 4: // Bottom
+            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, 1 ) );
+            break;
+
+        case 10 : // Respawn
+            mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ index ] );
             break;
 
         default:
@@ -130,7 +136,11 @@ cServer::NewClientConnected( )
 {
     qDebug() << "New client connected";
 
-    auto newUser = new cUser( mPaperLogic->mAllUsers.size() );
+
+    int R = rand() % 126;
+    int G = rand() % 126;
+    int B = rand() % 126;
+    auto newUser = new cUser( mPaperLogic->mAllUsers.size(), QColor( R, G, B ) );
     mPaperLogic->AddUser( newUser );
 
     // Tell all users a new one came

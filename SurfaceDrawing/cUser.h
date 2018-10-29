@@ -13,7 +13,7 @@ class cUser
 {
 public:
     ~cUser();
-    cUser( int iIndex );
+    cUser( int iIndex, const QColor& iColor );
 
 public:
     void copyFromUser( const cUser* iUser );
@@ -33,8 +33,6 @@ public:
     QPoint      mGUIPosition;
     QPoint      mGUISize;
     QPoint      mGUIMovementVector;
-
-    QPoint      mGUICenter;
 
     QPoint      mGUICurrentMovementVector;
 

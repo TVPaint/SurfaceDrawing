@@ -35,8 +35,30 @@ cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper )
         for( int y = 0; y < GRIDSIZE; ++y )
         {
             auto cell = CELLAT( QPoint( x, y ) );
-            if( cell == iPaper.mPaperGrid[ x ][ y ] )
+            auto externCell = iPaper.mPaperGrid[ x ][ y ];
+            if( cell == externCell )
                 continue;
+
+
+            //if( externCell.mPlayer != cell.mPlayer )
+            //{
+            //    cell.mPlayer = externCell.mPlayer;
+            //    _CallCB( x, y, externCell.mPlayer, kPlayer ); // Only x and y matters here as canvas CB only uses them if player changed
+            //}
+
+            //if( externCell.mGround != cell.mGround )
+            //{
+            //    cell.mGround = externCell.mGround;
+            //    _CallCB( x, y, externCell.mGround, kGround ); // Only x and y matters here as canvas CB only uses them if player changed
+            //}
+
+            //if( externCell.mTrail != cell.mTrail )
+            //{
+            //    cell.mTrail = externCell.mTrail;
+            //    _CallCB( x, y, externCell.mTrail, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
+            //}
+
+
 
             CELLAT( QPoint( x, y ) ) = iPaper.mPaperGrid[ x ][ y ];
             _CallCB( x, y, -5, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
@@ -73,19 +95,10 @@ cPaperLogic::MapFromGrid( const QPoint & iPoint )
 QColor
 cPaperLogic::GetColorByIndex( int iIndex )
 {
-    if( iIndex < 0 )
+    if( iIndex < 0 || mAllUsers[ iIndex ]->mIsDead )
         return  Qt::transparent;
 
-
-    if( iIndex == 0 )
-        return  Qt::red;
-    else
-        return  Qt::blue;
-
-    return  QColor( (iIndex * 50)       % 256,
-                    ((iIndex + 7) * 50) % 256,
-                    (iIndex * 120)      % 256
-    );
+    return  mAllUsers[ iIndex ]->mColor;
 }
 
 
@@ -259,7 +272,6 @@ cPaperLogic::FillZone( cUser*  iUser )
 void
 cPaperLogic::KillUser( cUser* iUser )
 {
-    iUser->mColor = Qt::transparent;
     iUser->mIsDead = true;
     iUser->mGUICurrentMovementVector = QPoint( 0, 0 );
     iUser->mGUIMovementVector = QPoint( 0, 0 );
@@ -321,7 +333,6 @@ cPaperLogic::TryRespawningPlayer( cUser*  iUser )
 void
 cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
 {
-    iUser->mColor = GetColorByIndex( iUser->mIndex );
     iUser->setPosition( iPoint );
     iUser->mIsDead = false;
     iUser->mGUIMovementVector = QPoint( 1, 0 );

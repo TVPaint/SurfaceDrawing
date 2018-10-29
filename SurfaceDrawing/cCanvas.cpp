@@ -52,9 +52,8 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
             auto tile = mAllTiles[ singleIndex ];
             tile->mHalf = false;
 
-
-            tile->mGroundColor  = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
-            tile->mTrailColor   = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
+            tile->mGroundColor  = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
+            tile->mTrailColor   = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
 
             if( iType == cPaperLogic::kPlayer )
             {
@@ -63,7 +62,7 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
                     if( mPaperLogic->mPaperGrid[x][y].mGround < 0 )
                     {
                         tile->mHalf = true;
-                        tile->mTrailColor   = cPaperLogic::GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mPlayer ).lighter( 170 );
+                        tile->mTrailColor   = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mPlayer ).lighter( 170 );
 
                         if( mAllUserItems[ newValue ]->mUser->mGUICurrentMovementVector.x() > 0 )
                             tile->mDirection = cBasicTile::kEast;
@@ -113,7 +112,8 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     }
     else if( iEvent->key() == Qt::Key_Space )
     {
-        mPaperLogic->TryRespawningPlayer( mMyself->mUser );
+        //mPaperLogic->TryRespawningPlayer( mMyself->mUser );
+        emit respawnRequest();
     }
 }
 

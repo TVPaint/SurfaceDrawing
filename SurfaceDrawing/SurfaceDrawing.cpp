@@ -40,6 +40,7 @@ SurfaceDrawing::Init()
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
     connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
+    connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
 }
 
 
@@ -98,6 +99,13 @@ void
 SurfaceDrawing::DirectionChanged( int iDirection )
 {
     mClientSocket->SendNewDirection( iDirection );
+}
+
+
+void
+SurfaceDrawing::RespawnRequest()
+{
+    mClientSocket->SendRespawnRequest();
 }
 
 

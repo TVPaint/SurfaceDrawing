@@ -56,7 +56,7 @@ public:
 public:
     static  QPoint  MapToGrid( const QPoint& iPoint );
     static  QPoint  MapFromGrid( const QPoint& iPoint );
-    static  QColor  GetColorByIndex( int iIndex );
+    QColor  GetColorByIndex( int iIndex );
 
 public:
     void   AddUser( cUser* iUser );

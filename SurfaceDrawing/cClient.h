@@ -29,8 +29,8 @@ public:
 public:
     void  AskConnection();
 
-    void  ReadNewUser( const QString& iUserSerialized );
     void SendNewDirection( int iDirection );
+    void SendRespawnRequest();
 
 public slots:
     void  Connected();

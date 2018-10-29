@@ -37,6 +37,7 @@ public:
 public slots:
     void  NewClientConnected();
     void  Update();
+    void  NetworkTick();
     void  GetData();
 
 signals:
@@ -45,7 +46,8 @@ signals:
 private:
     cPaperLogic*                mPaperLogic;
     QMap< int, QTcpSocket* >    mClients;
-    QTimer*                     mTimer;
+    QTimer*                     mUpdateTimer;
+    QTimer*                     mPacketTimer;
     QMap< int, QDataStream* >   mDataStream;
 
     bool                        mQuit = false;

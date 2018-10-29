@@ -12,12 +12,14 @@ cUser::~cUser()
 }
 
 
-cUser::cUser( int iIndex ) :
+cUser::cUser( int iIndex, const QColor& iColor ) :
     mIndex( iIndex ),
-    mColor( cPaperLogic::GetColorByIndex( iIndex ) ),
     mAskDirectionChange( false ),
     mIsOutOfGround( false )
 {
+    mColor = iColor;
+
+
     int randX = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
     int randY = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
                                                // Points are in grid coordinates
@@ -35,7 +37,6 @@ cUser::copyFromUser( const cUser * iUser )
     mPosition = iUser->mPosition;
     mColor = iUser->mColor;
 
-    mGUICenter = iUser->mGUICenter;
     mGUICurrentMovementVector = iUser->mGUICurrentMovementVector;
     mGUIMovementVector = iUser->mGUIMovementVector;
     mGUIPosition = iUser->mGUIPosition;
@@ -116,7 +117,6 @@ operator<<( std::ostream& oStream, const cUser& iUser )
             << "\tGUIPosition: " << iUser.mGUIPosition.x() << "," << iUser.mGUIPosition.y() << std::endl
             << "\tGUISize: " << iUser.mGUISize.x() << "," << iUser.mGUISize.y() << std::endl
             << "\tGUIMovementVector: " << iUser.mGUIMovementVector.x() << "," << iUser.mGUIMovementVector.y() << std::endl
-            << "\tGUICenter: " << iUser.mGUICenter.x() << "," << iUser.mGUICenter.y() << std::endl
             << "\tGUICurrentMovementVector: " << iUser.mGUICurrentMovementVector.x() << "," << iUser.mGUICurrentMovementVector.y() << std::endl
             << "\tAskDirectionChange: " << iUser.mAskDirectionChange << std::endl
             << "\tIsOutOfGround: " << iUser.mIsOutOfGround << std::endl
@@ -136,7 +136,6 @@ operator<<( QDebug& oStream, const cUser& iUser )
         << "\tGUIPosition: " << iUser.mGUIPosition.x() << "," << iUser.mGUIPosition.y()
         << "\tGUISize: " << iUser.mGUISize.x() << "," << iUser.mGUISize.y()
         << "\tGUIMovementVector: " << iUser.mGUIMovementVector.x() << "," << iUser.mGUIMovementVector.y()
-        << "\tGUICenter: " << iUser.mGUICenter.x() << "," << iUser.mGUICenter.y()
         << "\tGUICurrentMovementVector: " << iUser.mGUICurrentMovementVector.x() << "," << iUser.mGUICurrentMovementVector.y()
         << "\tAskDirectionChange: " << iUser.mAskDirectionChange
         << "\tIsOutOfGround: " << iUser.mIsOutOfGround
@@ -156,7 +155,6 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             << iUser.mGUIPosition
             << iUser.mGUISize
             << iUser.mGUIMovementVector
-            << iUser.mGUICenter
             << iUser.mGUICurrentMovementVector
             << iUser.mAskDirectionChange
             << iUser.mIsOutOfGround
@@ -183,7 +181,6 @@ operator>>(QDataStream& iStream, cUser& oUser )
             >> oUser.mGUIPosition
             >> oUser.mGUISize
             >> oUser.mGUIMovementVector
-            >> oUser.mGUICenter
             >> oUser.mGUICurrentMovementVector
             >> oUser.mAskDirectionChange
             >> oUser.mIsOutOfGround
@@ -204,7 +201,7 @@ operator<<(QDataStream& oStream, const cUser* iUser )
 QDataStream&
 operator>>(QDataStream& iStream, cUser*& oUser )
 {
-    oUser = new cUser( -1 );
+    oUser = new cUser( -1, Qt::transparent );
     iStream >> *oUser;
     return iStream;
 }

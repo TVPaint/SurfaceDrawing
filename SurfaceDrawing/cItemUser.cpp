@@ -26,6 +26,9 @@ cItemUser::boundingRect() const
 void
 cItemUser::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptions, QWidget * iWidget )
 {
+    if( mUser->mIsDead )
+        return;
+
     iPainter->setBrush( QBrush( mUser->mColor ) );
     iPainter->setPen( QPen( mUser->mColor ) );
     iPainter->drawRect( boundingRect() );

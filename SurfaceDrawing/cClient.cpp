@@ -1,5 +1,6 @@
 #include "cClient.h"
 
+#include "cServer.h"
 
 #include "cConnectionDialog.h"
 #include "cPaperLogic.h"
@@ -43,33 +44,6 @@ cClient::AskConnection()
 
 
 void
-cClient::ReadNewUser( const QString & iUserSerialized )
-{
-    QStringList package = iUserSerialized.split( "-" );
-
-    QString type = package[ 0 ];
-    int index = package[ 1 ].toInt();
-    QStringList position = package[ 2 ].split( "," );
-
-    QPoint userPos( position[0].toInt(), position[1].toInt() );
-
-    auto  newUser = new cUser( index );
-    newUser->setPosition( userPos );
-
-    if( type == "self" )
-    {
-        qDebug() << "MyUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
-        emit myUserAssigned( newUser );
-    }
-    else if( type == "other" )
-    {
-        qDebug() << "OtherUser is : " + QString::number( index ) + " at : " + QString::number( userPos.x() ) + "-" + QString::number( userPos.y() );
-        emit newUserArrived( newUser );
-    }
-}
-
-
-void
 cClient::SendNewDirection( int iDirection )
 {
     QByteArray data;
@@ -77,6 +51,18 @@ cClient::SendNewDirection( int iDirection )
     stream.setVersion( QDataStream::Qt_5_10 );
 
     stream << int( iDirection );
+    write( data );
+}
+
+
+void
+cClient::SendRespawnRequest()
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 10 );
     write( data );
 }
 
@@ -116,22 +102,28 @@ cClient::GetData()
         if( !mDataStream.commitTransaction() )
             return;
 
-        //qDebug() << data;
         emit  paperLogicArrived( data );
 
         mDataReadingState = kNone;
     }
     else if( mDataReadingState == kSIMPLE )
     {
-        QString dataString;
+        int type;
+        cUser* newUser = new cUser( -1, Qt::transparent );
+
         mDataStream.startTransaction();
-        mDataStream >> dataString;
+        mDataStream >> type;
+        mDataStream >> *newUser;
 
         if( !mDataStream.commitTransaction() )
             return;
 
-        //qDebug() << dataString;
-        ReadNewUser( dataString );
+        auto ttttype = cServer::eType( type );
+        if( ttttype == cServer::kSelfUser )
+            emit myUserAssigned( newUser );
+        else
+            emit newUserArrived( newUser );
+
         mDataReadingState = kNone;
     }
 }
