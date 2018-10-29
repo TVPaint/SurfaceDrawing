@@ -34,13 +34,14 @@ public:
 
 
 public slots:
+    void  RespawnRequest();
+    void  DirectionChanged( int iDirection );
+
+    void  PaperLogicArrived( cPaperLogic& iPaper );
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
-    void  PaperLogicArrived( cPaperLogic& iPaper );
-    void  DirectionChanged( int iDirection );
-    void  RespawnRequest();
-
     void  UserDirectionChanged( cUser* iUser );
+    void  UserRequestedRespawn( cUser* iUser );
 
 
 

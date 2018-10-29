@@ -44,6 +44,7 @@ SurfaceDrawing::Init()
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
     connect( mClientSocket, &cClient::userChangedDirection, this, &SurfaceDrawing::UserDirectionChanged );
+    connect( mClientSocket, &cClient::userRequestedRespawn, this, &SurfaceDrawing::UserRequestedRespawn );
 }
 
 
@@ -66,11 +67,16 @@ SurfaceDrawing::Start()
 
 
 void
-SurfaceDrawing::MyUserAssigned( cUser * iUser )
+SurfaceDrawing::RespawnRequest()
 {
-    mCanvas->AddUser( iUser, cCanvas::kMyself );
-    mPaperLogic->AddUser( iUser );
-    Start();
+    mClientSocket->SendRespawnRequest();
+}
+
+
+void
+SurfaceDrawing::DirectionChanged( int iDirection )
+{
+    mClientSocket->SendNewDirection( iDirection );
 }
 
 
@@ -99,16 +105,19 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper )
 
 
 void
-SurfaceDrawing::DirectionChanged( int iDirection )
+SurfaceDrawing::NewUserArrived( cUser* iUser )
 {
-    mClientSocket->SendNewDirection( iDirection );
+    mCanvas->AddUser( iUser, cCanvas::kOther );
+    mPaperLogic->AddUser( iUser );
 }
 
 
 void
-SurfaceDrawing::RespawnRequest()
+SurfaceDrawing::MyUserAssigned( cUser * iUser )
 {
-    mClientSocket->SendRespawnRequest();
+    mCanvas->AddUser( iUser, cCanvas::kMyself );
+    mPaperLogic->AddUser( iUser );
+    Start();
 }
 
 
@@ -120,10 +129,9 @@ SurfaceDrawing::UserDirectionChanged( cUser * iUser )
 
 
 void
-SurfaceDrawing::NewUserArrived( cUser* iUser )
+SurfaceDrawing::UserRequestedRespawn( cUser * iUser )
 {
-    mCanvas->AddUser( iUser, cCanvas::kOther );
-    mPaperLogic->AddUser( iUser );
+    mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ iUser->mIndex ] );
 }
 
 
