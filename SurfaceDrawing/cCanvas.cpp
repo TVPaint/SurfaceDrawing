@@ -156,10 +156,10 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
 void
 cCanvas::Update()
 {
-    QPointF firstPos = mapToScene( 0, 0 );
-    firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
-    firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
-    mGrid->setPos( firstPos );
+    //QPointF firstPos = mapToScene( 0, 0 );
+    //firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
+    //firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
+    //mGrid->setPos( firstPos );
 
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );

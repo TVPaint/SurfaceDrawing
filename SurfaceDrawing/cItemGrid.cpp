@@ -28,6 +28,8 @@ cItemGrid::boundingRect() const
 void
 cItemGrid::paint( QPainter*  iPainter, const QStyleOptionGraphicsItem*  iOptions, QWidget*  iWidget )
 {
+    return;
+
     QColor color = QColor( 255, 20, 20, 90 );
     iPainter->setBrush( QBrush( color ) );
     iPainter->setPen( QPen(  color ) );
