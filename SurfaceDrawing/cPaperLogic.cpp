@@ -25,6 +25,7 @@ cPaperLogic::cPaperLogic()
 void
 cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper )
 {
+    qDebug() << "Copying paper";
     for( auto user : mAllUsers )
     {
         int index = mAllUsers.key( user );
@@ -108,6 +109,14 @@ cPaperLogic::AddUser( cUser * iUser )
     mAllUsers.insert( iUser->mIndex, iUser );
 
     SpawnUserAtPoint( iUser, iUser->mPosition );
+}
+
+
+void
+cPaperLogic::RemoveUser( cUser * iUser )
+{
+    KillUser( iUser );
+    mAllUsers.erase( mAllUsers.find( mAllUsers.key( iUser ) ) );
 }
 
 

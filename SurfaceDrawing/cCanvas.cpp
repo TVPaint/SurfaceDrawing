@@ -4,7 +4,7 @@
 #include "cUser.h"
 #include "cItemUser.h"
 #include "cBasicTile.h"
-//#include "cItemGrid.h"
+#include "cItemGrid.h"
 #include "cPaperLogic.h"
 #include "cBordersItem.h"
 
@@ -24,16 +24,16 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 {
     int offset = 600;
     QGraphicsScene* scene = new QGraphicsScene();
-    int size = GRIDSIZE * CELLSIZE + offset*2;
-    scene->setSceneRect( -offset, -offset, size, size );
+    int gridSize = GRIDSIZE * CELLSIZE + offset*2;
+    scene->setSceneRect( -offset, -offset, gridSize, gridSize );
     setScene( scene );
 
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
-    //mGrid = new cItemGrid( 0 );
-    //mGrid->mSize = size();
-    //scene->addItem( mGrid );
+    mGrid = new cItemGrid( 0 );
+    mGrid->mSize = size();
+    scene->addItem( mGrid );
 
     mBordersItem = new cBordersItem();
     scene->addItem( mBordersItem );
@@ -126,8 +126,8 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 void
 cCanvas::resizeEvent( QResizeEvent* event )
 {
-    //mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
-    //mGrid->update();
+    mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
+    mGrid->update();
     QGraphicsView::resizeEvent( event );
 }
 
@@ -156,10 +156,10 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
 void
 cCanvas::Update()
 {
-    //QPointF firstPos = mapToScene( 0, 0 );
-    //firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
-    //firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
-    //mGrid->setPos( firstPos );
+    QPointF firstPos = mapToScene( 0, 0 );
+    firstPos.setX( firstPos.x() - (int(firstPos.x()) %  CELLSIZE) );
+    firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
+    mGrid->setPos( firstPos );
 
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );

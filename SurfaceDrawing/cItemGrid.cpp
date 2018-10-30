@@ -28,8 +28,9 @@ cItemGrid::boundingRect() const
 void
 cItemGrid::paint( QPainter*  iPainter, const QStyleOptionGraphicsItem*  iOptions, QWidget*  iWidget )
 {
-    iPainter->setBrush( QBrush( Qt::black ) );
-    iPainter->setPen( QPen(  Qt::black ) );
+    QColor color = QColor( 255, 20, 20, 90 );
+    iPainter->setBrush( QBrush( color ) );
+    iPainter->setPen( QPen(  color ) );
     QRectF bbox = boundingRect();
 
     for( int x = 0; x < mSize.width(); x += CELLSIZE )

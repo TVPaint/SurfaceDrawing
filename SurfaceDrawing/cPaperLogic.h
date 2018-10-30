@@ -60,6 +60,7 @@ public:
 
 public:
     void   AddUser( cUser* iUser );
+    void   RemoveUser( cUser* iUser );
 
 
 public:

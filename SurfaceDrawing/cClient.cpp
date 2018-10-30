@@ -102,19 +102,13 @@ cClient::GetData()
 
         if( mDataReadingState == kGRID )
         {
-            QByteArray dataCompressed;
-
-
-            mDataStream.startTransaction();
-            mDataStream >> dataCompressed;
-
-            if( !mDataStream.commitTransaction() )
-                return;
+            qDebug() << "GRID";
 
             cPaperLogic data;
-            //dataCompressed = qUncompress( dataCompressed );
-            QDataStream streamTemp( &dataCompressed, QIODevice::ReadOnly );
-            streamTemp >> data;
+            mDataStream.startTransaction();
+            mDataStream >> data;
+            if( !mDataStream.commitTransaction() )
+                return;
 
             emit  paperLogicArrived( data );
 
@@ -137,12 +131,12 @@ cClient::GetData()
             auto typeAsEnum = cServer::eType( type );
             if( typeAsEnum == cServer::kSelfUser )
             {
-                qDebug() << "SELF";
+                qDebug() << "SELF" << newUser->mPosition;
                 emit myUserAssigned( newUser );
             }
             else
             {
-                qDebug() << "OTHER";
+                qDebug() << "OTHER : " << newUser->mPosition;
                 emit newUserArrived( newUser );
             }
 

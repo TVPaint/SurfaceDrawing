@@ -29,11 +29,14 @@ public:
 
 
     void  SendGridToAllClient();
+    void  SendGridToClient( QTcpSocket* iClient );
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
     void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
 
 public slots:
     void  NewClientConnected();
+    void  ClientDisconnected();
+
     void  Update();
     void  NetworkTick();
     void  GetData();

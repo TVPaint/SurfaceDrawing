@@ -61,6 +61,19 @@ cServer::SendGridToAllClient()
 
 
 void
+cServer::SendGridToClient( QTcpSocket * iClient )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
+
+    stream << quint8(0);
+    stream << *mPaperLogic;
+}
+
+
+void
 cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eType iType )
 {
     QByteArray data;
@@ -71,8 +84,6 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream << quint8(1);
     stream << iType;
     stream << *iUser;
-
-    iClient->flush();
 }
 
 
@@ -84,11 +95,36 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient );
 
+    qDebug() << "Sending action to user : " + QString::number( mClients.key( iClient ) );
+
     stream << quint8(2);
     stream << iAction;
     stream << *iUser;
+}
 
-    iClient->flush();
+
+
+void
+cServer::ClientDisconnected()
+{
+    for( auto client : mClients )
+    {
+        if( client->state() == QAbstractSocket::UnconnectedState )
+        {
+            auto clientKey = mClients.key( client );
+            qDebug() << "Client " + QString::number( clientKey ) + " disconnected. RIP";
+
+            // Remove from containers
+            mDataStream.erase( mDataStream.find( clientKey ) );
+            mClients.erase( mClients.find( clientKey ) );
+            mPaperLogic->RemoveUser( mPaperLogic->mAllUsers[ clientKey ] );
+
+            client->deleteLater();
+            break;
+        }
+    }
+
+    SendGridToAllClient();
 }
 
 
@@ -160,7 +196,6 @@ cServer::GetData()
         if( index == mClients.key( client ) )
             continue;
 
-        qDebug() << "Sending action to user : " + QString::number( mClients.key( client ) );
         SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
     }
 }
@@ -185,6 +220,7 @@ cServer::NewClientConnected( )
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
     connect( newClient, &QTcpSocket::readyRead, this, &cServer::GetData );
+    connect( newClient, &QTcpSocket::disconnected, this, &cServer::ClientDisconnected );
 
     auto dstream = new QDataStream( newClient );
     dstream->setVersion( QDataStream::Qt_5_10 );
@@ -203,6 +239,7 @@ cServer::NewClientConnected( )
         SendSimpleUserPositionToClient( newClient, user, kOtherUser );
     }
 
+    SendGridToClient( newClient );
 }
 
 
