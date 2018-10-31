@@ -120,6 +120,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
         mPaperLogic->TryRespawningPlayer( mMyself->mUser );
         emit respawnRequest();
     }
+    else if( iEvent->key() == Qt::Key_P )
+    {
+        emit pingRequest();
+    }
 }
 
 

@@ -110,6 +110,9 @@ cClient::GetData()
 {
     qint64 timestamp;
 
+
+    qDebug() << "======================INC================= : " << bytesAvailable();
+
     while( bytesAvailable() > 0 )
     {
         if( mDataReadingState == kNone )

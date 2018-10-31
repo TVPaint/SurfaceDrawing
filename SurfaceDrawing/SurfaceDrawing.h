@@ -36,6 +36,7 @@ public:
 public slots:
     void  RespawnRequest();
     void  DirectionChanged( int iDirection );
+    void  PingRequest();
 
     void  PaperLogicArrived( cPaperLogic& iPaper, quint64 iTimestamp );
     void  NewUserArrived( cUser* iUser );

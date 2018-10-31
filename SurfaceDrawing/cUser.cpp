@@ -29,20 +29,20 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     mGUICurrentMovementVector = mGUIMovementVector;
     mIsDead = false;
 
-    QString wher = "CLIENT";
-#ifdef SERVERSIDE
-    wher = "SERVER";
-#endif
+//    QString wher = "CLIENT";
+//#ifdef SERVERSIDE
+//    wher = "SERVER";
+//#endif
 
     mDEBUGFile = 0;
     mDEBUGStream = 0;
 
-    if( mIndex >= 0 )
-    {
-        mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( mIndex ) + wher + ".txt" );
-        mDEBUGFile->open( QIODevice::WriteOnly );
-        mDEBUGStream = new QTextStream( mDEBUGFile );
-    }
+    //if( mIndex >= 0 )
+    //{
+    //    mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( mIndex ) + wher + ".txt" );
+    //    mDEBUGFile->open( QIODevice::WriteOnly );
+    //    mDEBUGStream = new QTextStream( mDEBUGFile );
+    //}
 }
 
 
@@ -215,17 +215,17 @@ operator>>(QDataStream& iStream, cUser& oUser )
     //oUser.mPosition = cPaperLogic::MapToGrid( oUser.mGUIPosition );
 
 
-
-    if( oUser.mIndex >= 0 && !oUser.mDEBUGFile )
-    {
-        QString wher = "CLIENT";
-#ifdef SERVERSIDE
-        wher = "SERVER";
-#endif
-        oUser.mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( oUser.mIndex ) + wher + ".txt" );
-        oUser.mDEBUGFile->open( QIODevice::WriteOnly );
-        oUser.mDEBUGStream = new QTextStream( oUser.mDEBUGFile );
-    }
+//
+//    if( oUser.mIndex >= 0 && !oUser.mDEBUGFile )
+//    {
+//        QString wher = "CLIENT";
+//#ifdef SERVERSIDE
+//        wher = "SERVER";
+//#endif
+//        oUser.mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( oUser.mIndex ) + wher + ".txt" );
+//        oUser.mDEBUGFile->open( QIODevice::WriteOnly );
+//        oUser.mDEBUGStream = new QTextStream( oUser.mDEBUGFile );
+//    }
 
     return  iStream;
 }

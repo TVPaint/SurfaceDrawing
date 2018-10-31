@@ -38,6 +38,7 @@ SurfaceDrawing::Init()
 
     connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
     connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
+    connect( mCanvas, &cCanvas::pingRequest, this, &SurfaceDrawing::PingRequest );
 
 
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
@@ -82,6 +83,13 @@ SurfaceDrawing::DirectionChanged( int iDirection )
 
 
 void
+SurfaceDrawing::PingRequest()
+{
+    mClientSocket->SendPing();
+}
+
+
+void
 SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
 {
     // As we send newUser and otherUsers info, this should never be out of sync
@@ -112,7 +120,7 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
     if( currentTime < iTimestamp )
     {
         quint64 deltaTime = iTimestamp - currentTime;
-        missingUpdates = deltaTime / (1000/60); // 60 fps
+        missingUpdates = deltaTime / SPEED; // 60 fps
         qDebug() << "DELTATIME " + QString::number( deltaTime );
     }
 

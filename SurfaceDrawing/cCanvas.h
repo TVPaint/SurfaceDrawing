@@ -43,6 +43,7 @@ public:
 signals:
     void  directionChanged( int iDirection );
     void  respawnRequest();
+    void  pingRequest();
 
 public:
     cItemUser*                  mMyself = 0;
