@@ -34,11 +34,27 @@ cClient::cClient() :
 void
 cClient::AskConnection()
 {
-    cConnectionDialog cdial( "LocalHost" );
+    QFile recentFile( "recentHosts.txt" );
+    QTextStream stream( &recentFile );
+    QString  lastIP = "LocalHost";
+    if( recentFile.open( QIODevice::ReadOnly ) )
+    {
+        stream >> lastIP;
+        recentFile.close();
+    }
+
+    cConnectionDialog cdial( lastIP );
     while( !mConnectedToServer )
     {
         if( cdial.exec() )
         {
+            auto ip = cdial.GetIP();
+            if( recentFile.open( QIODevice::WriteOnly ) )
+            {
+                stream << ip;
+                recentFile.close();
+            }
+
             connectToHost( cdial.GetIP(), cdial.GetPort() );
             if( !waitForConnected( 5000 ) )
                 qDebug() << "TimedOut " << errorString();

@@ -166,3 +166,11 @@ cCanvas::Update()
 
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 }
+
+
+
+
+
+
+
+
