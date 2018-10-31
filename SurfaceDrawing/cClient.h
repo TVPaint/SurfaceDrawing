@@ -22,7 +22,9 @@ public:
         kGRID,
         kSIMPLE,
         kACTION,
-        kCLOCK
+        kCLOCK,
+        kDISC,
+        kPONG
     };
 
 public:
@@ -34,6 +36,8 @@ public:
 
     void SendNewDirection( int iDirection );
     void SendRespawnRequest();
+
+    void  SendPing();
 
 public slots:
     void  Connected();
@@ -49,11 +53,14 @@ signals:
     void  userChangedDirection( cUser* iUser );
     void  userRequestedRespawn( cUser* iUser );
 
+    void  userDisconnected( int iIndex );
+
 public:
     eDataReadingState   mDataReadingState = kNone;
     bool                mConnectedToServer = false;
     QDataStream         mDataStream;
 
     QTimer*             mApplicationClock;
+    quint64             mPingStartTime;
 };
 

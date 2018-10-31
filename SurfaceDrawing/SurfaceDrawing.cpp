@@ -45,6 +45,7 @@ SurfaceDrawing::Init()
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
     connect( mClientSocket, &cClient::userChangedDirection, this, &SurfaceDrawing::UserDirectionChanged );
     connect( mClientSocket, &cClient::userRequestedRespawn, this, &SurfaceDrawing::UserRequestedRespawn );
+    connect( mClientSocket, &cClient::userDisconnected, this, &SurfaceDrawing::UserDisconnected );
 }
 
 
@@ -148,6 +149,13 @@ void
 SurfaceDrawing::UserRequestedRespawn( cUser * iUser )
 {
     mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ iUser->mIndex ] );
+}
+
+
+void
+SurfaceDrawing::UserDisconnected( int iIndex )
+{
+    mPaperLogic->RemoveUser( mPaperLogic->mAllUsers[ iIndex ] );
 }
 
 

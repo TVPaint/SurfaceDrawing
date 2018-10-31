@@ -20,6 +20,18 @@ public:
         kSelfUser
     };
 
+    enum ePacketType : quint8
+    {
+        kGrid = 0,
+        kSimple,
+        kAction,
+        kClock,
+        kDisc,
+        kPong
+    };
+
+
+
 public:
     ~cServer();
     cServer();
@@ -30,10 +42,13 @@ public:
 
     void  SendGridToAllClient();
     void  SendClockToAllClients();
-    void  SendGridToClient( QTcpSocket* iClient );
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
     void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
+    void  SendUserDisconnectedToAllClients( int iIndex );
 
+    void  SendPongToClient( QTcpSocket* iClient );
+
+    void  BuildPacket( QByteArray* oData, QDataStream* oStream, int iType );
 
 public slots:
     void  NewClientConnected();

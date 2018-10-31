@@ -43,6 +43,8 @@ public slots:
     void  UserDirectionChanged( cUser* iUser );
     void  UserRequestedRespawn( cUser* iUser );
 
+    void  UserDisconnected( int iIndex );
+
 
 
 private:

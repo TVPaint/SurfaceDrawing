@@ -22,8 +22,6 @@ cClient::cClient() :
     connect( this, &QTcpSocket::connected, this, &cClient::Connected );
     connect( this, &QTcpSocket::readyRead, this, &cClient::GetData );
 
-    connect( this, SLOT( error(QAbstractSocket::SocketError)), this, SIGNAL(ConnectionError(QAbstractSocket::SocketError)) );
-
     mDataStream.setDevice( this );
     mDataStream.setVersion( QDataStream::Qt_5_10 );
 
@@ -88,6 +86,19 @@ cClient::SendRespawnRequest()
 
 
 void
+cClient::SendPing()
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 99 );
+    write( data );
+    mPingStartTime = mApplicationClock->remainingTimeAsDuration().count();
+}
+
+
+void
 cClient::ConnectionError( QAbstractSocket::SocketError iError )
 {
     qDebug() << "Connection Error : " << iError;
@@ -108,8 +119,6 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            qDebug() << "MYTIME : " << QString::number( mApplicationClock->remainingTimeAsDuration().count() );
-            qDebug() << "TIMESTAMP : " << QString::number( timestamp );
             qDebug() << "PACKET got sent in : " << QString::number( timestamp - mApplicationClock->remainingTimeAsDuration().count() );
 
 
@@ -119,14 +128,18 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            if( header == 0 )
+            if( header == cServer::kGrid )
                 mDataReadingState = kGRID;
-            else if( header == 1 )
+            else if( header == cServer::kSimple )
                 mDataReadingState = kSIMPLE;
-            else if( header == 2 )
+            else if( header == cServer::kAction )
                 mDataReadingState = kACTION;
-            else if( header == 3 )
+            else if( header == cServer::kClock )
                 mDataReadingState = kCLOCK;
+            else if( header == cServer::kDisc )
+                mDataReadingState = kDISC;
+            else if( header == cServer::kPong )
+                mDataReadingState = kPONG;
         }
 
         if( mDataReadingState == kGRID )
@@ -229,6 +242,28 @@ cClient::GetData()
                 return;
 
             mApplicationClock->start( clock );
+            SendPing();
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == kDISC )
+        {
+            qDebug() << "DISC";
+
+            int index;
+
+            mDataStream.startTransaction();
+            mDataStream >> index;
+            if( !mDataStream.commitTransaction() )
+                return;
+
+            emit userDisconnected( index );
+
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == kPONG )
+        {
+            qDebug() << "PING : " << mPingStartTime - mApplicationClock->remainingTimeAsDuration().count() << " ms";
+
             mDataReadingState = kNone;
         }
     }

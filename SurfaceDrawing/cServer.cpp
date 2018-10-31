@@ -55,7 +55,7 @@ cServer::SendGridToAllClient()
     stream.setVersion( QDataStream::Qt_5_10 );
 
     stream << mApplicationTimer->remainingTimeAsDuration().count();
-    stream << quint8(0);
+    stream << quint8(kGrid);
     stream << *mPaperLogic;
 
     for( auto client : mClients )
@@ -74,23 +74,9 @@ cServer::SendClockToAllClients()
         stream.setDevice( client );
 
         stream << mApplicationTimer->remainingTimeAsDuration().count();
-        stream << quint8(3);
+        stream << quint8(kClock);
         stream << mApplicationTimer->remainingTimeAsDuration().count();
     }
-}
-
-
-void
-cServer::SendGridToClient( QTcpSocket * iClient )
-{
-    QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
-    stream.setVersion( QDataStream::Qt_5_10 );
-    stream.setDevice( iClient );
-
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
-    stream << quint8(0);
-    stream << *mPaperLogic;
 }
 
 
@@ -103,7 +89,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setDevice( iClient);
 
     stream << mApplicationTimer->remainingTimeAsDuration().count();
-    stream << quint8(1);
+    stream << quint8(kSimple);
     stream << iType;
     stream << *iUser;
 }
@@ -120,11 +106,46 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     qDebug() << "Sending action to user : " + QString::number( mClients.key( iClient ) );
 
     stream << mApplicationTimer->remainingTimeAsDuration().count();
-    stream << quint8(2);
+    stream << quint8(kAction);
     stream << iAction;
     stream << *iUser;
 }
 
+
+void
+cServer::SendUserDisconnectedToAllClients( int iIndex )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << quint8(kDisc);
+    stream << iIndex;
+
+    for( auto client : mClients )
+        client->write( data );
+}
+
+
+void
+cServer::SendPongToClient( QTcpSocket* iClient )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
+
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << quint8(kPong);
+}
+
+
+void
+cServer::BuildPacket( QByteArray * oData, QDataStream * oStream, int iType )
+{
+    // possible ?
+}
 
 
 void
@@ -143,6 +164,8 @@ cServer::ClientDisconnected()
             mPaperLogic->RemoveUser( mPaperLogic->mAllUsers[ clientKey ] );
 
             client->deleteLater();
+
+            SendUserDisconnectedToAllClients( clientKey );
             break;
         }
     }
@@ -208,18 +231,26 @@ cServer::GetData()
             mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ index ] );
             break;
 
+        case 99 : // Ping
+            qDebug() << "Answering ping request";
+            SendPongToClient( mClients[ index ] );
+            break;
+
         default:
             break;
     }
 
-    qDebug() << "User : " + QString::number( index ) + " did an action " + QString::number( header );
-
-    for( auto client : mClients )
+    if( index < 20 )
     {
-        if( index == mClients.key( client ) )
-            continue;
+        qDebug() << "User : " + QString::number( index ) + " did an action " + QString::number( header );
 
-        SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
+        for( auto client : mClients )
+        {
+            if( index == mClients.key( client ) )
+                continue;
+
+            SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
+        }
     }
 }
 
