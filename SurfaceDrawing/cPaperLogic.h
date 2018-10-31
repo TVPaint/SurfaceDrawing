@@ -13,6 +13,7 @@ class cUser;
 
 #define GRIDSIZE 75
 #define CELLSIZE 16
+#define SPEED 20 // ms for 1 pixel
 
 class cPaperLogic
 {
@@ -46,7 +47,7 @@ public:
 
 
 public:
-    void  CopyFromPaper( const cPaperLogic& iPaper );
+    void  CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates );
 
 
 public:
@@ -64,7 +65,7 @@ public:
 
 
 public:
-    void Update();
+    void Update( quint64 iCurrentTimeRemaining );
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 
@@ -75,10 +76,10 @@ public:
     void  FillZone( cUser*  iUser );
 
 
-    void KillUser( cUser*  iUser );
+    void  KillUser( cUser*  iUser );
 
-    void TryRespawningPlayer( cUser*  iUser );
-    void SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
+    void  TryRespawningPlayer( cUser*  iUser );
+    void  SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
 
 private:
     bool  SanityChecks() const;
@@ -93,7 +94,12 @@ public:
     QMap< int, cUser* >                 mAllUsers;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
+
+    quint64                             mPreviousTime = 0;
+    quint64                             mTimeBuffer = 0;
 };
+
+
 
 std::ostream& operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic );
 QDebug& operator<<( QDebug& oStream, const cPaperLogic& iPaperLogic );

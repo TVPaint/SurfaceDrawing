@@ -51,7 +51,7 @@ SurfaceDrawing::Init()
 void
 SurfaceDrawing::Update()
 {
-    mPaperLogic->Update();
+    mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
     mCanvas->Update();
 }
 
@@ -60,7 +60,7 @@ void
 SurfaceDrawing::Start()
 {
     mTimer = new  QTimer();
-    mTimer->start( 1000/60 );
+    mTimer->start( SPEED/2 );
 
     connect( mTimer, &QTimer::timeout, this, &SurfaceDrawing::Update );
 }
@@ -81,7 +81,7 @@ SurfaceDrawing::DirectionChanged( int iDirection )
 
 
 void
-SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper )
+SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
 {
     // As we send newUser and otherUsers info, this should never be out of sync
     Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
@@ -100,7 +100,23 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper )
     //    }
     //}
 
-    mPaperLogic->CopyFromPaper( iPaper );
+    qDebug() << "DELTATIME " + QString::number( iTimestamp - mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
+
+    mPaperLogic->CopyFromPaper( iPaper, 0 );
+
+    quint16 missingUpdates = 0;
+    quint64  currentTime = mClientSocket->mApplicationClock->remainingTimeAsDuration().count();
+
+
+    if( currentTime < iTimestamp )
+    {
+        quint64 deltaTime = iTimestamp - currentTime;
+        missingUpdates = deltaTime / (1000/60); // 60 fps
+        qDebug() << "DELTATIME " + QString::number( deltaTime );
+    }
+
+    qDebug() << "OFF BY -------------> " + QString::number( missingUpdates );
+
 }
 
 

@@ -8,9 +8,11 @@
 #include <QHostAddress>
 
 #include <iostream>
+#include <ctime>
 
 cClient::~cClient()
 {
+    delete  mApplicationClock;
 }
 
 
@@ -24,6 +26,8 @@ cClient::cClient() :
 
     mDataStream.setDevice( this );
     mDataStream.setVersion( QDataStream::Qt_5_10 );
+
+    mApplicationClock = new QTimer();
 }
 
 
@@ -77,18 +81,25 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    qDebug() << "Data inc";
+    qint64 timestamp;
 
     while( bytesAvailable() > 0 )
     {
         if( mDataReadingState == kNone )
         {
-            quint8 header;
-
             mDataStream.startTransaction();
+            mDataStream >> timestamp;
+            if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+                return;
 
+            qDebug() << "MYTIME : " << QString::number( mApplicationClock->remainingTimeAsDuration().count() );
+            qDebug() << "TIMESTAMP : " << QString::number( timestamp );
+            qDebug() << "PACKET got sent in : " << QString::number( timestamp - mApplicationClock->remainingTimeAsDuration().count() );
+
+
+            quint8 header;
+            mDataStream.startTransaction();
             mDataStream >> header;
-
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
@@ -98,6 +109,8 @@ cClient::GetData()
                 mDataReadingState = kSIMPLE;
             else if( header == 2 )
                 mDataReadingState = kACTION;
+            else if( header == 3 )
+                mDataReadingState = kCLOCK;
         }
 
         if( mDataReadingState == kGRID )
@@ -110,7 +123,7 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() )
                 return;
 
-            emit  paperLogicArrived( data );
+            emit  paperLogicArrived( data, timestamp );
 
             mDataReadingState = kNone;
         }
@@ -131,12 +144,12 @@ cClient::GetData()
             auto typeAsEnum = cServer::eType( type );
             if( typeAsEnum == cServer::kSelfUser )
             {
-                qDebug() << "SELF" << newUser->mPosition;
+                qDebug() << "SELF" << newUser->mGUIPosition;
                 emit myUserAssigned( newUser );
             }
             else
             {
-                qDebug() << "OTHER : " << newUser->mPosition;
+                qDebug() << "OTHER : " << newUser->mGUIPosition;
                 emit newUserArrived( newUser );
             }
 
@@ -186,6 +199,20 @@ cClient::GetData()
             }
 
             delete  newUser;
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == kCLOCK )
+        {
+            qDebug() << "CLOCK";
+
+            quint64 clock;
+
+            mDataStream.startTransaction();
+            mDataStream >> clock;
+            if( !mDataStream.commitTransaction() )
+                return;
+
+            mApplicationClock->start( clock );
             mDataReadingState = kNone;
         }
     }

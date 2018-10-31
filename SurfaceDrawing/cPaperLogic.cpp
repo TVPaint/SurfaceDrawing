@@ -23,7 +23,7 @@ cPaperLogic::cPaperLogic()
 
 
 void
-cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper )
+cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates )
 {
     qDebug() << "Copying paper";
     for( auto user : mAllUsers )
@@ -64,6 +64,11 @@ cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper )
             CELLAT( QPoint( x, y ) ) = iPaper.mPaperGrid[ x ][ y ];
             _CallCB( x, y, -5, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
         }
+
+    qDebug() << "OFF BY " << QString::number( iMissingUpdates );
+
+    for( auto user : mAllUsers )
+        user->Update( iMissingUpdates );
 }
 
 
@@ -121,8 +126,23 @@ cPaperLogic::RemoveUser( cUser * iUser )
 
 
 void
-cPaperLogic::Update()
+cPaperLogic::Update( quint64 iCurrentTimeRemaining )
 {
+    qint64 deltaTimeMs  = mPreviousTime - iCurrentTimeRemaining;
+    mPreviousTime       = iCurrentTimeRemaining;
+
+    if( deltaTimeMs < 0 )
+        return;
+
+    mTimeBuffer += deltaTimeMs;
+
+    int tickCount = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
+    mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
+
+
+    if( tickCount == 0 )
+        return;
+
     for( auto user : mAllUsers )
     {
         if( !user || user->mIsDead )
@@ -134,7 +154,7 @@ cPaperLogic::Update()
         SetPlayerValueAt( oldPosition, -1 );
 
         // User movement
-        user->Update();
+        user->Update( tickCount );
         QPoint newPosition = user->mPosition;
 
         if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
@@ -281,6 +301,7 @@ cPaperLogic::FillZone( cUser*  iUser )
 void
 cPaperLogic::KillUser( cUser* iUser )
 {
+    qDebug() << "KILL=================================================================";
     iUser->mIsDead = true;
     iUser->mGUICurrentMovementVector = QPoint( 0, 0 );
     iUser->mGUIMovementVector = QPoint( 0, 0 );

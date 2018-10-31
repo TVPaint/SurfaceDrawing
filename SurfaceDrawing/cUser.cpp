@@ -28,12 +28,28 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
     mIsDead = false;
+
+    QString wher = "CLIENT";
+#ifdef SERVERSIDE
+    wher = "SERVER";
+#endif
+
+    mDEBUGFile = 0;
+    mDEBUGStream = 0;
+
+    if( mIndex >= 0 )
+    {
+        mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( mIndex ) + wher + ".txt" );
+        mDEBUGFile->open( QIODevice::WriteOnly );
+        mDEBUGStream = new QTextStream( mDEBUGFile );
+    }
 }
 
 
 void
 cUser::copyFromUser( const cUser * iUser )
 {
+    qDebug() << "COPYYING USER";
     mPosition = iUser->mPosition;
     mColor = iUser->mColor;
 
@@ -47,9 +63,11 @@ cUser::copyFromUser( const cUser * iUser )
     mIsDead = iUser->mIsDead;
 
     if( mTrailPoints.size() != iUser->mTrailPoints.size() )
-    {
         mTrailPoints = iUser->mTrailPoints;
-    }
+
+
+    qDebug() << "GUIPosition -- " << mGUIPosition;
+    qDebug() << "END COPYYING USER";
 }
 
 
@@ -64,9 +82,9 @@ cUser::setPosition( QPoint iPosition )
 
 
 void
-cUser::Update()
+cUser::Update( int iTickCount )
 {
-    mGUIPosition += mGUICurrentMovementVector;
+    mGUIPosition += mGUICurrentMovementVector * iTickCount;
 
     QPoint newCenter = mGUIPosition + mGUISize * 0.5;
     QPoint newCell   = cPaperLogic::MapToGrid( newCenter );
@@ -83,6 +101,11 @@ cUser::Update()
             mGUIPosition = cPaperLogic::MapFromGrid( mPosition );
         }
     }
+
+    //*mDEBUGStream   << "====================USER "
+    //                << mIndex
+    //                << " POS -----> "
+    //                << mGUIPosition.x() << "-" << mGUIPosition.y() << "\n";
 }
 
 
@@ -190,6 +213,19 @@ operator>>(QDataStream& iStream, cUser& oUser )
     //iStream >> oUser.mTrailPoints;
 
     //oUser.mPosition = cPaperLogic::MapToGrid( oUser.mGUIPosition );
+
+
+
+    if( oUser.mIndex >= 0 && !oUser.mDEBUGFile )
+    {
+        QString wher = "CLIENT";
+#ifdef SERVERSIDE
+        wher = "SERVER";
+#endif
+        oUser.mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( oUser.mIndex ) + wher + ".txt" );
+        oUser.mDEBUGFile->open( QIODevice::WriteOnly );
+        oUser.mDEBUGStream = new QTextStream( oUser.mDEBUGFile );
+    }
 
     return  iStream;
 }

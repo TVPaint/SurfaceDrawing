@@ -1,9 +1,13 @@
 #include "cServer.h"
 
 #include "cUser.h"
+#include "cPaperLogic.h"
 
 #include <QHostAddress>
+#include <ctime>
 
+
+#define CLOCKTIME 108000000 // 30 min
 
 cServer::~cServer()
 {
@@ -16,13 +20,16 @@ cServer::cServer() :
     QTcpServer()
 {
     mUpdateTimer = new  QTimer();
-    mUpdateTimer->start( 1000/60 );
+    mUpdateTimer->start( SPEED/2 );
 
-    //mPacketTimer = new  QTimer();
-    //mPacketTimer->start( 1000/5 );
+    mApplicationTimer = new QTimer();
+    mApplicationTimer->start( CLOCKTIME );
+
+    mPreviousTime = mApplicationTimer->remainingTimeAsDuration().count();
 
     connect( mUpdateTimer, &QTimer::timeout, this, &cServer::Update );
-    //connect( mPacketTimer, &QTimer::timeout, this, &cServer::NetworkTick );
+    connect( mApplicationTimer, &QTimer::timeout, this, &cServer::SendClockToAllClients );
+
     connect( this, &QTcpServer::newConnection, this, &cServer::NewClientConnected );
 
     mPaperLogic = new cPaperLogic();
@@ -43,20 +50,33 @@ cServer::Run()
 void
 cServer::SendGridToAllClient()
 {
-    QByteArray dataCompressed;
-    QDataStream streamComp( &dataCompressed, QIODevice::WriteOnly );
-    streamComp << *mPaperLogic;
-    //dataCompressed = qCompress( dataCompressed, 1 );
-
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
     stream << quint8(0);
-    stream << dataCompressed;
+    stream << *mPaperLogic;
 
     for( auto client : mClients )
         client->write( data );
+}
+
+
+void
+cServer::SendClockToAllClients()
+{
+    for( auto client : mClients )
+    {
+        QByteArray data;
+        QDataStream stream( &data, QIODevice::WriteOnly );
+        stream.setVersion( QDataStream::Qt_5_10 );
+        stream.setDevice( client );
+
+        stream << mApplicationTimer->remainingTimeAsDuration().count();
+        stream << quint8(3);
+        stream << mApplicationTimer->remainingTimeAsDuration().count();
+    }
 }
 
 
@@ -68,6 +88,7 @@ cServer::SendGridToClient( QTcpSocket * iClient )
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient );
 
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
     stream << quint8(0);
     stream << *mPaperLogic;
 }
@@ -81,6 +102,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient);
 
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
     stream << quint8(1);
     stream << iType;
     stream << *iUser;
@@ -97,6 +119,7 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
 
     qDebug() << "Sending action to user : " + QString::number( mClients.key( iClient ) );
 
+    stream << mApplicationTimer->remainingTimeAsDuration().count();
     stream << quint8(2);
     stream << iAction;
     stream << *iUser;
@@ -131,7 +154,7 @@ cServer::ClientDisconnected()
 void
 cServer::Update()
 {
-    mPaperLogic->Update();
+    mPaperLogic->Update( mApplicationTimer->remainingTimeAsDuration().count() );
 
     if( mQuit )
         emit quit();
@@ -216,6 +239,7 @@ cServer::NewClientConnected( )
     for( auto client : mClients )
         SendSimpleUserPositionToClient( client, newUser, kOtherUser );
 
+
     // Add new client
     auto it = mClients.insert( newUser->mIndex, nextPendingConnection() );
     auto newClient = it.value();
@@ -225,6 +249,9 @@ cServer::NewClientConnected( )
     auto dstream = new QDataStream( newClient );
     dstream->setVersion( QDataStream::Qt_5_10 );
     mDataStream.insert( newUser->mIndex, dstream );
+
+    // Clock sync
+    SendClockToAllClients();
 
     // Tell him his own position ( so client knows which player its controlling )
     SendSimpleUserPositionToClient( newClient, newUser, kSelfUser );
@@ -239,7 +266,7 @@ cServer::NewClientConnected( )
         SendSimpleUserPositionToClient( newClient, user, kOtherUser );
     }
 
-    SendGridToClient( newClient );
+    SendGridToAllClient();
 }
 
 

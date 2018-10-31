@@ -6,6 +6,7 @@
 #include <QPoint>
 #include <QSize>
 #include <ostream>
+#include <QFile>
 
 #include "cHash.h"
 
@@ -20,7 +21,7 @@ public:
 
 public:
     void setPosition( QPoint iPosition );
-    void Update();
+    void Update( int iTickCount );
     void setSize( QPoint iSize );
     void setMovementVector( QPoint iMovementVector );
 
@@ -41,6 +42,10 @@ public:
     bool        mIsDead;
 
     QList< QPoint >  mTrailPoints;
+
+
+    QFile*          mDEBUGFile;
+    QTextStream*    mDEBUGStream;
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );

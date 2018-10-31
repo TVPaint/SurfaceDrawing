@@ -5,6 +5,7 @@
 #include <QDataStream>
 
 #include <QTcpSocket>
+#include <QTimer>
 
 
 class cPaperLogic;
@@ -20,7 +21,8 @@ public:
         kNone,
         kGRID,
         kSIMPLE,
-        kACTION
+        kACTION,
+        kCLOCK
     };
 
 public:
@@ -42,14 +44,16 @@ public slots:
 signals:
     void  newUserArrived( cUser* iUser );
     void  myUserAssigned( cUser* iUser );
-    void  paperLogicArrived( cPaperLogic& iPaper );
+    void  paperLogicArrived( cPaperLogic& iPaper, quint64 iTimeStamp );
 
     void  userChangedDirection( cUser* iUser );
     void  userRequestedRespawn( cUser* iUser );
 
-private:
+public:
     eDataReadingState   mDataReadingState = kNone;
     bool                mConnectedToServer = false;
     QDataStream         mDataStream;
+
+    QTimer*             mApplicationClock;
 };
 

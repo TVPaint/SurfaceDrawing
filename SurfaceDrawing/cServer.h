@@ -29,9 +29,11 @@ public:
 
 
     void  SendGridToAllClient();
+    void  SendClockToAllClients();
     void  SendGridToClient( QTcpSocket* iClient );
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
     void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
+
 
 public slots:
     void  NewClientConnected();
@@ -45,12 +47,16 @@ signals:
     void  quit();
 
 private:
-    cPaperLogic*                mPaperLogic;
     QMap< int, QTcpSocket* >    mClients;
-    QTimer*                     mUpdateTimer;
-    QTimer*                     mPacketTimer;
     QMap< int, QDataStream* >   mDataStream;
 
+    cPaperLogic*                mPaperLogic;
+    QTimer*                     mApplicationTimer;
+    QTimer*                     mUpdateTimer;
+    quint64                     mPreviousTime;
+    quint64                     mTimeBuffer = 0;
+
     bool                        mQuit = false;
+
 };
 

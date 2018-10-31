@@ -37,7 +37,7 @@ public slots:
     void  RespawnRequest();
     void  DirectionChanged( int iDirection );
 
-    void  PaperLogicArrived( cPaperLogic& iPaper );
+    void  PaperLogicArrived( cPaperLogic& iPaper, quint64 iTimestamp );
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
     void  UserDirectionChanged( cUser* iUser );
