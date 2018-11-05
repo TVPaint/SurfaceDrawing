@@ -67,6 +67,7 @@ signals:
 private:
     // LOGS
     void  _LOG( const QString& iText );
+    bool  _CheckForData();
 
 
 private:

@@ -1,9 +1,139 @@
-107991495 : New client connected
-107991495 : Sending clock to all clients
-107991494 : DONE sending clock to all clients
-107991494 : Sending kSelfAssign information to client : 0
-107991494 : DONE sending information
-107991493 : Sending grid to all clients
-107991412 : Sending pong
-107991412 : DONE sending pong
-107991411 : User : 0 did an action 99
+107984498 : New client connected
+107984497 : Sending clock to all clients
+107984497 : DONE sending clock to all clients
+107984497 : Sending kSelfAssign information to client : 0
+107984497 : DONE sending information
+107984495 : Sending grid to all clients
+107984427 : Sending pong
+107984427 : DONE sending pong
+107984427 : User : 0 did an action 99
+107984427 : Sending pong
+107984427 : DONE sending pong
+107984427 : User : 0 did an action 99
+107984427 : Sending pong
+107984426 : DONE sending pong
+107984426 : User : 0 did an action 99
+107984426 : Sending pong
+107984426 : DONE sending pong
+107984426 : User : 0 did an action 99
+107984426 : Sending pong
+107984426 : DONE sending pong
+107984426 : User : 0 did an action 99
+107984426 : Sending pong
+107984426 : DONE sending pong
+107984426 : User : 0 did an action 99
+107984426 : Sending pong
+107984425 : DONE sending pong
+107984425 : User : 0 did an action 99
+107984425 : Sending pong
+107984424 : DONE sending pong
+107984424 : User : 0 did an action 99
+107984424 : Sending pong
+107984423 : DONE sending pong
+107984423 : User : 0 did an action 99
+107984419 : Sending pong
+107984414 : DONE sending pong
+107984411 : User : 0 did an action 99
+107979991 : User : 0 did an action 4
+107979206 : User : 0 did an action 1
+107975126 : User : 0 did an action 3
+107965354 : Client 0 disconnected.
+107965354 : Sending disconnected msg to all clients
+107965354 : DONE sending disconnect info
+107965352 : Sending grid to all clients
+107947913 : New client connected
+107947912 : Sending clock to all clients
+107947911 : DONE sending clock to all clients
+107947911 : Sending kSelfAssign information to client : 0
+107947910 : DONE sending information
+107947909 : Sending grid to all clients
+107947862 : Sending pong
+107947858 : DONE sending pong
+107947858 : User : 0 did an action 99
+107947858 : Sending pong
+107947857 : DONE sending pong
+107947857 : User : 0 did an action 99
+107947857 : Sending pong
+107947854 : DONE sending pong
+107947854 : User : 0 did an action 99
+107947854 : Sending pong
+107947854 : DONE sending pong
+107947854 : User : 0 did an action 99
+107947853 : Sending pong
+107947846 : DONE sending pong
+107947846 : User : 0 did an action 99
+107947846 : Sending pong
+107947846 : DONE sending pong
+107947846 : User : 0 did an action 99
+107947846 : Sending pong
+107947846 : DONE sending pong
+107947845 : User : 0 did an action 99
+107947845 : Sending pong
+107947844 : DONE sending pong
+107947844 : User : 0 did an action 99
+107947844 : Sending pong
+107947844 : DONE sending pong
+107947844 : User : 0 did an action 99
+107947844 : Sending pong
+107947844 : DONE sending pong
+107947844 : User : 0 did an action 99
+107945991 : User : 0 did an action 4
+107945368 : User : 0 did an action 1
+107943726 : User : 0 did an action 3
+107942924 : User : 0 did an action 2
+107942002 : User : 0 did an action 3
+107941434 : User : 0 did an action 1
+107940337 : User : 0 did an action 4
+107907055 : Client 0 disconnected.
+107907055 : Sending disconnected msg to all clients
+107907055 : DONE sending disconnect info
+107907053 : Sending grid to all clients
+107854890 : New client connected
+107854890 : Sending clock to all clients
+107854890 : DONE sending clock to all clients
+107854890 : Sending kSelfAssign information to client : 0
+107854890 : DONE sending information
+107854888 : Sending grid to all clients
+107854848 : Sending pong
+107854846 : DONE sending pong
+107854845 : User : 0 did an action 99
+107854845 : Sending pong
+107854844 : DONE sending pong
+107854844 : User : 0 did an action 99
+107854843 : Sending pong
+107854842 : DONE sending pong
+107854842 : User : 0 did an action 99
+107854842 : Sending pong
+107854841 : DONE sending pong
+107854841 : User : 0 did an action 99
+107854841 : Sending pong
+107854841 : DONE sending pong
+107854841 : User : 0 did an action 99
+107854841 : Sending pong
+107854841 : DONE sending pong
+107854841 : User : 0 did an action 99
+107854841 : Sending pong
+107854841 : DONE sending pong
+107854841 : User : 0 did an action 99
+107854841 : Sending pong
+107854840 : DONE sending pong
+107854840 : User : 0 did an action 99
+107854840 : Sending pong
+107854840 : DONE sending pong
+107854839 : User : 0 did an action 99
+107854839 : Sending pong
+107854838 : DONE sending pong
+107854838 : User : 0 did an action 99
+107854823 : Sending pong
+107854823 : DONE sending pong
+107854823 : User : 0 did an action 99
+107854821 : Sending pong
+107854821 : DONE sending pong
+107854821 : User : 0 did an action 99
+107852652 : User : 0 did an action 4
+107851752 : User : 0 did an action 1
+107849487 : User : 0 did an action 3
+107848565 : User : 0 did an action 1
+107845654 : User : 0 did an action 4
+107842396 : User : 0 did an action 2
+107838940 : User : 0 did an action 3

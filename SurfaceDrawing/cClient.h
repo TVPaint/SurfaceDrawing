@@ -38,6 +38,7 @@ public:
     void SendRespawnRequest();
 
     void  SendPing();
+    void  StartPingAveraging();
 
 public slots:
     void  Connected();
@@ -65,5 +66,8 @@ public:
 
     QTimer*             mApplicationClock;
     quint64             mPingStartTime;
+    bool                mPingAveraging; // In the state where client is pinging to calculate a speed
+    int                 mPingAveragingCounter; // To count where we at while receiving packets
+    int                 mPingAverage;
 };
 

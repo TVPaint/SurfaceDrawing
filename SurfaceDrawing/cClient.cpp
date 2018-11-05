@@ -10,6 +10,11 @@
 #include <iostream>
 #include <ctime>
 
+
+#define  PINGAVERAGINGAMOUNT 10
+
+
+
 cClient::~cClient()
 {
     delete  mApplicationClock;
@@ -95,6 +100,17 @@ cClient::SendPing()
     stream << int( 99 );
     write( data );
     mPingStartTime = mApplicationClock->remainingTimeAsDuration().count();
+}
+
+
+void
+cClient::StartPingAveraging()
+{
+    mPingAveraging = true;
+    mPingAveragingCounter = 0;
+    mPingAverage = 0;
+    for( int i = 0; i < PINGAVERAGINGAMOUNT; ++i )
+        SendPing();
 }
 
 
@@ -247,7 +263,9 @@ cClient::GetData()
                 return;
 
             mApplicationClock->start( clock );
-            SendPing();
+
+            StartPingAveraging();
+
             mDataReadingState = kNone;
         }
         else if( mDataReadingState == kDISC )
@@ -267,7 +285,31 @@ cClient::GetData()
         }
         else if( mDataReadingState == kPONG )
         {
+            auto ping = mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
+
             _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTimeAsDuration().count() ) + " ms" );
+
+
+            if( mPingAveragingCounter <= PINGAVERAGINGAMOUNT )
+            {
+                _LOG( "Undergoing ping averaging ..." );
+                ++mPingAveragingCounter;
+                mPingAverage += mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
+
+                if( mPingAveragingCounter >= PINGAVERAGINGAMOUNT )
+                {
+                    int pingAvg = mPingAverage/PINGAVERAGINGAMOUNT;
+
+                    _LOG( "Ping average : " + QString::number( pingAvg ) );
+                    mApplicationClock->start( timestamp - pingAvg/2 );
+                    mPingAveraging = false;
+
+                    _LOG( "Timestamp : " + QString::number( timestamp ) );
+                    _LOG( "Clock : " + QString::number( mApplicationClock->remainingTimeAsDuration().count() ) );
+
+                    SendPing(); // to check clock diff
+                }
+            }
 
             mDataReadingState = kNone;
         }
@@ -278,7 +320,7 @@ cClient::GetData()
 void
 cClient::_LOG( const QString & iText )
 {
-    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << endl;
+    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
 
 }
 

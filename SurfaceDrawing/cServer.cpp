@@ -230,60 +230,63 @@ void
 cServer::GetData()
 {
     int header;
-
     int index = -1;
 
-    for( auto stream : mDataStream )
+
+    while( _CheckForData() )
     {
-        stream->startTransaction();
-        *stream >> header;
-        if( !stream->commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
-            continue;
-
-        index = mDataStream.key( stream );
-        break;
-    }
-
-    if( index == -1 )
-        return;
-
-    switch( header )
-    {
-        case 1: // Left
-            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( -1, 0 ) );
-            break;
-        case 2: // Right
-            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 1, 0 ) );
-            break;
-        case 3: // Top
-            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, -1 ) );
-            break;
-        case 4: // Bottom
-            mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, 1 ) );
-            break;
-
-        case 10 : // Respawn
-            mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ index ] );
-            break;
-
-        case 99 : // Ping
-            SendPongToClient( mClients[ index ] );
-            break;
-
-        default:
-            break;
-    }
-
-    if( index < 20 )
-    {
-        _LOG( "User : " + QString::number( index ) + " did an action " + QString::number( header ) );
-
-        for( auto client : mClients )
+        for( auto stream : mDataStream )
         {
-            if( index == mClients.key( client ) )
+            stream->startTransaction();
+            *stream >> header;
+            if( !stream->commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 continue;
 
-            SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
+            index = mDataStream.key( stream );
+            break;
+        }
+
+        if( index == -1 )
+            return;
+
+        switch( header )
+        {
+            case 1: // Left
+                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( -1, 0 ) );
+                break;
+            case 2: // Right
+                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 1, 0 ) );
+                break;
+            case 3: // Top
+                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, -1 ) );
+                break;
+            case 4: // Bottom
+                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, 1 ) );
+                break;
+
+            case 10 : // Respawn
+                mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ index ] );
+                break;
+
+            case 99 : // Ping
+                SendPongToClient( mClients[ index ] );
+                break;
+
+            default:
+                break;
+        }
+
+        if( index < 20 )
+        {
+            _LOG( "User : " + QString::number( index ) + " did an action " + QString::number( header ) );
+
+            for( auto client : mClients )
+            {
+                if( index == mClients.key( client ) )
+                    continue;
+
+                SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );
+            }
         }
     }
 }
@@ -292,8 +295,20 @@ cServer::GetData()
 void
 cServer::_LOG( const QString & iText )
 {
-    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << endl;
+    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
     *mDEBUGStream << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
+}
+
+
+bool
+cServer::_CheckForData()
+{
+    for( auto client : mClients )
+    {
+        if( client->bytesAvailable() > 0 )
+            return  true;
+    }
+    return  false;
 }
 
 
