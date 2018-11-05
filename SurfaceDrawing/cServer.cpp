@@ -269,14 +269,33 @@ cServer::GetData()
                 break;
 
             case 99 : // Ping
+                _LOG( "User : " + QString::number( index ) + " did a ping request" );
                 SendPongToClient( mClients[ index ] );
+                break;
+
+            case 666 : // ClientIsReady
+                _LOG( "User : " + QString::number( index ) + " is ready to communicate" );
+                // Tell him his own position ( so client knows which player its controlling )
+                SendSimpleUserPositionToClient( mClients[ index ], mPaperLogic->mAllUsers[ index ], kSelfUser );
+
+                // Tell new client about others
+                for( auto client : mClients )
+                {
+                    if( client == mClients[ index ] )
+                        continue;
+
+                    cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
+                    SendSimpleUserPositionToClient( mClients[ index ], user, kOtherUser );
+                }
+
+                SendGridToAllClient();
                 break;
 
             default:
                 break;
         }
 
-        if( index < 20 )
+        if( header < 20 )
         {
             _LOG( "User : " + QString::number( index ) + " did an action " + QString::number( header ) );
 
@@ -340,21 +359,6 @@ cServer::NewClientConnected( )
 
     // Clock sync
     SendClockToAllClients();
-
-    // Tell him his own position ( so client knows which player its controlling )
-    SendSimpleUserPositionToClient( newClient, newUser, kSelfUser );
-
-    // Tell new client about others
-    for( auto client : mClients )
-    {
-        if( client == newClient )
-            continue;
-
-        cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
-        SendSimpleUserPositionToClient( newClient, user, kOtherUser );
-    }
-
-    SendGridToAllClient();
 }
 
 

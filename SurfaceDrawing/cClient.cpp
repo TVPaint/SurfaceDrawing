@@ -31,6 +31,8 @@ cClient::cClient() :
     mDataStream.setVersion( QDataStream::Qt_5_10 );
 
     mApplicationClock = new QTimer();
+    mApplicationClock->start( CLOCKTIME );
+    mClockOffset = -1;
 }
 
 
@@ -91,6 +93,18 @@ cClient::SendRespawnRequest()
 
 
 void
+cClient::SendRdy()
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 666 );
+    write( data );
+}
+
+
+void
 cClient::SendPing()
 {
     QByteArray data;
@@ -106,11 +120,19 @@ cClient::SendPing()
 void
 cClient::StartPingAveraging()
 {
+    _LOG( "Starting ping averaging ..." );
     mPingAveraging = true;
     mPingAveragingCounter = 0;
     mPingAverage = 0;
-    for( int i = 0; i < PINGAVERAGINGAMOUNT; ++i )
-        SendPing();
+    SendPing(); // only one, each ping has to be sent after previous one is answered, otherwise it'll pack all ping requests in one packet
+}
+
+
+quint64
+cClient::GetTime()
+{
+
+    return mApplicationClock->remainingTime() - mClockOffset;
 }
 
 
@@ -137,7 +159,8 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            _LOG( "PACKET got sent in : " + QString::number( timestamp - mApplicationClock->remainingTimeAsDuration().count() ) );
+            //_LOG( "TIMESTAMP : " + QString::number( timestamp) );
+            _LOG( "PACKET got sent in : " + QString::number( timestamp - GetTime() ) );
 
 
             quint8 header;
@@ -262,8 +285,6 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() )
                 return;
 
-            mApplicationClock->start( clock );
-
             StartPingAveraging();
 
             mDataReadingState = kNone;
@@ -287,29 +308,8 @@ cClient::GetData()
         {
             auto ping = mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
 
-            _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTimeAsDuration().count() ) + " ms" );
-
-
-            if( mPingAveragingCounter <= PINGAVERAGINGAMOUNT )
-            {
-                _LOG( "Undergoing ping averaging ..." );
-                ++mPingAveragingCounter;
-                mPingAverage += mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
-
-                if( mPingAveragingCounter >= PINGAVERAGINGAMOUNT )
-                {
-                    int pingAvg = mPingAverage/PINGAVERAGINGAMOUNT;
-
-                    _LOG( "Ping average : " + QString::number( pingAvg ) );
-                    mApplicationClock->start( timestamp - pingAvg/2 );
-                    mPingAveraging = false;
-
-                    _LOG( "Timestamp : " + QString::number( timestamp ) );
-                    _LOG( "Clock : " + QString::number( mApplicationClock->remainingTimeAsDuration().count() ) );
-
-                    SendPing(); // to check clock diff
-                }
-            }
+            _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" );
+            _PingAveraging( timestamp );
 
             mDataReadingState = kNone;
         }
@@ -322,6 +322,35 @@ cClient::_LOG( const QString & iText )
 {
     qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
 
+}
+
+
+void
+cClient::_PingAveraging( qint64 timestamp )
+{
+    if( mClockOffset == -1 && mPingAveraging && mPingAveragingCounter <= PINGAVERAGINGAMOUNT )
+    {
+        _LOG( "Undergoing ping averaging ..." );
+        ++mPingAveragingCounter;
+        mPingAverage += mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
+        SendPing();
+
+        if( mPingAveragingCounter >= PINGAVERAGINGAMOUNT )
+        {
+            int pingAvg = mPingAverage/mPingAveragingCounter;
+
+            _LOG( "Ping average : " + QString::number( pingAvg ) );
+            mPingAveraging = false;
+            mClockOffset = std::abs( int(timestamp - mApplicationClock->remainingTime()) ) - pingAvg/2;
+
+            _LOG( "Offset : " + QString::number( mClockOffset ) );
+            _LOG( "Timestamp : " + QString::number( timestamp ) );
+            _LOG( "Clock : " + QString::number( GetTime() ) );
+
+            SendPing(); // to check clock diff
+            SendRdy();
+        }
+    }
 }
 
 

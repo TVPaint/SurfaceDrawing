@@ -7,6 +7,8 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#include <chrono>
+
 
 class cPaperLogic;
 
@@ -36,9 +38,12 @@ public:
 
     void SendNewDirection( int iDirection );
     void SendRespawnRequest();
+    void SendRdy(); // Client is properly set and connected, and now ready to get data;
 
     void  SendPing();
     void  StartPingAveraging();
+
+    quint64  GetTime();
 
 public slots:
     void  Connected();
@@ -58,6 +63,7 @@ signals:
 
 private:
     void  _LOG( const QString& iText );
+    void  _PingAveraging( qint64 timestamp );
 
 public:
     eDataReadingState   mDataReadingState = kNone;
@@ -65,6 +71,8 @@ public:
     QDataStream         mDataStream;
 
     QTimer*             mApplicationClock;
+    int                 mClockOffset;  // Offset with server, as we can't restart the clock once started (because start will round given time to the second ... )
+
     quint64             mPingStartTime;
     bool                mPingAveraging; // In the state where client is pinging to calculate a speed
     int                 mPingAveragingCounter; // To count where we at while receiving packets

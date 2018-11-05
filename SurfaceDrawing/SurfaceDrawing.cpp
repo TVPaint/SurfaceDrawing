@@ -109,12 +109,12 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
     //    }
     //}
 
-    qDebug() << "DELTATIME " + QString::number( iTimestamp - mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
+    qDebug() << "DELTATIME " + QString::number( iTimestamp - mClientSocket->GetTime() );
 
     mPaperLogic->CopyFromPaper( iPaper, 0 );
 
     quint16 missingUpdates = 0;
-    quint64  currentTime = mClientSocket->mApplicationClock->remainingTimeAsDuration().count();
+    quint64  currentTime = mClientSocket->GetTime();
 
 
     if( currentTime < iTimestamp )
