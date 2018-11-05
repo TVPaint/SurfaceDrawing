@@ -25,7 +25,7 @@ cServer::cServer() :
     mApplicationTimer = new QTimer();
     mApplicationTimer->start( CLOCKTIME );
 
-    mPreviousTime = mApplicationTimer->remainingTimeAsDuration().count();
+    mPreviousTime = uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
 
     connect( mUpdateTimer, &QTimer::timeout, this, &cServer::Update );
     connect( mApplicationTimer, &QTimer::timeout, this, &cServer::SendClockToAllClients );
@@ -54,7 +54,7 @@ cServer::SendGridToAllClient()
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kGrid);
     stream << *mPaperLogic;
 
@@ -73,9 +73,9 @@ cServer::SendClockToAllClients()
         stream.setVersion( QDataStream::Qt_5_10 );
         stream.setDevice( client );
 
-        stream << mApplicationTimer->remainingTimeAsDuration().count();
+        stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
         stream << quint8(kClock);
-        stream << mApplicationTimer->remainingTimeAsDuration().count();
+        stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     }
 }
 
@@ -88,7 +88,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient);
 
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kSimple);
     stream << iType;
     stream << *iUser;
@@ -105,7 +105,7 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
 
     qDebug() << "Sending action to user : " + QString::number( mClients.key( iClient ) );
 
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kAction);
     stream << iAction;
     stream << *iUser;
@@ -119,7 +119,7 @@ cServer::SendUserDisconnectedToAllClients( int iIndex )
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kDisc);
     stream << iIndex;
 
@@ -136,7 +136,7 @@ cServer::SendPongToClient( QTcpSocket* iClient )
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient );
 
-    stream << mApplicationTimer->remainingTimeAsDuration().count();
+    stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kPong);
 }
 
@@ -177,7 +177,7 @@ cServer::ClientDisconnected()
 void
 cServer::Update()
 {
-    mPaperLogic->Update( mApplicationTimer->remainingTimeAsDuration().count() );
+    mPaperLogic->Update( uint32_t( mApplicationTimer->remainingTimeAsDuration().count() ) );
 
     if( mQuit )
         emit quit();
