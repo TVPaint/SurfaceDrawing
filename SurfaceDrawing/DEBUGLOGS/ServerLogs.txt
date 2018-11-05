@@ -1,0 +1,9 @@
+107991495 : New client connected
+107991495 : Sending clock to all clients
+107991494 : DONE sending clock to all clients
+107991494 : Sending kSelfAssign information to client : 0
+107991494 : DONE sending information
+107991493 : Sending grid to all clients
+107991412 : Sending pong
+107991412 : DONE sending pong
+107991411 : User : 0 did an action 99

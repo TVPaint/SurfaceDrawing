@@ -74,7 +74,7 @@ private:
     QMap< int, QDataStream* >   mDataStream;
 
     cPaperLogic*                mPaperLogic;
-    QTimer*                     mApplicationTimer;
+    QTimer*                     mApplicationClock;
     QTimer*                     mUpdateTimer;
     quint64                     mPreviousTime;
     quint64                     mTimeBuffer = 0;

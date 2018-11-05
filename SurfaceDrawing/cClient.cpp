@@ -110,8 +110,7 @@ cClient::GetData()
 {
     qint64 timestamp;
 
-
-    qDebug() << "======================INC================= : " << bytesAvailable();
+    _LOG( "======================INC================= : " + QString::number( bytesAvailable() ) );
 
     while( bytesAvailable() > 0 )
     {
@@ -122,7 +121,7 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            qDebug() << "PACKET got sent in : " << QString::number( timestamp - mApplicationClock->remainingTimeAsDuration().count() );
+            _LOG( "PACKET got sent in : " + QString::number( timestamp - mApplicationClock->remainingTimeAsDuration().count() ) );
 
 
             quint8 header;
@@ -147,7 +146,7 @@ cClient::GetData()
 
         if( mDataReadingState == kGRID )
         {
-            qDebug() << "GRID";
+            _LOG( "Data type : GRID" );
 
             cPaperLogic data;
             mDataStream.startTransaction();
@@ -161,7 +160,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == kSIMPLE )
         {
-            qDebug() << "SIMPLE";
+            _LOG( "Data type : SIMPLE" );
 
             int type;
             cUser* newUser = new cUser( -1, Qt::transparent );
@@ -177,11 +176,14 @@ cClient::GetData()
             if( typeAsEnum == cServer::kSelfUser )
             {
                 qDebug() << "SELF" << newUser->mGUIPosition;
+                _LOG( "SELF : " + QString::number( newUser->mGUIPosition.x() ) + "-" + QString::number( newUser->mGUIPosition.y() ) );
+
                 emit myUserAssigned( newUser );
             }
             else
             {
-                qDebug() << "OTHER : " << newUser->mGUIPosition;
+                _LOG( "OTHER : " + QString::number( newUser->mGUIPosition.x() ) + "-" + QString::number( newUser->mGUIPosition.y() ) );
+
                 emit newUserArrived( newUser );
             }
 
@@ -189,7 +191,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == kACTION )
         {
-            qDebug() << "ACTION";
+            _LOG( "Data type : ACTION" );
 
             int action;
             cUser* newUser = new cUser( -1, Qt::transparent );
@@ -201,7 +203,7 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() )
                 return;
 
-            qDebug() << "User : " + QString::number( newUser->mIndex ) + " did an action " + QString::number( action );
+            _LOG( "User : " + QString::number( newUser->mIndex ) + " did an action " + QString::number( action ) );
 
             switch( action )
             {
@@ -235,7 +237,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == kCLOCK )
         {
-            qDebug() << "CLOCK";
+            _LOG( "Data type : CLOCK" );
 
             quint64 clock;
 
@@ -250,7 +252,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == kDISC )
         {
-            qDebug() << "DISC";
+            _LOG( "Data type : DISC" );
 
             int index;
 
@@ -265,7 +267,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == kPONG )
         {
-            qDebug() << "PING : " << mPingStartTime - mApplicationClock->remainingTimeAsDuration().count() << " ms";
+            _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTimeAsDuration().count() ) + " ms" );
 
             mDataReadingState = kNone;
         }
@@ -274,10 +276,18 @@ cClient::GetData()
 
 
 void
+cClient::_LOG( const QString & iText )
+{
+    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << endl;
+
+}
+
+
+void
 cClient::Connected()
 {
     mConnectedToServer = true;
-    qDebug() << "Connected to server";
+    _LOG( "Connected to server" );
 }
 
 

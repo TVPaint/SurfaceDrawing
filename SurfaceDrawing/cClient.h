@@ -55,6 +55,9 @@ signals:
 
     void  userDisconnected( int iIndex );
 
+private:
+    void  _LOG( const QString& iText );
+
 public:
     eDataReadingState   mDataReadingState = kNone;
     bool                mConnectedToServer = false;
