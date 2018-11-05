@@ -3,6 +3,8 @@
 #include  "cPaperLogic.h"
 
 #include <QDataStream>
+#include <QTextStream>
+#include <QFile>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTimer>
@@ -61,6 +63,12 @@ public slots:
 signals:
     void  quit();
 
+
+private:
+    // LOGS
+    void  _LOG( const QString& iText );
+
+
 private:
     QMap< int, QTcpSocket* >    mClients;
     QMap< int, QDataStream* >   mDataStream;
@@ -73,5 +81,9 @@ private:
 
     bool                        mQuit = false;
 
+
+    // DEBUG
+    QFile*                       mDEBUGFile;
+    QTextStream*                 mDEBUGStream;
 };
 

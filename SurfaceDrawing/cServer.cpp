@@ -13,6 +13,10 @@ cServer::~cServer()
 {
     delete  mUpdateTimer;
     delete  mPaperLogic;
+
+    mDEBUGFile->close();
+    delete  mDEBUGFile;
+    delete  mDEBUGStream;
 }
 
 
@@ -34,6 +38,12 @@ cServer::cServer() :
 
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
+
+    mDEBUGFile = new QFile( "./DEBUGLOGS/ServerLogs.txt" );
+    if( !mDEBUGFile->open( QIODevice::WriteOnly ) )
+        qDebug() << "Can't open file";
+
+    mDEBUGStream = new QTextStream( mDEBUGFile );
 }
 
 
@@ -43,7 +53,6 @@ cServer::Run()
     if( !listen( QHostAddress::Any, 55666 ) )
         qDebug() << "Error";
 
-    qDebug() << "Listening on port :  " << serverPort();
 }
 
 
@@ -58,6 +67,8 @@ cServer::SendGridToAllClient()
     stream << quint8(kGrid);
     stream << *mPaperLogic;
 
+    _LOG( "Sending grid to all clients" );
+
     for( auto client : mClients )
         client->write( data );
 }
@@ -66,6 +77,7 @@ cServer::SendGridToAllClient()
 void
 cServer::SendClockToAllClients()
 {
+    _LOG( "Sending clock to all clients" );
     for( auto client : mClients )
     {
         QByteArray data;
@@ -77,6 +89,8 @@ cServer::SendClockToAllClients()
         stream << quint8(kClock);
         stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     }
+
+    _LOG( "DONE sending clock to all clients" );
 }
 
 
@@ -88,10 +102,20 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient);
 
+
+    QString type = "kSelfAssign";
+    if( iType == kOtherUser )
+        type = "kOtherUser";
+
+    _LOG( "Sending " + type + " information to client : " + QString::number( mClients.key( iClient ) ) );
+
     stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kSimple);
     stream << iType;
     stream << *iUser;
+
+    _LOG( "DONE sending information" );
+
 }
 
 
@@ -103,12 +127,14 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient );
 
-    qDebug() << "Sending action to user : " + QString::number( mClients.key( iClient ) );
+    _LOG( "Sending action to user : " + QString::number( mClients.key( iClient ) ) );
 
     stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kAction);
     stream << iAction;
     stream << *iUser;
+
+    _LOG( "DONE sending action" );
 }
 
 
@@ -123,8 +149,13 @@ cServer::SendUserDisconnectedToAllClients( int iIndex )
     stream << quint8(kDisc);
     stream << iIndex;
 
+
+    _LOG( "Sending disconnected msg to all clients" );
+
     for( auto client : mClients )
         client->write( data );
+
+    _LOG( "DONE sending disconnect info" );
 }
 
 
@@ -136,8 +167,12 @@ cServer::SendPongToClient( QTcpSocket* iClient )
     stream.setVersion( QDataStream::Qt_5_10 );
     stream.setDevice( iClient );
 
+    _LOG( "Sending pong" );
+
     stream << uint32_t( mApplicationTimer->remainingTimeAsDuration().count() );
     stream << quint8(kPong);
+
+    _LOG( "DONE sending pong" );
 }
 
 
@@ -156,7 +191,7 @@ cServer::ClientDisconnected()
         if( client->state() == QAbstractSocket::UnconnectedState )
         {
             auto clientKey = mClients.key( client );
-            qDebug() << "Client " + QString::number( clientKey ) + " disconnected. RIP";
+            _LOG( "Client " + QString::number( clientKey ) + " disconnected." );
 
             // Remove from containers
             mDataStream.erase( mDataStream.find( clientKey ) );
@@ -232,7 +267,6 @@ cServer::GetData()
             break;
 
         case 99 : // Ping
-            qDebug() << "Answering ping request";
             SendPongToClient( mClients[ index ] );
             break;
 
@@ -242,7 +276,7 @@ cServer::GetData()
 
     if( index < 20 )
     {
-        qDebug() << "User : " + QString::number( index ) + " did an action " + QString::number( header );
+        _LOG( "User : " + QString::number( index ) + " did an action " + QString::number( header ) );
 
         for( auto client : mClients )
         {
@@ -256,9 +290,17 @@ cServer::GetData()
 
 
 void
+cServer::_LOG( const QString & iText )
+{
+    qDebug() << mApplicationTimer->remainingTimeAsDuration().count() << " : " << iText << endl;
+    *mDEBUGStream << mApplicationTimer->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
+}
+
+
+void
 cServer::NewClientConnected( )
 {
-    qDebug() << "New client connected";
+    _LOG( " New client connected" );
 
     int R = rand() % 126;
     int G = rand() % 126;
