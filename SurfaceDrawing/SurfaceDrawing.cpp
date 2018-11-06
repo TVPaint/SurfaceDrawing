@@ -76,9 +76,10 @@ SurfaceDrawing::RespawnRequest()
 
 
 void
-SurfaceDrawing::DirectionChanged( int iDirection )
+SurfaceDrawing::DirectionChanged( quint64 iTick, int iDirection )
 {
-    mClientSocket->SendNewDirection( iDirection );
+    mClientSocket->SendNewDirection( iTick, iDirection );
+    qDebug() << mPaperLogic->mTick;
 }
 
 
@@ -90,7 +91,7 @@ SurfaceDrawing::PingRequest()
 
 
 void
-SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
+SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
 {
     // As we send newUser and otherUsers info, this should never be out of sync
     Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
@@ -109,23 +110,13 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, quint64 iTimestamp )
     //    }
     //}
 
-    qDebug() << "DELTATIME " + QString::number( iTimestamp - mClientSocket->GetTime() );
+    qDebug() << "PAPER LATENCY = " << iLatencyInMs;
 
     mPaperLogic->CopyFromPaper( iPaper, 0 );
 
-    quint16 missingUpdates = 0;
-    quint64  currentTime = mClientSocket->GetTime();
-
-
-    if( currentTime < iTimestamp )
-    {
-        quint64 deltaTime = iTimestamp - currentTime;
-        missingUpdates = deltaTime / SPEED; // 60 fps
-        qDebug() << "DELTATIME " + QString::number( deltaTime );
-    }
+    quint16 missingUpdates = iLatencyInMs / SPEED;
 
     qDebug() << "OFF BY -------------> " + QString::number( missingUpdates );
-
 }
 
 
@@ -147,9 +138,11 @@ SurfaceDrawing::MyUserAssigned( cUser * iUser )
 
 
 void
-SurfaceDrawing::UserDirectionChanged( cUser * iUser )
+SurfaceDrawing::UserDirectionChanged( cUser * iUser, quint64 iTick )
 {
+    mPaperLogic->GoToTick( iTick );
     mPaperLogic->mAllUsers[ iUser->mIndex ]->setMovementVector( iUser->mGUIMovementVector );
+    mPaperLogic->GoToTick( mPaperLogic->mTick );
 }
 
 

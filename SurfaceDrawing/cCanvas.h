@@ -41,7 +41,7 @@ public:
     void  Update();
 
 signals:
-    void  directionChanged( int iDirection );
+    void  directionChanged( quint64 iTick, int iDirection );
     void  respawnRequest();
     void  pingRequest();
 

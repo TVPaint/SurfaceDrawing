@@ -67,6 +67,7 @@ public:
 
 public:
     void Update( quint64 iCurrentTimeRemaining );
+    void GoToTick( quint64 iTick );
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 
@@ -98,6 +99,8 @@ public:
 
     quint64                             mPreviousTime = 0;
     quint64                             mTimeBuffer = 0;
+
+    quint64                             mTick;
 };
 
 

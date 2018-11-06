@@ -35,13 +35,13 @@ public:
 
 public slots:
     void  RespawnRequest();
-    void  DirectionChanged( int iDirection );
+    void  DirectionChanged( quint64 iTick, int iDirection );
     void  PingRequest();
 
-    void  PaperLogicArrived( cPaperLogic& iPaper, quint64 iTimestamp );
+    void  PaperLogicArrived( cPaperLogic& iPaper, int  iLatencyInMs );
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
-    void  UserDirectionChanged( cUser* iUser );
+    void  UserDirectionChanged( cUser* iUser, quint64 iTick );
     void  UserRequestedRespawn( cUser* iUser );
 
     void  UserDisconnected( int iIndex );

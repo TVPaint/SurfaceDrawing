@@ -98,22 +98,22 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     if( iEvent->key() == Qt::Key_Left )
     {
         mMyself->mUser->setMovementVector( QPoint( -1, 0 ) );
-        emit directionChanged( 1 );
+        emit directionChanged( mPaperLogic->mTick, 1 );
     }
     else if( iEvent->key() == Qt::Key_Right )
     {
         mMyself->mUser->setMovementVector( QPoint( 1, 0 ) );
-        emit directionChanged( 2 );
+        emit directionChanged( mPaperLogic->mTick, 2 );
     }
     else if( iEvent->key() == Qt::Key_Up )
     {
         mMyself->mUser->setMovementVector( QPoint( 0, -1 ) );
-        emit directionChanged( 3 );
+        emit directionChanged( mPaperLogic->mTick, 3 );
     }
     else if( iEvent->key() == Qt::Key_Down )
     {
         mMyself->mUser->setMovementVector( QPoint( 0, 1 ) );
-        emit directionChanged( 4 );
+        emit directionChanged( mPaperLogic->mTick, 4 );
     }
     else if( iEvent->key() == Qt::Key_Space )
     {

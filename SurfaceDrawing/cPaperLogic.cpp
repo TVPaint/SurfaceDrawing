@@ -19,6 +19,7 @@ cPaperLogic::~cPaperLogic()
 
 cPaperLogic::cPaperLogic()
 {
+    mTick = 0;
 }
 
 
@@ -26,6 +27,7 @@ void
 cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates )
 {
     qDebug() << "Copying paper";
+
     for( auto user : mAllUsers )
     {
         int index = mAllUsers.key( user );
@@ -69,6 +71,10 @@ cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates )
 
     for( auto user : mAllUsers )
         user->Update( iMissingUpdates );
+
+    mTick = iPaper.mTick;
+    GoToTick( mTick + iMissingUpdates ); // Don't change mTick before, because GoToTick uses mTick to calculate deltaTick
+    mTick += iMissingUpdates;
 }
 
 
@@ -139,52 +145,72 @@ cPaperLogic::Update( quint64 iCurrentTimeRemaining )
     int tickCount = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
     mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
 
+    GoToTick( mTick + tickCount );
+    mTick += tickCount;
+}
 
-    if( tickCount == 0 )
-        return;
 
-    for( auto user : mAllUsers )
+void
+cPaperLogic::GoToTick( quint64 iTick )
+{
+    int deltaTick = int(iTick - mTick);
+
+    if( deltaTick == 0 )
     {
-        if( !user || user->mIsDead )
-            continue;
-
-        // USER
-        QPoint oldPosition = user->mPosition;
-
-        SetPlayerValueAt( oldPosition, -1 );
-
-        // User movement
-        user->Update( tickCount );
-        QPoint newPosition = user->mPosition;
-
-        if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
-            || newPosition.y() < 0 || newPosition.y() >= GRIDSIZE )
+        //qDebug() << "*********************************Nothing";
+        return;
+    }
+    else if( deltaTick > 0 ) // Advance in ticks
+    {
+        //qDebug() << "*********************************FWD : " << deltaTick;
+        for( auto user : mAllUsers )
         {
-            KillUser( user );
-            return;
-        }
+            if( !user || user->mIsDead )
+                continue;
 
-        SetPlayerValueAt( newPosition, user->mIndex );
+            // USER
+            QPoint oldPosition = user->mPosition;
 
-        if( oldPosition != newPosition && CELLAT(oldPosition).mGround != user->mIndex )
-        {
-            _AddTrailAtIndex( oldPosition, user );
-        }
+            SetPlayerValueAt( oldPosition, -1 );
 
-        // TRAILS
-        if( CELLAT(newPosition).mGround == user->mIndex && user->mIsOutOfGround == true ) // if we land back on our ground
-        {
-            user->mIsOutOfGround = false;
-            FillZone( user );
+            // User movement
+            user->Update( deltaTick );
+            QPoint newPosition = user->mPosition;
+
+            if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
+                || newPosition.y() < 0 || newPosition.y() >= GRIDSIZE )
+            {
+                KillUser( user );
+                return;
+            }
+
+            SetPlayerValueAt( newPosition, user->mIndex );
+
+            if( oldPosition != newPosition && CELLAT(oldPosition).mGround != user->mIndex )
+            {
+                _AddTrailAtIndex( oldPosition, user );
+            }
+
+            // TRAILS
+            if( CELLAT(newPosition).mGround == user->mIndex && user->mIsOutOfGround == true ) // if we land back on our ground
+            {
+                user->mIsOutOfGround = false;
+                FillZone( user );
+            }
+            else if( CELLAT(newPosition).mGround != user->mIndex && user->mIsOutOfGround == false ) // If we leave our land
+            {
+                user->mIsOutOfGround = true;
+            }
+            else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
+            {
+                KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
+            }
         }
-        else if( CELLAT(newPosition).mGround != user->mIndex && user->mIsOutOfGround == false ) // If we leave our land
-        {
-            user->mIsOutOfGround = true;
-        }
-        else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
-        {
-            KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
-        }
+    }
+    else if( deltaTick < 0 ) // Go back in time
+    {
+        qDebug() << "*********************************BKWD : " << deltaTick;
+        //TODO
     }
 }
 
@@ -516,7 +542,8 @@ operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic )
 {
     oStream << compute_hash( "cPaperGrid" );
     oStream << iPaperLogic.mPaperGrid
-            << iPaperLogic.mAllUsers;
+            << iPaperLogic.mAllUsers
+            << iPaperLogic.mTick;
 
     return  oStream;
 }
@@ -534,7 +561,8 @@ operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic )
     }
 
     iStream >> oPaperLogic.mPaperGrid
-            >> oPaperLogic.mAllUsers;
+            >> oPaperLogic.mAllUsers
+            >> oPaperLogic.mTick;
 
 
     return  iStream;

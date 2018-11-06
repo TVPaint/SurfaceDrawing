@@ -36,7 +36,7 @@ public:
 public:
     void  AskConnection();
 
-    void SendNewDirection( int iDirection );
+    void SendNewDirection( quint64 iTick, int iDirection );
     void SendRespawnRequest();
     void SendRdy(); // Client is properly set and connected, and now ready to get data;
 
@@ -44,6 +44,7 @@ public:
     void  StartPingAveraging();
 
     quint64  GetTime();
+    quint64  GetLatencyInMsFromTimestamp( quint64 iTimestamp );
 
 public slots:
     void  Connected();
@@ -54,9 +55,9 @@ public slots:
 signals:
     void  newUserArrived( cUser* iUser );
     void  myUserAssigned( cUser* iUser );
-    void  paperLogicArrived( cPaperLogic& iPaper, quint64 iTimeStamp );
+    void  paperLogicArrived( cPaperLogic& iPaper, int  iLatencyInMs );
 
-    void  userChangedDirection( cUser* iUser );
+    void  userChangedDirection( cUser* iUser, quint64 iTick );
     void  userRequestedRespawn( cUser* iUser );
 
     void  userDisconnected( int iIndex );

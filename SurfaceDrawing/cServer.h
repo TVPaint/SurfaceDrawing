@@ -52,6 +52,9 @@ public:
 
     void  BuildPacket( QByteArray* oData, QDataStream* oStream, int iType );
 
+
+    bool  ReadUserAction( int iClientIndex, int iAction );
+
 public slots:
     void  NewClientConnected();
     void  ClientDisconnected();

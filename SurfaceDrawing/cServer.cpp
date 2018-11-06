@@ -77,7 +77,7 @@ cServer::SendGridToAllClient()
 void
 cServer::SendClockToAllClients()
 {
-    _LOG( "Sending clock to all clients" );
+    _LOG( "Sending clock signal to all clients" );
     for( auto client : mClients )
     {
         QByteArray data;
@@ -87,10 +87,9 @@ cServer::SendClockToAllClients()
 
         stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
         stream << quint8(kClock);
-        stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
     }
 
-    _LOG( "DONE sending clock to all clients" );
+    _LOG( "DONE sending clock signal to all clients" );
 }
 
 
@@ -113,6 +112,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     stream << quint8(kSimple);
     stream << iType;
     stream << *iUser;
+    stream << mPaperLogic->mTick;
 
     _LOG( "DONE sending information" );
 
@@ -133,6 +133,7 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     stream << quint8(kAction);
     stream << iAction;
     stream << *iUser;
+    stream << mPaperLogic->mTick;
 
     _LOG( "DONE sending action" );
 }
@@ -180,6 +181,58 @@ void
 cServer::BuildPacket( QByteArray * oData, QDataStream * oStream, int iType )
 {
     // possible ?
+}
+
+
+bool
+cServer::ReadUserAction( int iClientIndex, int iAction )
+{
+    QDataStream* stream = mDataStream[ iClientIndex ];
+    cUser* user = mPaperLogic->mAllUsers[ iClientIndex ];
+
+    quint64 tick;
+
+    stream->startTransaction();
+    *stream >> tick;
+    if( !stream->commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+        return  false;
+
+    _LOG( "User : " + QString::number( iClientIndex ) + " did an action " + QString::number( iAction ) + " -- Requested at tick : " + QString::number( tick ) );
+
+    QPoint  newVector;
+    switch( iAction )
+    {
+        case 1: // Left
+            newVector = ( QPoint( -1, 0 ) );
+            break;
+        case 2: // Right
+            newVector = ( QPoint( 1, 0 ) );
+            break;
+        case 3: // Top
+            newVector = ( QPoint( 0, -1 ) );
+            break;
+        case 4: // Bottom
+            newVector = ( QPoint( 0, 1 ) );
+            break;
+
+        default:
+            break;
+    }
+
+    mPaperLogic->GoToTick( tick ); // Lag Compensation
+    user->setMovementVector( newVector );
+    mPaperLogic->GoToTick( mPaperLogic->mTick );
+
+    // Information to other clients
+    for( auto client : mClients )
+    {
+        if( iClientIndex == mClients.key( client ) ) // Don't send to the guy that initially sent us the action
+            continue;
+
+        SendUserActionToClient( client, mPaperLogic->mAllUsers[ iClientIndex ], iAction );
+    }
+
+    return  true;
 }
 
 
@@ -251,17 +304,13 @@ cServer::GetData()
 
         switch( header )
         {
+            // Movement
             case 1: // Left
-                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( -1, 0 ) );
-                break;
             case 2: // Right
-                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 1, 0 ) );
-                break;
             case 3: // Top
-                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, -1 ) );
-                break;
             case 4: // Bottom
-                mPaperLogic->mAllUsers[ index ]->setMovementVector( QPoint( 0, 1 ) );
+                if( !ReadUserAction( index, header ) ) // false == packet incomplete, so return and wait the next one
+                    return;
                 break;
 
             case 10 : // Respawn
@@ -295,13 +344,11 @@ cServer::GetData()
                 break;
         }
 
-        if( header < 20 )
+        if( header == 10 ) // Respawn
         {
-            _LOG( "User : " + QString::number( index ) + " did an action " + QString::number( header ) );
-
             for( auto client : mClients )
             {
-                if( index == mClients.key( client ) )
+                if( index == mClients.key( client ) ) // Don't send to the guy that initially sent us the action
                     continue;
 
                 SendUserActionToClient( client, mPaperLogic->mAllUsers[ index ], header );

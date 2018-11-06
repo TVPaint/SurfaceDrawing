@@ -69,13 +69,15 @@ cClient::AskConnection()
 
 
 void
-cClient::SendNewDirection( int iDirection )
+cClient::SendNewDirection( quint64 iTick, int iDirection )
 {
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
     stream << int( iDirection );
+    stream << iTick;
+
     write( data );
 }
 
@@ -131,8 +133,14 @@ cClient::StartPingAveraging()
 quint64
 cClient::GetTime()
 {
+    return  mApplicationClock->remainingTime() - mClockOffset;
+}
 
-    return mApplicationClock->remainingTime() - mClockOffset;
+
+quint64
+cClient::GetLatencyInMsFromTimestamp( quint64 iTimestamp )
+{
+    return  iTimestamp - GetTime();
 }
 
 
@@ -193,7 +201,7 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() )
                 return;
 
-            emit  paperLogicArrived( data, timestamp );
+            emit  paperLogicArrived( data, GetLatencyInMsFromTimestamp( timestamp ) );
 
             mDataReadingState = kNone;
         }
@@ -234,10 +242,12 @@ cClient::GetData()
 
             int action;
             cUser* newUser = new cUser( -1, Qt::transparent );
+            quint64 tick;
 
             mDataStream.startTransaction();
             mDataStream >> action;
             mDataStream >> *newUser;
+            mDataStream >> tick;
 
             if( !mDataStream.commitTransaction() )
                 return;
@@ -248,19 +258,19 @@ cClient::GetData()
             {
                 case 1: // Right
                     newUser->setMovementVector( QPoint( -1, 0 ) );
-                    emit  userChangedDirection( newUser );
+                    emit  userChangedDirection( newUser, tick );
                     break;
                 case 2: // Left
                     newUser->setMovementVector( QPoint( 1, 0 ) );
-                    emit  userChangedDirection( newUser );
+                    emit  userChangedDirection( newUser, tick );
                     break;
                 case 3: // Top
                     newUser->setMovementVector( QPoint( 0, -1 ) );
-                    emit  userChangedDirection( newUser );
+                    emit  userChangedDirection( newUser, tick );
                     break;
                 case 4: // Bottom
                     newUser->setMovementVector( QPoint( 0, 1 ) );
-                    emit  userChangedDirection( newUser );
+                    emit  userChangedDirection( newUser, tick );
                     break;
 
                 case 10 : // Respawn
@@ -277,14 +287,6 @@ cClient::GetData()
         else if( mDataReadingState == kCLOCK )
         {
             _LOG( "Data type : CLOCK" );
-
-            quint64 clock;
-
-            mDataStream.startTransaction();
-            mDataStream >> clock;
-            if( !mDataStream.commitTransaction() )
-                return;
-
             StartPingAveraging();
 
             mDataReadingState = kNone;
