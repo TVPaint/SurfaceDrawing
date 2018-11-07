@@ -14,6 +14,7 @@ class cUser
 {
 public:
     ~cUser();
+    cUser();
     cUser( int iIndex, const QColor& iColor );
 
 public:

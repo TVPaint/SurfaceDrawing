@@ -37,6 +37,7 @@ public slots:
     void  RespawnRequest();
     void  DirectionChanged( quint64 iTick, int iDirection );
     void  PingRequest();
+    void  RollbackTest();
 
     void  PaperLogicArrived( cPaperLogic& iPaper, int  iLatencyInMs );
     void  NewUserArrived( cUser* iUser );

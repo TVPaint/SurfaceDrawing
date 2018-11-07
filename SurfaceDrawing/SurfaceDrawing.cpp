@@ -39,6 +39,7 @@ SurfaceDrawing::Init()
     connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
     connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
     connect( mCanvas, &cCanvas::pingRequest, this, &SurfaceDrawing::PingRequest );
+    connect( mCanvas, &cCanvas::rollbackTest, this, &SurfaceDrawing::RollbackTest );
 
 
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
@@ -87,6 +88,14 @@ void
 SurfaceDrawing::PingRequest()
 {
     mClientSocket->SendPing();
+}
+
+
+void
+SurfaceDrawing::RollbackTest()
+{
+    mPaperLogic->GoToTick( mPaperLogic->mTick - 80 );
+    mPaperLogic->mTick = mPaperLogic->mTick - 80;
 }
 
 

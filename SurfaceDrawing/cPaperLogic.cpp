@@ -20,6 +20,8 @@ cPaperLogic::~cPaperLogic()
 cPaperLogic::cPaperLogic()
 {
     mTick = 0;
+    mSnapShots.reserve( 100 );
+    mSnapShots.push_back( new cSnapShot( 0 ) ); // Initial SS
 }
 
 
@@ -145,6 +147,9 @@ cPaperLogic::Update( quint64 iCurrentTimeRemaining )
     int tickCount = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
     mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
 
+
+
+
     GoToTick( mTick + tickCount );
     mTick += tickCount;
 }
@@ -162,6 +167,11 @@ cPaperLogic::GoToTick( quint64 iTick )
     }
     else if( deltaTick > 0 ) // Advance in ticks
     {
+        if( mSnapShots.size() >= 100 )
+            mSnapShots.pop_front();
+
+        mSnapShots.push_back( new cSnapShot( mTick + deltaTick ) );
+
         //qDebug() << "*********************************FWD : " << deltaTick;
         for( auto user : mAllUsers )
         {
@@ -175,6 +185,8 @@ cPaperLogic::GoToTick( quint64 iTick )
 
             // User movement
             user->Update( deltaTick );
+            mSnapShots.back()->AddUserDiff( user );
+
             QPoint newPosition = user->mPosition;
 
             if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
@@ -210,7 +222,7 @@ cPaperLogic::GoToTick( quint64 iTick )
     else if( deltaTick < 0 ) // Go back in time
     {
         qDebug() << "*********************************BKWD : " << deltaTick;
-        //TODO
+        ApplySnapShotHistoryBackToTick( iTick );
     }
 }
 
@@ -234,6 +246,7 @@ void
 cPaperLogic::SetPlayerValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mPlayer = value;
+    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kPlayer );
 }
 
@@ -242,6 +255,7 @@ void
 cPaperLogic::SetTrailValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mTrail = value;
+    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kTrail );
 }
 
@@ -250,6 +264,7 @@ void
 cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mGround = value;
+    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kGround );
 }
 
@@ -416,8 +431,45 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
 
 
 
+cSnapShot*
+cPaperLogic::FindSnapShotByTick( quint64 iTick )
+{
+    for( auto snap : mSnapShots )
+    {
+        if( snap->Tick() >= iTick ) // The one exactly equal or higher closest
+            return  snap;
+    }
+
+    return  nullptr;
+}
 
 
+void
+cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
+{
+    auto& diffMap = iSnap->DiffMap();
+    auto& diffUsers = iSnap->DiffUsers();
+
+    for( auto& user : diffUsers )
+    {
+        mAllUsers[ user.mIndex ]->copyFromUser( &user );
+    }
+
+    for( auto& cell : diffMap )
+        CELLAT( cell.first ) = cell.second;
+}
+
+
+void
+cPaperLogic::ApplySnapShotHistoryBackToTick( quint64 iTick )
+{
+    auto snap = FindSnapShotByTick( iTick );
+
+    for( int i = mSnapShots.indexOf( snap ); i < mSnapShots.size(); ++i )
+    {
+        ApplySnapShot( mSnapShots[ i ] );
+    }
+}
 
 
 bool
@@ -566,4 +618,62 @@ operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic )
 
 
     return  iStream;
+}
+
+
+
+// ===========================
+// ===========================
+// ===========================
+// ===========================
+
+
+
+cSnapShot::~cSnapShot()
+{
+}
+
+
+cSnapShot::cSnapShot( quint64 iTick ) :
+    mTick( iTick)
+{
+}
+
+
+void
+cSnapShot::AddCellDiff( const QPoint & iPoint, cPaperLogic::eDataCell iData )
+{
+    QPair< QPoint, cPaperLogic::eDataCell > pair( iPoint, iData );
+    mDiffMap.push_back( pair );
+}
+
+
+void
+cSnapShot::AddUserDiff( cUser * iUser )
+{
+    cUser userCopy( 0, Qt::transparent );
+    userCopy.copyFromUser( iUser );
+
+    mDiffUsers.push_back( userCopy );
+}
+
+
+QVector< QPair< QPoint, cPaperLogic::eDataCell > >&
+cSnapShot::DiffMap()
+{
+    return  mDiffMap;
+}
+
+
+QVector< cUser >&
+cSnapShot::DiffUsers()
+{
+    return  mDiffUsers;
+}
+
+
+quint64
+cSnapShot::Tick() const
+{
+    return  mTick;
 }

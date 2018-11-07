@@ -1,242 +1,271 @@
-107991304 : New client connected
-107991304 : Sending clock signal to all clients
-107991303 : DONE sending clock signal to all clients
-107991235 : User : 0 did a ping request
-107991235 : Sending pong
-107991235 : DONE sending pong
-107991229 : User : 0 did a ping request
-107991229 : Sending pong
-107991228 : DONE sending pong
-107991206 : User : 0 did a ping request
-107991206 : Sending pong
-107991206 : DONE sending pong
-107991193 : User : 0 did a ping request
-107991193 : Sending pong
-107991193 : DONE sending pong
-107991192 : User : 0 did a ping request
-107991192 : Sending pong
-107991192 : DONE sending pong
-107991190 : User : 0 did a ping request
-107991190 : Sending pong
-107991190 : DONE sending pong
-107991188 : User : 0 did a ping request
-107991188 : Sending pong
-107991188 : DONE sending pong
-107991184 : User : 0 did a ping request
-107991184 : Sending pong
-107991184 : DONE sending pong
-107991182 : User : 0 did a ping request
-107991182 : Sending pong
-107991181 : DONE sending pong
-107991180 : User : 0 did a ping request
-107991180 : Sending pong
-107991180 : DONE sending pong
-107991178 : User : 0 did a ping request
-107991178 : Sending pong
-107991177 : DONE sending pong
-107991177 : User : 0 did a ping request
-107991177 : Sending pong
-107991177 : DONE sending pong
-107991177 : User : 0 is ready to communicate
-107991177 : Sending kSelfAssign information to client : 0
-107991177 : DONE sending information
-107991176 : Sending grid to all clients
-107990249 : User : 0 did an action 3 -- Requested at tick : 485
-107988940 : User : 0 did an action 1 -- Requested at tick : 551
-107986834 : User : 0 did an action 4 -- Requested at tick : 655
-107985770 : User : 0 did an action 2 -- Requested at tick : 709
-107984713 : User : 0 did an action 4 -- Requested at tick : 762
-107981153 : User : 0 did an action 3 -- Requested at tick : 940
-107980683 : User : 0 did an action 1 -- Requested at tick : 964
-107979431 : User : 0 did an action 4 -- Requested at tick : 1026
-107979155 : User : 0 did an action 2 -- Requested at tick : 1040
-107977707 : User : 0 did an action 3 -- Requested at tick : 1112
-107974448 : Client 0 disconnected.
-107974448 : Sending disconnected msg to all clients
-107974448 : DONE sending disconnect info
-107974447 : Sending grid to all clients
-107970879 : New client connected
-107970879 : Sending clock signal to all clients
-107970878 : DONE sending clock signal to all clients
-107970844 : User : 0 did a ping request
-107970833 : Sending pong
-107970833 : DONE sending pong
-107970830 : User : 0 did a ping request
-107970829 : Sending pong
-107970829 : DONE sending pong
-107970827 : User : 0 did a ping request
-107970827 : Sending pong
-107970827 : DONE sending pong
-107970825 : User : 0 did a ping request
-107970825 : Sending pong
-107970825 : DONE sending pong
-107970824 : User : 0 did a ping request
-107970824 : Sending pong
-107970823 : DONE sending pong
-107970822 : User : 0 did a ping request
-107970822 : Sending pong
-107970822 : DONE sending pong
-107970821 : User : 0 did a ping request
-107970820 : Sending pong
-107970820 : DONE sending pong
-107970819 : User : 0 did a ping request
-107970818 : Sending pong
-107970818 : DONE sending pong
-107970817 : User : 0 did a ping request
-107970817 : Sending pong
-107970817 : DONE sending pong
-107970816 : User : 0 did a ping request
-107970816 : Sending pong
-107970816 : DONE sending pong
-107970814 : User : 0 did a ping request
-107970814 : Sending pong
-107970814 : DONE sending pong
-107970814 : User : 0 did a ping request
-107970814 : Sending pong
-107970814 : DONE sending pong
-107970814 : User : 0 is ready to communicate
-107970814 : Sending kSelfAssign information to client : 0
-107970813 : DONE sending information
-107970812 : Sending grid to all clients
-107970077 : User : 0 did an action 4 -- Requested at tick : 1494
-107968922 : User : 0 did an action 1 -- Requested at tick : 1551
-107967806 : User : 0 did an action 3 -- Requested at tick : 1607
-107967004 : User : 0 did an action 1 -- Requested at tick : 1647
-107966219 : User : 0 did an action 4 -- Requested at tick : 1686
-107965200 : User : 0 did an action 2 -- Requested at tick : 1737
-107963033 : User : 0 did an action 3 -- Requested at tick : 1845
-107962463 : User : 0 did an action 2 -- Requested at tick : 1874
-107960293 : User : 0 did an action 4 -- Requested at tick : 1983
-107959938 : User : 0 did an action 1 -- Requested at tick : 2000
-107957184 : User : 0 did an action 4 -- Requested at tick : 2138
-107955833 : User : 0 did an action 1 -- Requested at tick : 2206
-107955108 : User : 0 did an action 3 -- Requested at tick : 2242
-107948977 : User : 0 did an action 4 -- Requested at tick : 2548
-107948115 : User : 0 did an action 2 -- Requested at tick : 2592
-107947759 : User : 0 did an action 3 -- Requested at tick : 2609
-107946917 : User : 0 did an action 2 -- Requested at tick : 2652
-107946601 : User : 0 did an action 4 -- Requested at tick : 2667
-107945485 : User : 0 did an action 2 -- Requested at tick : 2723
-107945225 : User : 0 did an action 3 -- Requested at tick : 2736
-107939352 : User : 0 did an action 3 -- Requested at tick : 3029
-107934661 : User : 0 did an action 4 -- Requested at tick : 3264
-107934329 : User : 0 did an action 2 -- Requested at tick : 3281
-107933875 : User : 0 did an action 3 -- Requested at tick : 3303
-107933228 : User : 0 did an action 2 -- Requested at tick : 3336
-107932835 : User : 0 did an action 4 -- Requested at tick : 3355
-107931621 : User : 0 did an action 2 -- Requested at tick : 3416
-107931227 : User : 0 did an action 3 -- Requested at tick : 3436
-107929857 : User : 0 did an action 1 -- Requested at tick : 3504
-107927865 : User : 0 did an action 4 -- Requested at tick : 3604
-107924384 : User : 0 did an action 3 -- Requested at tick : 3778
-107924067 : User : 0 did an action 2 -- Requested at tick : 3794
-107923399 : User : 0 did an action 4 -- Requested at tick : 3827
-107922636 : User : 0 did an action 2 -- Requested at tick : 3865
-107921657 : User : 0 did an action 3 -- Requested at tick : 3915
-107920968 : User : 0 did an action 1 -- Requested at tick : 3949
-107917143 : User : 0 did an action 4 -- Requested at tick : 4140
-107911377 : Client 0 disconnected.
-107911377 : Sending disconnected msg to all clients
-107911377 : DONE sending disconnect info
-107911376 : Sending grid to all clients
-107898737 : New client connected
-107898737 : Sending clock signal to all clients
-107898737 : DONE sending clock signal to all clients
-107898636 : User : 0 did a ping request
-107898636 : Sending pong
-107898635 : DONE sending pong
-107898621 : User : 0 did a ping request
-107898621 : Sending pong
-107898620 : DONE sending pong
-107898619 : User : 0 did a ping request
-107898619 : Sending pong
-107898618 : DONE sending pong
-107898617 : User : 0 did a ping request
-107898617 : Sending pong
-107898617 : DONE sending pong
-107898615 : User : 0 did a ping request
-107898614 : Sending pong
-107898614 : DONE sending pong
-107898612 : User : 0 did a ping request
-107898612 : Sending pong
-107898612 : DONE sending pong
-107898610 : User : 0 did a ping request
-107898610 : Sending pong
-107898609 : DONE sending pong
-107898608 : User : 0 did a ping request
-107898607 : Sending pong
-107898607 : DONE sending pong
-107898605 : User : 0 did a ping request
-107898604 : Sending pong
-107898604 : DONE sending pong
-107898601 : User : 0 did a ping request
-107898601 : Sending pong
-107898601 : DONE sending pong
-107898598 : User : 0 did a ping request
-107898598 : Sending pong
-107898598 : DONE sending pong
-107898598 : User : 0 did a ping request
-107898598 : Sending pong
-107898598 : DONE sending pong
-107898597 : User : 0 is ready to communicate
-107898597 : Sending kSelfAssign information to client : 0
-107898597 : DONE sending information
-107898595 : Sending grid to all clients
-107898033 : User : 0 did an action 3 -- Requested at tick : 5096
-107893949 : User : 0 did an action 4 -- Requested at tick : 5300
-107893536 : User : 0 did an action 2 -- Requested at tick : 5321
-107892674 : User : 0 did an action 3 -- Requested at tick : 5364
-107891792 : User : 0 did an action 1 -- Requested at tick : 5408
-107889195 : User : 0 did an action 4 -- Requested at tick : 5538
-107887688 : User : 0 did an action 2 -- Requested at tick : 5613
-107887041 : User : 0 did an action 4 -- Requested at tick : 5646
-107886257 : User : 0 did an action 1 -- Requested at tick : 5685
-107885745 : User : 0 did an action 3 -- Requested at tick : 5710
-107885410 : User : 0 did an action 1 -- Requested at tick : 5727
-107884803 : User : 0 did an action 3 -- Requested at tick : 5757
-107883078 : User : 0 did an action 2 -- Requested at tick : 5844
-107882572 : User : 0 did an action 4 -- Requested at tick : 5869
-107881534 : User : 0 did an action 2 -- Requested at tick : 5921
-107878876 : User : 0 did an action 4 -- Requested at tick : 6054
-107878578 : User : 0 did an action 1 -- Requested at tick : 6069
-107876994 : User : 0 did an action 4 -- Requested at tick : 6148
-107876809 : User : 0 did an action 2 -- Requested at tick : 6157
-107874718 : User : 0 did an action 3 -- Requested at tick : 6262
-107873838 : User : 0 did an action 1 -- Requested at tick : 6306
-107871535 : User : 0 did an action 4 -- Requested at tick : 6421
-107870297 : User : 0 did an action 2 -- Requested at tick : 6483
-107867919 : User : 0 did an action 3 -- Requested at tick : 6602
-107866432 : User : 0 did an action 1 -- Requested at tick : 6676
-107865609 : User : 0 did an action 3 -- Requested at tick : 6717
-107865372 : User : 0 did an action 2 -- Requested at tick : 6729
-107863964 : User : 0 did an action 4 -- Requested at tick : 6799
-107863432 : User : 0 did an action 2 -- Requested at tick : 6826
-107863038 : User : 0 did an action 3 -- Requested at tick : 6846
-107862156 : User : 0 did an action 1 -- Requested at tick : 6890
-107860376 : User : 0 did an action 3 -- Requested at tick : 6979
-107856741 : User : 0 did an action 4 -- Requested at tick : 7161
-107856445 : User : 0 did an action 2 -- Requested at tick : 7175
-107853534 : User : 0 did an action 4 -- Requested at tick : 7321
-107853237 : User : 0 did an action 2 -- Requested at tick : 7336
-107852258 : User : 0 did an action 3 -- Requested at tick : 7385
-107851572 : User : 0 did an action 1 -- Requested at tick : 7419
-107849206 : User : 0 did an action 3 -- Requested at tick : 7537
-107848872 : User : 0 did an action 1 -- Requested at tick : 7554
-107845648 : User : 0 did an action 3 -- Requested at tick : 7715
-107842948 : User : 0 did an action 4 -- Requested at tick : 7850
-107842633 : User : 0 did an action 2 -- Requested at tick : 7866
-107841360 : User : 0 did an action 4 -- Requested at tick : 7930
-107841123 : User : 0 did an action 2 -- Requested at tick : 7941
-107840241 : User : 0 did an action 3 -- Requested at tick : 7986
-107839202 : User : 0 did an action 1 -- Requested at tick : 8037
-107836155 : User : 0 did an action 4 -- Requested at tick : 8190
-107835622 : User : 0 did an action 2 -- Requested at tick : 8216
-107834701 : User : 0 did an action 3 -- Requested at tick : 8262
-107833686 : User : 0 did an action 2 -- Requested at tick : 8313
-107831495 : User : 0 did an action 3 -- Requested at tick : 8423
-107828641 : User : 0 did an action 3 -- Requested at tick : 8566
-107828033 : User : 0 did an action 2 -- Requested at tick : 8596
-107824686 : Client 0 disconnected.
-107824685 : Sending disconnected msg to all clients
-107824685 : DONE sending disconnect info
-107824684 : Sending grid to all clients
+107991795 : New client connected
+107991795 : Sending clock signal to all clients
+107991795 : DONE sending clock signal to all clients
+107991747 : User : 0 did a ping request
+107991747 : Sending pong
+107991745 : DONE sending pong
+107991724 : User : 0 did a ping request
+107991724 : Sending pong
+107991724 : DONE sending pong
+107991710 : User : 0 did a ping request
+107991710 : Sending pong
+107991710 : DONE sending pong
+107991708 : User : 0 did a ping request
+107991708 : Sending pong
+107991708 : DONE sending pong
+107991706 : User : 0 did a ping request
+107991706 : Sending pong
+107991706 : DONE sending pong
+107991705 : User : 0 did a ping request
+107991705 : Sending pong
+107991705 : DONE sending pong
+107991703 : User : 0 did a ping request
+107991703 : Sending pong
+107991703 : DONE sending pong
+107991702 : User : 0 did a ping request
+107991702 : Sending pong
+107991702 : DONE sending pong
+107991701 : User : 0 did a ping request
+107991701 : Sending pong
+107991701 : DONE sending pong
+107991699 : User : 0 did a ping request
+107991699 : Sending pong
+107991698 : DONE sending pong
+107991696 : User : 0 did a ping request
+107991696 : Sending pong
+107991696 : DONE sending pong
+107991696 : User : 0 did a ping request
+107991695 : Sending pong
+107991695 : DONE sending pong
+107991695 : User : 0 is ready to communicate
+107991695 : Sending kSelfAssign information to client : 0
+107991695 : DONE sending information
+107991694 : Sending grid to all clients
+107977086 : Client 0 disconnected.
+107977086 : Sending disconnected msg to all clients
+107977086 : DONE sending disconnect info
+107977084 : Sending grid to all clients
+107959833 : New client connected
+107959832 : Sending clock signal to all clients
+107959832 : DONE sending clock signal to all clients
+107959784 : User : 0 did a ping request
+107959784 : Sending pong
+107959784 : DONE sending pong
+107959724 : User : 0 did a ping request
+107959724 : Sending pong
+107959724 : DONE sending pong
+107959723 : User : 0 did a ping request
+107959723 : Sending pong
+107959723 : DONE sending pong
+107959721 : User : 0 did a ping request
+107959721 : Sending pong
+107959721 : DONE sending pong
+107959719 : User : 0 did a ping request
+107959719 : Sending pong
+107959719 : DONE sending pong
+107959718 : User : 0 did a ping request
+107959718 : Sending pong
+107959718 : DONE sending pong
+107959715 : User : 0 did a ping request
+107959715 : Sending pong
+107959715 : DONE sending pong
+107959713 : User : 0 did a ping request
+107959713 : Sending pong
+107959713 : DONE sending pong
+107959712 : User : 0 did a ping request
+107959712 : Sending pong
+107959711 : DONE sending pong
+107959710 : User : 0 did a ping request
+107959710 : Sending pong
+107959710 : DONE sending pong
+107959708 : User : 0 did a ping request
+107959708 : Sending pong
+107959708 : DONE sending pong
+107959708 : User : 0 did a ping request
+107959708 : Sending pong
+107959708 : DONE sending pong
+107959708 : User : 0 is ready to communicate
+107959708 : Sending kSelfAssign information to client : 0
+107959708 : DONE sending information
+107959707 : Sending grid to all clients
+107931008 : Client 0 disconnected.
+107931007 : Sending disconnected msg to all clients
+107931006 : DONE sending disconnect info
+107931005 : Sending grid to all clients
+107904256 : New client connected
+107904253 : Sending clock signal to all clients
+107904251 : DONE sending clock signal to all clients
+107904192 : User : 0 did a ping request
+107904190 : Sending pong
+107904190 : DONE sending pong
+107904125 : User : 0 did a ping request
+107904125 : Sending pong
+107904125 : DONE sending pong
+107904123 : User : 0 did a ping request
+107904123 : Sending pong
+107904123 : DONE sending pong
+107904121 : User : 0 did a ping request
+107904121 : Sending pong
+107904121 : DONE sending pong
+107904120 : User : 0 did a ping request
+107904120 : Sending pong
+107904120 : DONE sending pong
+107904119 : User : 0 did a ping request
+107904119 : Sending pong
+107904119 : DONE sending pong
+107904117 : User : 0 did a ping request
+107904117 : Sending pong
+107904117 : DONE sending pong
+107904115 : User : 0 did a ping request
+107904115 : Sending pong
+107904115 : DONE sending pong
+107904114 : User : 0 did a ping request
+107904114 : Sending pong
+107904114 : DONE sending pong
+107904112 : User : 0 did a ping request
+107904112 : Sending pong
+107904112 : DONE sending pong
+107904110 : User : 0 did a ping request
+107904110 : Sending pong
+107904110 : DONE sending pong
+107904110 : User : 0 did a ping request
+107904110 : Sending pong
+107904109 : DONE sending pong
+107904109 : User : 0 is ready to communicate
+107904109 : Sending kSelfAssign information to client : 0
+107904109 : DONE sending information
+107904108 : Sending grid to all clients
+107901615 : User : 0 did an action 3 -- Requested at tick : 4917
+107900706 : User : 0 did an action 1 -- Requested at tick : 4963
+107899671 : User : 0 did an action 4 -- Requested at tick : 5014
+107899358 : User : 0 did an action 1 -- Requested at tick : 5030
+107898516 : User : 0 did an action 3 -- Requested at tick : 5072
+107894315 : User : 0 did an action 1 -- Requested at tick : 5282
+107885240 : User : 0 did an action 4 -- Requested at tick : 5736
+107884653 : User : 0 did an action 2 -- Requested at tick : 5765
+107845070 : Client 0 disconnected.
+107845070 : Sending disconnected msg to all clients
+107845069 : DONE sending disconnect info
+107845068 : Sending grid to all clients
+107789836 : New client connected
+107789835 : Sending clock signal to all clients
+107789835 : DONE sending clock signal to all clients
+107789787 : User : 0 did a ping request
+107789784 : Sending pong
+107789784 : DONE sending pong
+107789710 : User : 0 did a ping request
+107789710 : Sending pong
+107789710 : DONE sending pong
+107789708 : User : 0 did a ping request
+107789708 : Sending pong
+107789708 : DONE sending pong
+107789706 : User : 0 did a ping request
+107789705 : Sending pong
+107789705 : DONE sending pong
+107789704 : User : 0 did a ping request
+107789704 : Sending pong
+107789703 : DONE sending pong
+107789702 : User : 0 did a ping request
+107789702 : Sending pong
+107789702 : DONE sending pong
+107789700 : User : 0 did a ping request
+107789700 : Sending pong
+107789700 : DONE sending pong
+107789697 : User : 0 did a ping request
+107789697 : Sending pong
+107789697 : DONE sending pong
+107789696 : User : 0 did a ping request
+107789696 : Sending pong
+107789695 : DONE sending pong
+107789692 : User : 0 did a ping request
+107789692 : Sending pong
+107789692 : DONE sending pong
+107789690 : User : 0 did a ping request
+107789690 : Sending pong
+107789690 : DONE sending pong
+107789690 : User : 0 did a ping request
+107789690 : Sending pong
+107789690 : DONE sending pong
+107789690 : User : 0 is ready to communicate
+107789690 : Sending kSelfAssign information to client : 0
+107789690 : DONE sending information
+107789689 : Sending grid to all clients
+107784570 : User : 0 did an action 3 -- Requested at tick : 10370
+107783531 : User : 0 did an action 1 -- Requested at tick : 10422
+107780700 : User : 0 did an action 4 -- Requested at tick : 10483
+107780384 : User : 0 did an action 2 -- Requested at tick : 10499
+107777844 : User : 0 did an action 4 -- Requested at tick : 10626
+107777644 : User : 0 did an action 1 -- Requested at tick : 10636
+107769816 : Client 0 disconnected.
+107769815 : Sending disconnected msg to all clients
+107769815 : DONE sending disconnect info
+107769814 : Sending grid to all clients
+107745845 : New client connected
+107745844 : Sending clock signal to all clients
+107745844 : DONE sending clock signal to all clients
+107745775 : User : 0 did a ping request
+107745774 : Sending pong
+107745774 : DONE sending pong
+107745753 : User : 0 did a ping request
+107745753 : Sending pong
+107745753 : DONE sending pong
+107745749 : User : 0 did a ping request
+107745749 : Sending pong
+107745749 : DONE sending pong
+107745746 : User : 0 did a ping request
+107745746 : Sending pong
+107745746 : DONE sending pong
+107745744 : User : 0 did a ping request
+107745743 : Sending pong
+107745743 : DONE sending pong
+107745742 : User : 0 did a ping request
+107745742 : Sending pong
+107745742 : DONE sending pong
+107745739 : User : 0 did a ping request
+107745739 : Sending pong
+107745738 : DONE sending pong
+107745737 : User : 0 did a ping request
+107745737 : Sending pong
+107745737 : DONE sending pong
+107745735 : User : 0 did a ping request
+107745735 : Sending pong
+107745735 : DONE sending pong
+107745733 : User : 0 did a ping request
+107745733 : Sending pong
+107745733 : DONE sending pong
+107745732 : User : 0 did a ping request
+107745732 : Sending pong
+107745732 : DONE sending pong
+107745732 : User : 0 did a ping request
+107745732 : Sending pong
+107745732 : DONE sending pong
+107745731 : User : 0 is ready to communicate
+107745731 : Sending kSelfAssign information to client : 0
+107745731 : DONE sending information
+107745730 : Sending grid to all clients
+107744538 : User : 0 did an action 3 -- Requested at tick : 12770
+107743033 : User : 0 did an action 1 -- Requested at tick : 12845
+107741409 : User : 0 did an action 4 -- Requested at tick : 12927
+107740391 : User : 0 did an action 2 -- Requested at tick : 12978
+107739195 : User : 0 did an action 4 -- Requested at tick : 13038
+107738569 : User : 0 did an action 2 -- Requested at tick : 13068
+107737571 : User : 0 did an action 3 -- Requested at tick : 13119
+107736768 : User : 0 did an action 1 -- Requested at tick : 13159
+107735866 : User : 0 did an action 4 -- Requested at tick : 13204
+107733600 : User : 0 did an action 2 -- Requested at tick : 13317
+107733226 : User : 0 did an action 3 -- Requested at tick : 13336
+107732284 : User : 0 did an action 2 -- Requested at tick : 13383
+107731988 : User : 0 did an action 4 -- Requested at tick : 13398
+107730384 : User : 0 did an action 1 -- Requested at tick : 13478
+107729894 : User : 0 did an action 3 -- Requested at tick : 13503
+107726199 : User : 0 did an action 3 -- Requested at tick : 13687
+107725709 : User : 0 did an action 1 -- Requested at tick : 13712
+107724221 : User : 0 did an action 4 -- Requested at tick : 13786
+107723575 : User : 0 did an action 2 -- Requested at tick : 13819
+107721132 : User : 0 did an action 3 -- Requested at tick : 13941
+107720033 : User : 0 did an action 1 -- Requested at tick : 13996
+107717536 : User : 0 did an action 3 -- Requested at tick : 14121
+107714556 : Client 0 disconnected.
+107714556 : Sending disconnected msg to all clients
+107714555 : DONE sending disconnect info
+107714554 : Sending grid to all clients

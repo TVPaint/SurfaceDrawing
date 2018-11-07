@@ -124,6 +124,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         emit pingRequest();
     }
+    else if( iEvent->key() == Qt::Key_R )
+    {
+        emit rollbackTest();
+    }
 }
 
 

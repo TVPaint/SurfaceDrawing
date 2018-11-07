@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QMap>
+#include <QHash>
 #include <QPoint>
 #include <QColor>
 
@@ -15,6 +16,10 @@ class cUser;
 #define CELLSIZE 16
 #define SPEED 20 // ms for 1 pixel
 #define CLOCKTIME 108000000 // 30 min
+
+
+
+class cSnapShot;
 
 class cPaperLogic
 {
@@ -83,6 +88,12 @@ public:
     void  TryRespawningPlayer( cUser*  iUser );
     void  SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
 
+
+public:
+    cSnapShot*  FindSnapShotByTick( quint64 iTick );
+    void        ApplySnapShot( cSnapShot* iSnap );
+    void        ApplySnapShotHistoryBackToTick( quint64 iTick );
+
 private:
     bool  SanityChecks() const;
     void  _CallCB( int, int, int, eDataType );
@@ -93,6 +104,7 @@ private:
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
+    QVector< cSnapShot* >               mSnapShots;
     QMap< int, cUser* >                 mAllUsers;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
@@ -113,5 +125,32 @@ QDataStream& operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell 
 
 QDataStream& operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic );
 QDataStream& operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic );
+
+
+
+
+
+
+class cSnapShot
+{
+public:
+    ~cSnapShot();
+    cSnapShot( quint64 iTick );
+
+
+public:
+    void  AddCellDiff( const QPoint& iPoint, cPaperLogic::eDataCell iData );
+    void  AddUserDiff( cUser* iUser);
+    QVector< QPair< QPoint, cPaperLogic::eDataCell > >&     DiffMap();
+    QVector< cUser >&                                       DiffUsers();
+    quint64                                                 Tick() const;
+
+private:
+    quint64                                                 mTick;
+    QVector< QPair< QPoint, cPaperLogic::eDataCell > >      mDiffMap;
+    QVector< cUser >                                        mDiffUsers;
+};
+
+
 
 

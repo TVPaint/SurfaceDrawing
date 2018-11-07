@@ -12,6 +12,16 @@ cUser::~cUser()
 }
 
 
+cUser::cUser() :
+    mIndex( -5 ),
+    mAskDirectionChange( false ),
+    mIsOutOfGround( false )
+{
+    mColor = Qt::transparent;
+    mIsDead = false;
+}
+
+
 cUser::cUser( int iIndex, const QColor& iColor ) :
     mIndex( iIndex ),
     mAskDirectionChange( false ),
@@ -49,7 +59,7 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
 void
 cUser::copyFromUser( const cUser * iUser )
 {
-    qDebug() << "COPYYING USER";
+    //qDebug() << "COPYYING USER";
     mPosition = iUser->mPosition;
     mColor = iUser->mColor;
 
@@ -66,8 +76,8 @@ cUser::copyFromUser( const cUser * iUser )
         mTrailPoints = iUser->mTrailPoints;
 
 
-    qDebug() << "GUIPosition -- " << mGUIPosition;
-    qDebug() << "END COPYYING USER";
+    //qDebug() << "GUIPosition -- " << mGUIPosition;
+    //qDebug() << "END COPYYING USER";
 }
 
 
@@ -90,7 +100,7 @@ cUser::Update( int iTickCount )
     QPoint newCell   = cPaperLogic::MapToGrid( newCenter );
     mPosition = newCell;
 
-    if( mAskDirectionChange )
+    if( iTickCount > 0 && mAskDirectionChange )
     {
         QPoint centerNewCell = newCell * CELLSIZE + QPoint( CELLSIZE / 2, CELLSIZE / 2 );
         QPoint delta = centerNewCell - newCenter;
