@@ -168,7 +168,7 @@ cClient::GetData()
                 return;
 
             //_LOG( "TIMESTAMP : " + QString::number( timestamp) );
-            _LOG( "PACKET got sent in : " + QString::number( timestamp - GetTime() ) );
+            _LOG( "PACKET got sent in : " + QString::number( qint64(timestamp - GetTime()) ) );
 
 
             quint8 header;
@@ -201,6 +201,7 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() )
                 return;
 
+            _LOG("INC Grid has " + QString::number( data.mAllUsers.size() ) );
             emit  paperLogicArrived( data, GetLatencyInMsFromTimestamp( timestamp ) );
 
             mDataReadingState = kNone;
