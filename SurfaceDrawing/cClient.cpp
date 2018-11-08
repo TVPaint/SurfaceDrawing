@@ -212,10 +212,12 @@ cClient::GetData()
 
             int type;
             cUser* newUser = new cUser( -1, Qt::transparent );
+            quint64 tick;
 
             mDataStream.startTransaction();
             mDataStream >> type;
             mDataStream >> *newUser;
+            mDataStream >> tick;
 
             if( !mDataStream.commitTransaction() )
                 return;
