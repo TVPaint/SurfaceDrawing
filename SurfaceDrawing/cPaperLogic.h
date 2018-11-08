@@ -107,7 +107,7 @@ private:
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
-    cCircularBuffer< cSnapShot* >       mSnapShots;
+    cCircularBufferP< cSnapShot >       mSnapShots;
     QMap< int, cUser* >                 mAllUsers;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
