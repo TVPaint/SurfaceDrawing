@@ -7,7 +7,7 @@
 #include <ctime>
 
 
-#define CLOCKTIME 108000000 // 30 min
+#define CLOCKTIME       108000000 // 30 min
 
 cServer::~cServer()
 {
@@ -64,10 +64,30 @@ cServer::SendGridToAllClient()
     stream.setVersion( QDataStream::Qt_5_10 );
 
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
     stream << quint8(kGrid);
     stream << *mPaperLogic;
 
     _LOG( "Sending grid to all clients" );
+
+    for( auto client : mClients )
+        client->write( data );
+}
+
+
+void
+cServer::SendNextSnapShotToAllClient()
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
+    stream << quint8(kSnap);
+    stream << *(mPaperLogic->mSnapShots.Back());
+
+    _LOG( "Sending snap to all clients" );
 
     for( auto client : mClients )
         client->write( data );
@@ -86,6 +106,7 @@ cServer::SendClockToAllClients()
         stream.setDevice( client );
 
         stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+        stream << quint64( mPaperLogic->mTick );
         stream << quint8(kClock);
     }
 
@@ -109,10 +130,10 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
     _LOG( "Sending " + type + " information to client : " + QString::number( mClients.key( iClient ) ) );
 
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
     stream << quint8(kSimple);
     stream << iType;
     stream << *iUser;
-    stream << mPaperLogic->mTick;
 
     _LOG( "DONE sending information" );
 
@@ -130,10 +151,10 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     _LOG( "Sending action to user : " + QString::number( mClients.key( iClient ) ) );
 
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
     stream << quint8(kAction);
     stream << iAction;
     stream << *iUser;
-    stream << mPaperLogic->mTick;
 
     _LOG( "DONE sending action" );
 }
@@ -147,6 +168,7 @@ cServer::SendUserDisconnectedToAllClients( int iIndex )
     stream.setVersion( QDataStream::Qt_5_10 );
 
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
     stream << quint8(kDisc);
     stream << iIndex;
 
@@ -171,6 +193,7 @@ cServer::SendPongToClient( QTcpSocket* iClient )
     _LOG( "Sending pong" );
 
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
     stream << quint8(kPong);
 
     _LOG( "DONE sending pong" );
@@ -266,16 +289,10 @@ void
 cServer::Update()
 {
     mPaperLogic->Update( qint64( mApplicationClock->remainingTimeAsDuration().count() ) );
+    SendNextSnapShotToAllClient();
 
     if( mQuit )
         emit quit();
-}
-
-
-void
-cServer::NetworkTick()
-{
-    SendGridToAllClient();
 }
 
 

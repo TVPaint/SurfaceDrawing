@@ -29,7 +29,8 @@ public:
         kAction,
         kClock,
         kDisc,
-        kPong
+        kPong,
+        kSnap
     };
 
 
@@ -43,6 +44,7 @@ public:
 
 
     void  SendGridToAllClient();
+    void  SendNextSnapShotToAllClient();
     void  SendClockToAllClients();
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
     void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
@@ -60,7 +62,6 @@ public slots:
     void  ClientDisconnected();
 
     void  Update();
-    void  NetworkTick();
     void  GetData();
 
 signals:

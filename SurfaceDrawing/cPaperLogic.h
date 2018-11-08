@@ -10,6 +10,9 @@
 #include <functional>
 #include <ostream>
 
+
+#include "CircularBuffer.h"
+
 class cUser;
 
 #define GRIDSIZE 75
@@ -104,7 +107,7 @@ private:
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
-    QVector< cSnapShot* >               mSnapShots;
+    cCircularBuffer< cSnapShot* >       mSnapShots;
     QMap< int, cUser* >                 mAllUsers;
 
     QList< std::function< void( int, int, int, eDataType ) > > mCBList;
@@ -145,12 +148,15 @@ public:
     QVector< cUser >&                                       DiffUsers();
     quint64                                                 Tick() const;
 
-private:
+public:
     quint64                                                 mTick;
     QVector< QPair< QPoint, cPaperLogic::eDataCell > >      mDiffMap;
     QVector< cUser >                                        mDiffUsers;
 };
 
+
+QDataStream& operator<<(QDataStream& oStream, const cSnapShot& iPaperLogic );
+QDataStream& operator>>(QDataStream& iStream, cSnapShot& oPaperLogic );
 
 
 

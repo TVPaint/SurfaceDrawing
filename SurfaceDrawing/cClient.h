@@ -11,6 +11,7 @@
 
 
 class cPaperLogic;
+class cSnapShot;
 
 class cClient :
     public QTcpSocket
@@ -26,7 +27,8 @@ public:
         kACTION,
         kCLOCK,
         kDISC,
-        kPONG
+        kPONG,
+        KSNAP
     };
 
 public:
@@ -56,6 +58,7 @@ signals:
     void  newUserArrived( cUser* iUser );
     void  myUserAssigned( cUser* iUser );
     void  paperLogicArrived( cPaperLogic& iPaper, int  iLatencyInMs );
+    void  snapShotArrived( cSnapShot* iSnapShot );
 
     void  userChangedDirection( cUser* iUser, quint64 iTick );
     void  userRequestedRespawn( cUser* iUser );

@@ -17,11 +17,11 @@ cPaperLogic::~cPaperLogic()
 }
 
 
-cPaperLogic::cPaperLogic()
+cPaperLogic::cPaperLogic():
+    mTick( 0 ),
+    mSnapShots( 100 )
 {
-    mTick = 0;
-    mSnapShots.reserve( 100 );
-    mSnapShots.push_back( new cSnapShot( 0 ) ); // Initial SS
+    mSnapShots.Write( new cSnapShot( 0 ) ); // Initial SS
 }
 
 
@@ -167,10 +167,7 @@ cPaperLogic::GoToTick( quint64 iTick )
     }
     else if( deltaTick > 0 ) // Advance in ticks
     {
-        if( mSnapShots.size() >= 100 )
-            mSnapShots.pop_front();
-
-        mSnapShots.push_back( new cSnapShot( mTick + deltaTick ) );
+        mSnapShots.Write( new cSnapShot( mTick + deltaTick ) );
 
         //qDebug() << "*********************************FWD : " << deltaTick;
         for( auto user : mAllUsers )
@@ -185,7 +182,7 @@ cPaperLogic::GoToTick( quint64 iTick )
 
             // User movement
             user->Update( deltaTick );
-            mSnapShots.back()->AddUserDiff( user );
+            mSnapShots.Back()->AddUserDiff( user );
 
             QPoint newPosition = user->mPosition;
 
@@ -246,7 +243,7 @@ void
 cPaperLogic::SetPlayerValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mPlayer = value;
-    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
+    mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kPlayer );
 }
 
@@ -255,7 +252,7 @@ void
 cPaperLogic::SetTrailValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mTrail = value;
-    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
+    mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kTrail );
 }
 
@@ -264,7 +261,7 @@ void
 cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 {
     mPaperGrid[ iPoint.x() ][ iPoint.y() ].mGround = value;
-    mSnapShots.back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
+    mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kGround );
 }
 
@@ -379,6 +376,7 @@ cPaperLogic::KillUser( cUser* iUser )
 void
 cPaperLogic::TryRespawningPlayer( cUser*  iUser )
 {
+    // NO FUN
     if( !iUser->mIsDead )
         return;
 
@@ -398,6 +396,8 @@ cPaperLogic::TryRespawningPlayer( cUser*  iUser )
             }
         }
     }
+
+    //TODO : FUN
 }
 
 
@@ -425,19 +425,13 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
 }
 
 
-
-
-
-
-
-
 cSnapShot*
 cPaperLogic::FindSnapShotByTick( quint64 iTick )
 {
-    for( auto snap : mSnapShots )
+    for( int i = 0; i < mSnapShots.Count(); ++i )
     {
-        if( snap->Tick() >= iTick ) // The one exactly equal or higher closest
-            return  snap;
+        if( mSnapShots[i]->Tick() >= iTick ) // The one exactly equal or higher closest
+            return  mSnapShots[i];
     }
 
     return  nullptr;
@@ -456,18 +450,23 @@ cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
     }
 
     for( auto& cell : diffMap )
+    {
+        _CallCB( cell.first.x(), cell.first.y(), -2, kPlayer );
         CELLAT( cell.first ) = cell.second;
+        _CallCB( cell.first.x(), cell.first.y(), cell.second.mPlayer, kPlayer );
+    }
 }
 
 
 void
 cPaperLogic::ApplySnapShotHistoryBackToTick( quint64 iTick )
 {
-    auto snap = FindSnapShotByTick( iTick );
-
-    for( int i = mSnapShots.indexOf( snap ); i < mSnapShots.size(); ++i )
+    for( int i = mSnapShots.Count() - 1; i >= 0; --i )
     {
-        ApplySnapShot( mSnapShots[ i ] );
+        if( mSnapShots[i]->Tick() >= iTick ) // The one exactly equal or higher closest
+            ApplySnapShot( mSnapShots[ i ] );
+        else
+            return;
     }
 }
 
@@ -677,3 +676,37 @@ cSnapShot::Tick() const
 {
     return  mTick;
 }
+
+
+QDataStream&
+operator<<(QDataStream& oStream, const cSnapShot& iSnapShot )
+{
+    oStream << compute_hash( "cSnapShot" );
+
+    oStream << iSnapShot.mTick
+            << iSnapShot.mDiffMap
+            << iSnapShot.mDiffUsers;
+
+    return  oStream;
+}
+
+
+QDataStream&
+operator>>(QDataStream& iStream, cSnapShot& oSnapShot )
+{
+    uint32_t  id;
+    iStream >> id;
+    if( id != compute_hash( "cSnapShot" ) )
+    {
+        //qDebug() << "Invalid cPaperLogic object!";
+        return  iStream;
+    }
+
+    iStream >> oSnapShot.mTick
+            >> oSnapShot.mDiffMap
+            >> oSnapShot.mDiffUsers;
+
+
+    return  iStream;
+}
+

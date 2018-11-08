@@ -4,6 +4,7 @@
 #include "TickerTimer.h"
 
 
+#include <QtGlobal>
 #include <QDebug>
 
 SurfaceDrawing::~SurfaceDrawing()
@@ -26,7 +27,10 @@ SurfaceDrawing::Init()
 {
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
-
+    mSnapBuffer.reserve( 100 );
+    mCurrentSnapInBuffer = 0;
+    mAuthPaperLogic = new cPaperLogic();
+    mAuthPaperLogic->Init();
 
     mCanvas = new cCanvas( mPaperLogic, this );
     mMainLayout = new QVBoxLayout();
@@ -45,6 +49,7 @@ SurfaceDrawing::Init()
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
     connect( mClientSocket, &cClient::myUserAssigned, this, &SurfaceDrawing::MyUserAssigned );
     connect( mClientSocket, &cClient::paperLogicArrived, this, &SurfaceDrawing::PaperLogicArrived );
+    connect( mClientSocket, &cClient::snapShotArrived, this, &SurfaceDrawing::SnapShotArrived );
     connect( mClientSocket, &cClient::userChangedDirection, this, &SurfaceDrawing::UserDirectionChanged );
     connect( mClientSocket, &cClient::userRequestedRespawn, this, &SurfaceDrawing::UserRequestedRespawn );
     connect( mClientSocket, &cClient::userDisconnected, this, &SurfaceDrawing::UserDisconnected );
@@ -54,7 +59,21 @@ SurfaceDrawing::Init()
 void
 SurfaceDrawing::Update()
 {
+    int tickToRender = mPaperLogic->mTick - 4;
+    if( tickToRender < 0 )
+        return;
+
+    auto snap = mSnapBuffer[ mCurrentSnapInBuffer ];
+    if( snap->mTick < tickToRender )
+        ++mCurrentSnapInBuffer;
+
+    if( mCurrentSnapInBuffer )
+
+
+
     mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
+
+
     mCanvas->Update();
 }
 
@@ -102,6 +121,7 @@ SurfaceDrawing::RollbackTest()
 void
 SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
 {
+
     // As we send newUser and otherUsers info, this should never be out of sync
     Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
 
@@ -119,13 +139,18 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
     //    }
     //}
 
-    qDebug() << "PAPER LATENCY = " << iLatencyInMs;
-
+    mAuthPaperLogic->CopyFromPaper( iPaper, 0 );
     mPaperLogic->CopyFromPaper( iPaper, 0 );
+}
 
-    quint16 missingUpdates = iLatencyInMs / SPEED;
 
-    qDebug() << "OFF BY -------------> " + QString::number( missingUpdates );
+void
+SurfaceDrawing::SnapShotArrived( cSnapShot * iSnap )
+{
+    if( mSnapBuffer.size() > 100 )
+        mSnapBuffer.pop_front();
+
+    mSnapBuffer.push_back( iSnap );
 }
 
 

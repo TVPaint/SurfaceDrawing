@@ -154,7 +154,8 @@ cClient::ConnectionError( QAbstractSocket::SocketError iError )
 void
 cClient::GetData()
 {
-    qint64 timestamp;
+    qint64      timestamp;
+    quint64     packetTick = -1;
 
     _LOG( "======================INC================= : " + QString::number( bytesAvailable() ) );
 
@@ -169,6 +170,13 @@ cClient::GetData()
 
             //_LOG( "TIMESTAMP : " + QString::number( timestamp) );
             _LOG( "PACKET got sent in : " + QString::number( qint64(timestamp - GetTime()) ) );
+
+            mDataStream.startTransaction();
+            mDataStream >> packetTick;
+            if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
+                return;
+
+            _LOG( "At tick : " + QString::number( packetTick ) );
 
 
             quint8 header;
@@ -189,6 +197,8 @@ cClient::GetData()
                 mDataReadingState = kDISC;
             else if( header == cServer::kPong )
                 mDataReadingState = kPONG;
+            else if( header == cServer::kSnap )
+                mDataReadingState = KSNAP;
         }
 
         if( mDataReadingState == kGRID )
@@ -212,12 +222,10 @@ cClient::GetData()
 
             int type;
             cUser* newUser = new cUser( -1, Qt::transparent );
-            quint64 tick;
 
             mDataStream.startTransaction();
             mDataStream >> type;
             mDataStream >> *newUser;
-            mDataStream >> tick;
 
             if( !mDataStream.commitTransaction() )
                 return;
@@ -245,12 +253,10 @@ cClient::GetData()
 
             int action;
             cUser* newUser = new cUser( -1, Qt::transparent );
-            quint64 tick;
 
             mDataStream.startTransaction();
             mDataStream >> action;
             mDataStream >> *newUser;
-            mDataStream >> tick;
 
             if( !mDataStream.commitTransaction() )
                 return;
@@ -261,19 +267,19 @@ cClient::GetData()
             {
                 case 1: // Right
                     newUser->setMovementVector( QPoint( -1, 0 ) );
-                    emit  userChangedDirection( newUser, tick );
+                    emit  userChangedDirection( newUser, packetTick );
                     break;
                 case 2: // Left
                     newUser->setMovementVector( QPoint( 1, 0 ) );
-                    emit  userChangedDirection( newUser, tick );
+                    emit  userChangedDirection( newUser, packetTick );
                     break;
                 case 3: // Top
                     newUser->setMovementVector( QPoint( 0, -1 ) );
-                    emit  userChangedDirection( newUser, tick );
+                    emit  userChangedDirection( newUser, packetTick );
                     break;
                 case 4: // Bottom
                     newUser->setMovementVector( QPoint( 0, 1 ) );
-                    emit  userChangedDirection( newUser, tick );
+                    emit  userChangedDirection( newUser, packetTick );
                     break;
 
                 case 10 : // Respawn
@@ -315,6 +321,21 @@ cClient::GetData()
 
             _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" );
             _PingAveraging( timestamp );
+
+            mDataReadingState = kNone;
+        }
+        else if( mDataReadingState == KSNAP )
+        {
+            _LOG( "Data type : SNAP" );
+
+            cSnapShot* ss = new cSnapShot( packetTick );
+
+            mDataStream.startTransaction();
+            mDataStream >> *ss;
+            if( !mDataStream.commitTransaction() )
+                return;
+
+            emit snapShotArrived( ss );
 
             mDataReadingState = kNone;
         }

@@ -134,5 +134,8 @@
     <ClInclude Include="cHash.h">
       <Filter>src\PaperLogic</Filter>
     </ClInclude>
+    <ClInclude Include="CircularBuffer.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

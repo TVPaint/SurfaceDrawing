@@ -16,7 +16,6 @@
 #include "ui_SurfaceDrawing.h"
 
 
-
 class SurfaceDrawing :
     public QMainWindow
 {
@@ -40,6 +39,7 @@ public slots:
     void  RollbackTest();
 
     void  PaperLogicArrived( cPaperLogic& iPaper, int  iLatencyInMs );
+    void  SnapShotArrived( cSnapShot* iSnap );
     void  NewUserArrived( cUser* iUser );
     void  MyUserAssigned( cUser* iUser );
     void  UserDirectionChanged( cUser* iUser, quint64 iTick );
@@ -61,5 +61,8 @@ private:
     cCanvas*        mCanvas;
 
     // NETWORK
-    cClient*     mClientSocket;
+    cClient*                mClientSocket;
+    cPaperLogic*            mAuthPaperLogic;
+    QVector< cSnapShot* >   mSnapBuffer;
+    int                     mCurrentSnapInBuffer;
 };

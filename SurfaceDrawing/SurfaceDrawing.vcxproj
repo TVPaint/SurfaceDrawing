@@ -316,6 +316,7 @@
     </QtMoc>
     <ClInclude Include="cConnectionDialog.h" />
     <ClInclude Include="cHash.h" />
+    <ClInclude Include="CircularBuffer.h" />
     <ClInclude Include="cItemGrid.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='DebugClient|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='DebugServer|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
