@@ -14,8 +14,8 @@ SurfaceDrawing::~SurfaceDrawing()
 }
 
 
-SurfaceDrawing::SurfaceDrawing(QWidget *parent)
-    : QMainWindow(parent)
+SurfaceDrawing::SurfaceDrawing( QWidget* iParent ) :
+    QMainWindow( iParent )
 {
     ui.setupUi( this );
     Init();
@@ -27,8 +27,6 @@ SurfaceDrawing::Init()
 {
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
-    mSnapBuffer.reserve( 100 );
-    mCurrentSnapInBuffer = 0;
     mAuthPaperLogic = new cPaperLogic();
     mAuthPaperLogic->Init();
 
@@ -59,22 +57,27 @@ SurfaceDrawing::Init()
 void
 SurfaceDrawing::Update()
 {
-    int tickToRender = mPaperLogic->mTick - 4;
-    if( tickToRender < 0 )
+    mPaperLogic->TickUpdate( mClientSocket->mApplicationClock->remainingTime() );
+
+    int tickToRender = mPaperLogic->mTick - 5; // Actually 4 tick of delai, as we update right before, it'll start at 1
+    if( tickToRender < 0 || tickToRender == mLasRenderedTick )
         return;
 
-    auto snap = mSnapBuffer[ mCurrentSnapInBuffer ];
-    if( snap->mTick < tickToRender )
-        ++mCurrentSnapInBuffer;
+    if( mAuthPaperLogic->FindSnapShotByTick( tickToRender ) )
+    {
+        mAuthPaperLogic->ApplySnapShotHistoryUpToTick( tickToRender, cPaperLogic::kSetTickToSnap );
+        mPaperLogic->CopyFromPaper( *mAuthPaperLogic, 0, cPaperLogic::kKeepOwnTick );
+    }
+    else
+    {
+        mPaperLogic->GoToTick( tickToRender ); // If packet were lost, here we fill ticks using simulation's update
+    }
 
-    if( mCurrentSnapInBuffer )
-
-
-
-    mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
-
+    //mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
 
     mCanvas->Update();
+
+    mLasRenderedTick = tickToRender;
 }
 
 
@@ -139,18 +142,17 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
     //    }
     //}
 
-    mAuthPaperLogic->CopyFromPaper( iPaper, 0 );
-    mPaperLogic->CopyFromPaper( iPaper, 0 );
+    //qDebug() << "Paper arrived : Tick == " << iPaper.mTick;
+
+    mAuthPaperLogic->CopyFromPaper( iPaper, 0, cPaperLogic::kSetTickToSnap );
+    mPaperLogic->CopyFromPaper( iPaper, 0, cPaperLogic::kSetTickToSnap );
 }
 
 
 void
 SurfaceDrawing::SnapShotArrived( cSnapShot * iSnap )
 {
-    if( mSnapBuffer.size() > 100 )
-        mSnapBuffer.pop_front();
-
-    mSnapBuffer.push_back( iSnap );
+    mAuthPaperLogic->AddSnapShot( iSnap );
 }
 
 
@@ -159,6 +161,7 @@ SurfaceDrawing::NewUserArrived( cUser* iUser )
 {
     mCanvas->AddUser( iUser, cCanvas::kOther );
     mPaperLogic->AddUser( iUser );
+    mAuthPaperLogic->AddUser( iUser );
 }
 
 
@@ -167,6 +170,7 @@ SurfaceDrawing::MyUserAssigned( cUser * iUser )
 {
     mCanvas->AddUser( iUser, cCanvas::kMyself );
     mPaperLogic->AddUser( iUser );
+    mAuthPaperLogic->AddUser( iUser );
     Start();
 }
 
@@ -191,6 +195,7 @@ void
 SurfaceDrawing::UserDisconnected( int iIndex )
 {
     mPaperLogic->RemoveUser( mPaperLogic->mAllUsers[ iIndex ] );
+    mAuthPaperLogic->RemoveUser( mAuthPaperLogic->mAllUsers[ iIndex ] );
 }
 
 

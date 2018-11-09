@@ -19,6 +19,7 @@ cUser::cUser() :
 {
     mColor = Qt::transparent;
     mIsDead = false;
+    setSize( QPoint( 1, 1 ) ); // Grid coordinates
 }
 
 
@@ -34,7 +35,7 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     int randY = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
                                                // Points are in grid coordinates
     setPosition( QPoint( randX, randY ) );
-    setSize( QPoint( 1, 1 ) );
+    setSize( QPoint( 1, 1 ) ); // Grid coordinates
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
     mIsDead = false;
@@ -44,8 +45,8 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
 //    wher = "SERVER";
 //#endif
 
-    mDEBUGFile = 0;
-    mDEBUGStream = 0;
+    //mDEBUGFile = 0;
+    //mDEBUGStream = 0;
 
     //if( mIndex >= 0 )
     //{
@@ -59,7 +60,6 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
 void
 cUser::copyFromUser( const cUser * iUser )
 {
-    //qDebug() << "COPYYING USER";
     mPosition = iUser->mPosition;
     mColor = iUser->mColor;
 
@@ -74,10 +74,6 @@ cUser::copyFromUser( const cUser * iUser )
 
     if( mTrailPoints.size() != iUser->mTrailPoints.size() )
         mTrailPoints = iUser->mTrailPoints;
-
-
-    //qDebug() << "GUIPosition -- " << mGUIPosition;
-    //qDebug() << "END COPYYING USER";
 }
 
 

@@ -45,8 +45,8 @@ public:
     QList< QPoint >  mTrailPoints;
 
 
-    QFile*          mDEBUGFile;
-    QTextStream*    mDEBUGStream;
+    //QFile*          mDEBUGFile;
+    //QTextStream*    mDEBUGStream;
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );

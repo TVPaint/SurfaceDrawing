@@ -26,57 +26,41 @@ cPaperLogic::cPaperLogic():
 
 
 void
-cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates )
+cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates, eRollBackType iType )
 {
-    qDebug() << "Copying paper";
+    if( iType != kKeepOwnTick )
+        mTick = iPaper.mTick;
+
+    mSnapShots.Write( new cSnapShot( mTick ) ); // SnapShot for the copy step
 
     for( auto user : mAllUsers )
     {
+        if( !user )
+            continue;
+
         int index = mAllUsers.key( user );
         user->copyFromUser( iPaper.mAllUsers[ index ] );
+        mSnapShots.Back()->AddUserDiff( user );
     }
 
     for( int x = 0; x < GRIDSIZE; ++x )
         for( int y = 0; y < GRIDSIZE; ++y )
         {
-            auto cell = CELLAT( QPoint( x, y ) );
+            QPoint cellPoint( x, y );
             auto externCell = iPaper.mPaperGrid[ x ][ y ];
-            if( cell == externCell )
+            if( CELLAT( cellPoint ) == externCell )
                 continue;
 
+            CELLAT( cellPoint ) = externCell;
 
-            //if( externCell.mPlayer != cell.mPlayer )
-            //{
-            //    cell.mPlayer = externCell.mPlayer;
-            //    _CallCB( x, y, externCell.mPlayer, kPlayer ); // Only x and y matters here as canvas CB only uses them if player changed
-            //}
+            // Clear tile
+            _CallCB( x, y, -2, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
 
-            //if( externCell.mGround != cell.mGround )
-            //{
-            //    cell.mGround = externCell.mGround;
-            //    _CallCB( x, y, externCell.mGround, kGround ); // Only x and y matters here as canvas CB only uses them if player changed
-            //}
+            mSnapShots.Back()->AddCellDiff( cellPoint, CELLAT( cellPoint ) );
 
-            //if( externCell.mTrail != cell.mTrail )
-            //{
-            //    cell.mTrail = externCell.mTrail;
-            //    _CallCB( x, y, externCell.mTrail, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
-            //}
-
-
-
-            CELLAT( QPoint( x, y ) ) = iPaper.mPaperGrid[ x ][ y ];
-            _CallCB( x, y, -5, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
+            // Setup tile
+            _CallCB( x, y, CELLAT( cellPoint ).mPlayer, kPlayer );
         }
-
-    qDebug() << "OFF BY " << QString::number( iMissingUpdates );
-
-    for( auto user : mAllUsers )
-        user->Update( iMissingUpdates );
-
-    mTick = iPaper.mTick;
-    GoToTick( mTick + iMissingUpdates ); // Don't change mTick before, because GoToTick uses mTick to calculate deltaTick
-    mTick += iMissingUpdates;
 }
 
 
@@ -109,7 +93,7 @@ cPaperLogic::MapFromGrid( const QPoint & iPoint )
 QColor
 cPaperLogic::GetColorByIndex( int iIndex )
 {
-    if( iIndex < 0 || mAllUsers[ iIndex ]->mIsDead )
+    if( iIndex < 0 || !mAllUsers[ iIndex ] || mAllUsers[ iIndex ]->mIsDead )
         return  Qt::transparent;
 
     return  mAllUsers[ iIndex ]->mColor;
@@ -148,9 +132,33 @@ cPaperLogic::Update( quint64 iCurrentTimeRemaining )
     mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
 
 
+    GoToTick( mTick + tickCount ); //TODO: This is annoying, it denies the call of TickUpdate, maybe do something like AdvanceByTick( deltaTick ), and do something like
+    /*
+
+    int oldTick = mTick
+    UpdateTick();
+    AdvanceBy( mTick - oldTick );
+    */
 
 
-    GoToTick( mTick + tickCount );
+    mTick += tickCount;
+}
+
+
+void
+cPaperLogic::TickUpdate( quint64 iCurrentTimeRemaining )
+{
+    qint64 deltaTimeMs  = mPreviousTime - iCurrentTimeRemaining;
+    mPreviousTime       = iCurrentTimeRemaining;
+
+    if( deltaTimeMs < 0 )
+        return;
+
+    mTimeBuffer += deltaTimeMs;
+
+    int tickCount = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
+    mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
+
     mTick += tickCount;
 }
 
@@ -218,8 +226,7 @@ cPaperLogic::GoToTick( quint64 iTick )
     }
     else if( deltaTick < 0 ) // Go back in time
     {
-        qDebug() << "*********************************BKWD : " << deltaTick;
-        ApplySnapShotHistoryBackToTick( iTick );
+        ApplySnapShotHistoryUpToTick( iTick, kKeepOwnTick );
     }
 }
 
@@ -242,7 +249,7 @@ cPaperLogic::AddGridChangedCB( std::function<void( int, int, int, eDataType )> i
 void
 cPaperLogic::SetPlayerValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mPlayer = value;
+    CELLAT( iPoint ).mPlayer = value;
     mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kPlayer );
 }
@@ -251,7 +258,7 @@ cPaperLogic::SetPlayerValueAt( const QPoint& iPoint, int value )
 void
 cPaperLogic::SetTrailValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mTrail = value;
+    CELLAT( iPoint ).mTrail = value;
     mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kTrail );
 }
@@ -260,7 +267,7 @@ cPaperLogic::SetTrailValueAt( const QPoint& iPoint, int value )
 void
 cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
 {
-    mPaperGrid[ iPoint.x() ][ iPoint.y() ].mGround = value;
+    CELLAT( iPoint ).mGround = value;
     mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kGround );
 }
@@ -345,6 +352,7 @@ cPaperLogic::KillUser( cUser* iUser )
     iUser->mGUIMovementVector = QPoint( 0, 0 );
     iUser->mTrailPoints.clear();
     iUser->setPosition( QPoint( 1, 1 ) );
+    mSnapShots.Back()->AddUserDiff( iUser );
 
     for( auto row = 0; row < GRIDSIZE; ++row )
     {
@@ -409,6 +417,7 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
     iUser->mGUIMovementVector = QPoint( 1, 0 );
     iUser->mGUICurrentMovementVector = QPoint( 1, 0 );
     iUser->mIsOutOfGround = false;
+    mSnapShots.Back()->AddUserDiff( iUser );
 
     SetPlayerValueAt( iUser->mPosition,                     iUser->mIndex );
 
@@ -421,7 +430,6 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
     SetGroundValueAt( iUser->mPosition + QPoint( 1, -1 ),   iUser->mIndex );
     SetGroundValueAt( iUser->mPosition + QPoint( 1, 0 ),    iUser->mIndex );
     SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
-
 }
 
 
@@ -430,11 +438,24 @@ cPaperLogic::FindSnapShotByTick( quint64 iTick )
 {
     for( int i = 0; i < mSnapShots.Count(); ++i )
     {
-        if( mSnapShots[i]->Tick() >= iTick ) // The one exactly equal or higher closest
+        if( mSnapShots[i]->Tick() == iTick ) // The one exactly equal
             return  mSnapShots[i];
     }
 
     return  nullptr;
+}
+
+
+int
+cPaperLogic::GetSnapShotIndexByTick( quint64 iTick )
+{
+    for( int i = 0; i < mSnapShots.Count(); ++i )
+    {
+        if( mSnapShots[ i ]->mTick == iTick )
+            return  i;
+    }
+
+    return  -1;
 }
 
 
@@ -446,7 +467,8 @@ cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
 
     for( auto& user : diffUsers )
     {
-        mAllUsers[ user.mIndex ]->copyFromUser( &user );
+        if( mAllUsers[ user.mIndex ] )
+            mAllUsers[ user.mIndex ]->copyFromUser( &user );
     }
 
     for( auto& cell : diffMap )
@@ -459,14 +481,46 @@ cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
 
 
 void
-cPaperLogic::ApplySnapShotHistoryBackToTick( quint64 iTick )
+cPaperLogic::AddSnapShot( cSnapShot * iSnap )
 {
-    for( int i = mSnapShots.Count() - 1; i >= 0; --i )
+    mSnapShots.Write( iSnap );
+
+}
+
+
+void
+cPaperLogic::ApplySnapShotHistoryUpToTick( quint64 iTick, eRollBackType iRollbackType )
+{
+    int indexCurrentSnap = GetSnapShotIndexByTick( mTick );
+    int indexAimedSnap = GetSnapShotIndexByTick( iTick );
+
+    if( indexCurrentSnap < 0 || indexAimedSnap < 0 )
+        return;
+
+    // Then, go from current snap, to iTick snap
+    if( indexCurrentSnap == indexAimedSnap )
     {
-        if( mSnapShots[i]->Tick() >= iTick ) // The one exactly equal or higher closest
+        return;
+    }
+    else if( indexCurrentSnap > indexAimedSnap )
+    {
+        for( int i = indexCurrentSnap; i >= indexAimedSnap; --i )
+        {
+             if( iRollbackType == kSetTickToSnap )
+                 mTick = mSnapShots[ i ]->Tick();
+
+             ApplySnapShot( mSnapShots[ i ] );
+        }
+    }
+    else
+    {
+        for( int i = indexCurrentSnap; i <= indexAimedSnap; ++i )
+        {
+            if( iRollbackType == kSetTickToSnap )
+                mTick = mSnapShots[ i ]->Tick();
+
             ApplySnapShot( mSnapShots[ i ] );
-        else
-            return;
+        }
     }
 }
 
@@ -587,6 +641,14 @@ operator<<( QDebug& oStream, const cPaperLogic& iPaperLogic )
 }
 
 
+QDebug&
+operator<<( QDebug & oStream, const cPaperLogic::eDataCell & iCell )
+{
+    oStream << "Cell : (" << iCell.mGround << "," << iCell.mTrail << "," << iCell.mPlayer << "):";
+    return  oStream;
+}
+
+
 
 QDataStream&
 operator<<(QDataStream& oStream, const cPaperLogic& iPaperLogic )
@@ -642,15 +704,28 @@ cSnapShot::cSnapShot( quint64 iTick ) :
 void
 cSnapShot::AddCellDiff( const QPoint & iPoint, cPaperLogic::eDataCell iData )
 {
-    QPair< QPoint, cPaperLogic::eDataCell > pair( iPoint, iData );
-    mDiffMap.push_back( pair );
+    //qDebug() << __FUNCTION__ << " at : " << iPoint << " :: " << iData;
+    // If the cell is already there, we override the data, because we only want the last change to be in the SS
+    // So that we have the final state in the SS
+    for( auto& pair : mDiffMap )
+    {
+        if( pair.first == iPoint )
+        {
+            pair.second = iData;
+            //qDebug() << "OVERRIDE";
+            return;
+        }
+    }
+
+    QPair< QPoint, cPaperLogic::eDataCell > newPair( iPoint, iData );
+    mDiffMap.push_back( newPair );
 }
 
 
 void
 cSnapShot::AddUserDiff( cUser * iUser )
 {
-    cUser userCopy( 0, Qt::transparent );
+    cUser userCopy( iUser->mIndex, Qt::transparent );
     userCopy.copyFromUser( iUser );
 
     mDiffUsers.push_back( userCopy );
@@ -675,6 +750,17 @@ quint64
 cSnapShot::Tick() const
 {
     return  mTick;
+}
+
+
+QDebug&
+operator<<( QDebug & oStream, const cSnapShot & iSnapShot )
+{
+    oStream << "START cSnapShot : =================";
+    for( auto& cell : iSnapShot.mDiffMap )
+        oStream << cell;
+    oStream << "END cSnapShot ==================";
+    return  oStream;
 }
 
 

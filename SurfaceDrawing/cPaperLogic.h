@@ -40,6 +40,15 @@ public:
             return  mPlayer == iRHS.mPlayer && mTrail == iRHS.mTrail && mGround == iRHS.mGround;
         }
 
+        eDataCell&  operator=( const eDataCell& iRHS )
+        {
+            mPlayer = iRHS.mPlayer;
+            mTrail = iRHS.mTrail;
+            mGround = iRHS.mGround;
+
+            return  *this;
+        }
+
         int8_t  mPlayer;
         int8_t  mTrail;
         int8_t  mGround;
@@ -54,9 +63,15 @@ public:
         kGround
     };
 
+    enum eRollBackType
+    {
+        kSetTickToSnap,
+        kKeepOwnTick
+    };
+
 
 public:
-    void  CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates );
+    void  CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates, eRollBackType iType );
 
 
 public:
@@ -75,6 +90,7 @@ public:
 
 public:
     void Update( quint64 iCurrentTimeRemaining );
+    void TickUpdate( quint64 iCurrentTimeRemaining );
     void GoToTick( quint64 iTick );
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
@@ -94,8 +110,10 @@ public:
 
 public:
     cSnapShot*  FindSnapShotByTick( quint64 iTick );
+    int         GetSnapShotIndexByTick( quint64 iTick );
     void        ApplySnapShot( cSnapShot* iSnap );
-    void        ApplySnapShotHistoryBackToTick( quint64 iTick );
+    void        AddSnapShot( cSnapShot* iSnap );
+    void        ApplySnapShotHistoryUpToTick( quint64 iTick, eRollBackType iRollbackType );
 
 private:
     bool  SanityChecks() const;
@@ -122,6 +140,7 @@ public:
 
 std::ostream& operator<<( std::ostream& oStream, const cPaperLogic& iPaperLogic );
 QDebug& operator<<( QDebug& oStream, const cPaperLogic& iPaperLogic );
+QDebug& operator<<( QDebug& oStream, const cPaperLogic::eDataCell& iCell );
 
 QDataStream& operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell );
 QDataStream& operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell );
@@ -155,8 +174,10 @@ public:
 };
 
 
-QDataStream& operator<<(QDataStream& oStream, const cSnapShot& iPaperLogic );
-QDataStream& operator>>(QDataStream& iStream, cSnapShot& oPaperLogic );
+QDebug& operator<<( QDebug& oStream, const cSnapShot& iSnapShot );
+
+QDataStream& operator<<(QDataStream& oStream, const cSnapShot& iSnapShot );
+QDataStream& operator>>(QDataStream& iStream, cSnapShot& oSnapShot );
 
 
 

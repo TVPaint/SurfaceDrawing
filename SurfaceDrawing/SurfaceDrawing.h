@@ -6,7 +6,6 @@
 #include "cUser.h"
 #include "cCanvas.h"
 
-
 #include "cClient.h"
 
 #include <QMainWindow>
@@ -56,13 +55,13 @@ private:
 
     QVector< cUser* >           mAllUsers;
 
+    quint64                     mLasRenderedTick = -1;
+
     // GUI
     QVBoxLayout*    mMainLayout;
     cCanvas*        mCanvas;
 
     // NETWORK
-    cClient*                mClientSocket;
-    cPaperLogic*            mAuthPaperLogic;
-    QVector< cSnapShot* >   mSnapBuffer;
-    int                     mCurrentSnapInBuffer;
+    cClient*                        mClientSocket;
+    cPaperLogic*                    mAuthPaperLogic;
 };

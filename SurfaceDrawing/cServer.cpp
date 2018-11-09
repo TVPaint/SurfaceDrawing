@@ -71,7 +71,8 @@ cServer::SendGridToAllClient()
     _LOG( "Sending grid to all clients" );
 
     for( auto client : mClients )
-        client->write( data );
+        if( _IsClientReady( mClients.key( client ) ) )
+            client->write( data );
 }
 
 
@@ -87,10 +88,11 @@ cServer::SendNextSnapShotToAllClient()
     stream << quint8(kSnap);
     stream << *(mPaperLogic->mSnapShots.Back());
 
-    _LOG( "Sending snap to all clients" );
+    //_LOG( "Sending snap to all clients" );
 
     for( auto client : mClients )
-        client->write( data );
+        if( _IsClientReady( mClients.key( client ) ) )
+            client->write( data );
 }
 
 
@@ -100,6 +102,8 @@ cServer::SendClockToAllClients()
     _LOG( "Sending clock signal to all clients" );
     for( auto client : mClients )
     {
+        // No ready check here, as the clock packet is the one starting the conversation
+        // It goes Clock -> ping averaging -> ready
         QByteArray data;
         QDataStream stream( &data, QIODevice::WriteOnly );
         stream.setVersion( QDataStream::Qt_5_10 );
@@ -117,6 +121,10 @@ cServer::SendClockToAllClients()
 void
 cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eType iType )
 {
+    if( !_IsClientReady( mClients.key( iClient ) ) )
+        return;
+
+
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
@@ -143,6 +151,10 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
 void
 cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iAction )
 {
+    if( !_IsClientReady( mClients.key( iClient ) ) )
+        return;
+
+
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
@@ -176,7 +188,8 @@ cServer::SendUserDisconnectedToAllClients( int iIndex )
     _LOG( "Sending disconnected msg to all clients" );
 
     for( auto client : mClients )
-        client->write( data );
+        if( _IsClientReady( mClients.key( client ) ) )
+            client->write( data );
 
     _LOG( "DONE sending disconnect info" );
 }
@@ -242,9 +255,12 @@ cServer::ReadUserAction( int iClientIndex, int iAction )
             break;
     }
 
-    mPaperLogic->GoToTick( tick ); // Lag Compensation
+    // Do we really need this ? i guess, but let's try without because it'll make things easier at first (because we know from branch fullgridnt that this approach works)
+    // And this hasn't been tester yet
+
+    //mPaperLogic->GoToTick( tick ); // Lag Compensation
     user->setMovementVector( newVector );
-    mPaperLogic->GoToTick( mPaperLogic->mTick );
+    //mPaperLogic->GoToTick( mPaperLogic->mTick );
 
     // Information to other clients
     for( auto client : mClients )
@@ -276,6 +292,8 @@ cServer::ClientDisconnected()
 
             client->deleteLater();
 
+            mReadyClients.remove( mReadyClients.indexOf( clientKey ) );
+
             SendUserDisconnectedToAllClients( clientKey );
             break;
         }
@@ -289,7 +307,13 @@ void
 cServer::Update()
 {
     mPaperLogic->Update( qint64( mApplicationClock->remainingTimeAsDuration().count() ) );
-    SendNextSnapShotToAllClient();
+
+    if( mPreviousSnapTickSent != mPaperLogic->mSnapShots.Back()->mTick )
+    {
+        SendNextSnapShotToAllClient();
+        mPreviousSnapTickSent = mPaperLogic->mSnapShots.Back()->mTick;
+    }
+
 
     if( mQuit )
         emit quit();
@@ -341,13 +365,16 @@ cServer::GetData()
 
             case 666 : // ClientIsReady
                 _LOG( "User : " + QString::number( index ) + " is ready to communicate" );
+                if( !mReadyClients.contains( index ) )
+                    mReadyClients.push_back( index );
+
                 // Tell him his own position ( so client knows which player its controlling )
                 SendSimpleUserPositionToClient( mClients[ index ], mPaperLogic->mAllUsers[ index ], kSelfUser );
 
                 // Tell new client about others
                 for( auto client : mClients )
                 {
-                    if( client == mClients[ index ] )
+                    if( client == mClients[ index ] || !_IsClientReady( index ) )
                         continue;
 
                     cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
@@ -392,6 +419,17 @@ cServer::_CheckForData()
             return  true;
     }
     return  false;
+}
+
+
+bool
+cServer::_IsClientReady( int iIndex ) const
+{
+    for( int index : mReadyClients )
+        if( index == iIndex )
+            return  true;
+
+    return false;
 }
 
 

@@ -72,17 +72,21 @@ private:
     // LOGS
     void  _LOG( const QString& iText );
     bool  _CheckForData();
+    bool  _IsClientReady( int iIndex ) const;
 
 
 private:
     QMap< int, QTcpSocket* >    mClients;
     QMap< int, QDataStream* >   mDataStream;
+    QVector< int >              mReadyClients;
 
     cPaperLogic*                mPaperLogic;
     QTimer*                     mApplicationClock;
     QTimer*                     mUpdateTimer;
     quint64                     mPreviousTime;
     quint64                     mTimeBuffer = 0;
+
+    quint64                     mPreviousSnapTickSent = -1;
 
     bool                        mQuit = false;
 

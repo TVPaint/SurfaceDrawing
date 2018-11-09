@@ -157,7 +157,7 @@ cClient::GetData()
     qint64      timestamp;
     quint64     packetTick = -1;
 
-    _LOG( "======================INC================= : " + QString::number( bytesAvailable() ) );
+    //_LOG( "======================INC================= : " + QString::number( bytesAvailable() ) );
 
     while( bytesAvailable() > 0 )
     {
@@ -169,14 +169,14 @@ cClient::GetData()
                 return;
 
             //_LOG( "TIMESTAMP : " + QString::number( timestamp) );
-            _LOG( "PACKET got sent in : " + QString::number( qint64(timestamp - GetTime()) ) );
+            //_LOG( "PACKET got sent in : " + QString::number( qint64(timestamp - GetTime()) ) );
 
             mDataStream.startTransaction();
             mDataStream >> packetTick;
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            _LOG( "At tick : " + QString::number( packetTick ) );
+            //_LOG( "At tick : " + QString::number( packetTick ) );
 
 
             quint8 header;
@@ -326,7 +326,7 @@ cClient::GetData()
         }
         else if( mDataReadingState == KSNAP )
         {
-            _LOG( "Data type : SNAP" );
+            //_LOG( "Data type : SNAP" );
 
             cSnapShot* ss = new cSnapShot( packetTick );
 
@@ -347,7 +347,6 @@ void
 cClient::_LOG( const QString & iText )
 {
     qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
-
 }
 
 
