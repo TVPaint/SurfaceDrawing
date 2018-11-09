@@ -60,7 +60,7 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
             tile->mGroundColor  = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
             tile->mTrailColor   = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
 
-            qDebug() << "Change CB : " << QPoint( x, y ) << " -- " << mPaperLogic->mPaperGrid[x][y].mGround;
+            //qDebug() << "Change CB : " << QPoint( x, y ) << " -- " << mPaperLogic->mPaperGrid[x][y].mGround;
 
             if( mPaperLogic->mPaperGrid[x][y].mGround == -1 )
                 int bp = 0;
