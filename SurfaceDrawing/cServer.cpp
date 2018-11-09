@@ -400,11 +400,21 @@ cServer::NewClientConnected( )
 {
     _LOG( "New client connected" );
 
-    int R = rand() % 126;
-    int G = rand() % 126;
-    int B = rand() % 126;
-    auto newUser = new cUser( mPaperLogic->mAllUsers.size(), QColor( R, G, B ) );
-    mPaperLogic->AddUser( newUser );
+    const QVector< QColor >  colors = {
+        QColor(155, 7, 173),
+        QColor(245, 192, 14),
+        QColor(0, 255, 223),
+        QColor(22, 224, 0),
+        QColor(0, 49, 163),
+        QColor(150, 7, 0),
+        QColor(238, 0, 255),
+        QColor(0, 110, 231),
+        QColor(122, 252, 0),
+        QColor(236, 245, 12)
+    };
+
+    auto newUser = new cUser( mPaperLogic->mAllUsers.size(), colors[ mPaperLogic->mAllUsers.size() % colors.size() ] );
+    mPaperLogic->AddUser( newUser ); 
 
     // Tell all users a new one came
     for( auto client : mClients )
