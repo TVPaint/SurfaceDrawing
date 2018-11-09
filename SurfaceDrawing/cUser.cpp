@@ -30,30 +30,10 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
 {
     mColor = iColor;
 
-
-    int randX = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
-    int randY = (rand() % (GRIDSIZE - 4)) + 2; // Between 2 and GRIDSIZE - 2
-                                               // Points are in grid coordinates
-    setPosition( QPoint( randX, randY ) );
     setSize( QPoint( 1, 1 ) ); // Grid coordinates
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
-    mIsDead = false;
-
-//    QString wher = "CLIENT";
-//#ifdef SERVERSIDE
-//    wher = "SERVER";
-//#endif
-
-    //mDEBUGFile = 0;
-    //mDEBUGStream = 0;
-
-    //if( mIndex >= 0 )
-    //{
-    //    mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( mIndex ) + wher + ".txt" );
-    //    mDEBUGFile->open( QIODevice::WriteOnly );
-    //    mDEBUGStream = new QTextStream( mDEBUGFile );
-    //}
+    mIsDead = true;
 }
 
 

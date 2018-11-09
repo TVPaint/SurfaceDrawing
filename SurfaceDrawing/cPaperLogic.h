@@ -48,6 +48,11 @@ public:
 
             return  *this;
         }
+        
+        bool  empty() const
+        {
+            return  mPlayer == -1 && mTrail == -1 && mGround == -1;
+        }
 
         int8_t  mPlayer;
         int8_t  mTrail;

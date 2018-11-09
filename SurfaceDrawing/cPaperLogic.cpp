@@ -4,6 +4,7 @@
 #include "cUser.h"
 
 #include <stack>
+#include <random>
 
 #include <QDebug>
 #include <QDataStream>
@@ -104,8 +105,7 @@ void
 cPaperLogic::AddUser( cUser * iUser )
 {
     mAllUsers.insert( iUser->mIndex, iUser );
-
-    SpawnUserAtPoint( iUser, iUser->mPosition );
+    TryRespawningPlayer( iUser );
 }
 
 
@@ -384,28 +384,61 @@ cPaperLogic::KillUser( cUser* iUser )
 void
 cPaperLogic::TryRespawningPlayer( cUser*  iUser )
 {
-    // NO FUN
     if( !iUser->mIsDead )
         return;
 
-    for( int x = SPAWNINGAREAREQUIRED / 2; x < GRIDSIZE - SPAWNINGAREAREQUIRED / 2; ++x )
+    const int WIDTH = GRIDSIZE - (2 * SPAWNINGAREAREQUIRED);
+    const int HEIGHT = WIDTH;
+    QVector< bool >  spawnIsPossible( WIDTH * HEIGHT, true );
+
+    auto _SetNotSpawnable = [&spawnIsPossible, WIDTH, HEIGHT] (const QPoint&  iPoint )
     {
-        for( int y = SPAWNINGAREAREQUIRED / 2; y < GRIDSIZE - SPAWNINGAREAREQUIRED / 2; ++y )
+        auto point = iPoint - QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED );
+
+        for( int dy = -SPAWNINGAREAREQUIRED / 2; dy <= SPAWNINGAREAREQUIRED / 2; ++dy )
         {
-            QPoint cellPos( x, y );
-
-            if( CELLAT( cellPos ).mSpawnIsImpossibleHere )
-                continue;
-
-            if( _IsAvailableSpaceAtPoint( cellPos ) )
+            for( int dx = -SPAWNINGAREAREQUIRED / 2; dx <= SPAWNINGAREAREQUIRED / 2; ++dx )
             {
-                SpawnUserAtPoint( iUser, cellPos );
-                return;
+                auto p = point + QPoint( dx, dy );
+                if( p.y() < 0 || p.y() >= HEIGHT )
+                    break;
+                if( p.x() < 0 || p.x() >= WIDTH )
+                    continue;
+                spawnIsPossible[p.x() + p.y() * WIDTH] = false;
             }
+        }
+    };
+
+    for( int y = 0; y < GRIDSIZE; ++y )
+    {
+        for( int x = 0; x < GRIDSIZE; ++x )
+        {
+            QPoint  point( x, y ); 
+            eDataCell  cell = CELLAT( point );
+            if( !cell.empty() )
+                _SetNotSpawnable( point );
+        }    
+    }
+
+    std::vector< QPoint >  elligibleSpawnPoint;
+    for( int i = 0; i < spawnIsPossible.size(); ++i )
+    {    
+        if( spawnIsPossible[i] )
+        {
+            elligibleSpawnPoint.push_back( QPoint( i % WIDTH, i / WIDTH ) + QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED ) );
         }
     }
 
-    //TODO : FUN
+    if( elligibleSpawnPoint.empty() )
+        return;
+
+    std::random_device  generator;
+    std::uniform_int_distribution< int >  distribution( 0, elligibleSpawnPoint.size() - 1 );
+
+    QPoint newStart = elligibleSpawnPoint[distribution( generator )];
+
+    SpawnUserAtPoint( iUser, newStart );
+    return;
 }
 
 
@@ -558,7 +591,7 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser )
 
 
 bool
-cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint & iPoint ) const
+cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint& iPoint ) const
 {
     bool result = true;
     for( int x = iPoint.x() - SPAWNINGAREAREQUIRED / 2; x < iPoint.x() + SPAWNINGAREAREQUIRED / 2; ++x )
