@@ -91,6 +91,7 @@ public:
 public:
     void   AddUser( cUser* iUser );
     void   RemoveUser( cUser* iUser );
+    void   SetUserAskedRespawn( cUser* iUser );
 
 
 public:
@@ -109,7 +110,6 @@ public:
 
     void  KillUser( cUser*  iUser );
 
-    void  TryRespawningPlayer( cUser*  iUser );
     void  SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
 
 
@@ -122,10 +122,12 @@ public:
 
 private:
     bool  SanityChecks() const;
+    void  _TryRespawningPlayer( cUser*  iUser );
     void  _CallCB( int, int, int, eDataType );
     void  _AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser );
 
     bool  _IsAvailableSpaceAtPoint( const QPoint& iPoint ) const;
+    void  _SetCellData( const QPoint& iPoint, const eDataCell& iCellData );
 
 
 public:

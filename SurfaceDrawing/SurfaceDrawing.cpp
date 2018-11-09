@@ -187,7 +187,7 @@ SurfaceDrawing::UserDirectionChanged( cUser * iUser, quint64 iTick )
 void
 SurfaceDrawing::UserRequestedRespawn( cUser * iUser )
 {
-    mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ iUser->mIndex ] );
+    mPaperLogic->SetUserAskedRespawn( mPaperLogic->mAllUsers[ iUser->mIndex ] );
 }
 
 

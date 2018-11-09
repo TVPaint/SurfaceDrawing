@@ -52,15 +52,8 @@ cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates, 
             if( CELLAT( cellPoint ) == externCell )
                 continue;
 
-            CELLAT( cellPoint ) = externCell;
-
-            // Clear tile
-            _CallCB( x, y, -2, kTrail ); // Only x and y matters here as canvas CB only uses them if player changed
-
+            _SetCellData( cellPoint, externCell );
             mSnapShots.Back()->AddCellDiff( cellPoint, CELLAT( cellPoint ) );
-
-            // Setup tile
-            _CallCB( x, y, CELLAT( cellPoint ).mPlayer, kPlayer );
         }
 }
 
@@ -105,7 +98,7 @@ void
 cPaperLogic::AddUser( cUser * iUser )
 {
     mAllUsers.insert( iUser->mIndex, iUser );
-    TryRespawningPlayer( iUser );
+    _TryRespawningPlayer( iUser );
 }
 
 
@@ -114,6 +107,14 @@ cPaperLogic::RemoveUser( cUser * iUser )
 {
     KillUser( iUser );
     mAllUsers.erase( mAllUsers.find( mAllUsers.key( iUser ) ) );
+}
+
+
+void
+cPaperLogic::SetUserAskedRespawn( cUser * iUser )
+{
+    iUser->mAskedRespawn = true;
+    mSnapShots.Back()->AddUserDiff( iUser ); // We might not care about this bool
 }
 
 
@@ -180,8 +181,16 @@ cPaperLogic::GoToTick( quint64 iTick )
         //qDebug() << "*********************************FWD : " << deltaTick;
         for( auto user : mAllUsers )
         {
-            if( !user || user->mIsDead )
+            if( !user )
                 continue;
+
+            if( user->mIsDead )
+            {
+                if( user->mAskedRespawn )
+                    _TryRespawningPlayer( user );
+
+                continue;
+            }
 
             // USER
             QPoint oldPosition = user->mPosition;
@@ -382,67 +391,6 @@ cPaperLogic::KillUser( cUser* iUser )
 
 
 void
-cPaperLogic::TryRespawningPlayer( cUser*  iUser )
-{
-    if( !iUser->mIsDead )
-        return;
-
-    const int WIDTH = GRIDSIZE - (2 * SPAWNINGAREAREQUIRED);
-    const int HEIGHT = WIDTH;
-    QVector< bool >  spawnIsPossible( WIDTH * HEIGHT, true );
-
-    auto _SetNotSpawnable = [&spawnIsPossible, WIDTH, HEIGHT] (const QPoint&  iPoint )
-    {
-        auto point = iPoint - QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED );
-
-        for( int dy = -SPAWNINGAREAREQUIRED / 2; dy <= SPAWNINGAREAREQUIRED / 2; ++dy )
-        {
-            for( int dx = -SPAWNINGAREAREQUIRED / 2; dx <= SPAWNINGAREAREQUIRED / 2; ++dx )
-            {
-                auto p = point + QPoint( dx, dy );
-                if( p.y() < 0 || p.y() >= HEIGHT )
-                    break;
-                if( p.x() < 0 || p.x() >= WIDTH )
-                    continue;
-                spawnIsPossible[p.x() + p.y() * WIDTH] = false;
-            }
-        }
-    };
-
-    for( int y = 0; y < GRIDSIZE; ++y )
-    {
-        for( int x = 0; x < GRIDSIZE; ++x )
-        {
-            QPoint  point( x, y ); 
-            eDataCell  cell = CELLAT( point );
-            if( !cell.empty() )
-                _SetNotSpawnable( point );
-        }    
-    }
-
-    std::vector< QPoint >  elligibleSpawnPoint;
-    for( int i = 0; i < spawnIsPossible.size(); ++i )
-    {    
-        if( spawnIsPossible[i] )
-        {
-            elligibleSpawnPoint.push_back( QPoint( i % WIDTH, i / WIDTH ) + QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED ) );
-        }
-    }
-
-    if( elligibleSpawnPoint.empty() )
-        return;
-
-    std::random_device  generator;
-    std::uniform_int_distribution< int >  distribution( 0, elligibleSpawnPoint.size() - 1 );
-
-    QPoint newStart = elligibleSpawnPoint[distribution( generator )];
-
-    SpawnUserAtPoint( iUser, newStart );
-    return;
-}
-
-
-void
 cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
 {
     iUser->setPosition( iPoint );
@@ -450,6 +398,7 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
     iUser->mGUIMovementVector = QPoint( 1, 0 );
     iUser->mGUICurrentMovementVector = QPoint( 1, 0 );
     iUser->mIsOutOfGround = false;
+    iUser->mAskedRespawn = false;
     mSnapShots.Back()->AddUserDiff( iUser );
 
     SetPlayerValueAt( iUser->mPosition,                     iUser->mIndex );
@@ -505,11 +454,7 @@ cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
     }
 
     for( auto& cell : diffMap )
-    {
-        _CallCB( cell.first.x(), cell.first.y(), -2, kPlayer );
-        CELLAT( cell.first ) = cell.second;
-        _CallCB( cell.first.x(), cell.first.y(), cell.second.mPlayer, kPlayer );
-    }
+        _SetCellData( cell.first, cell.second );
 }
 
 
@@ -573,6 +518,66 @@ cPaperLogic::SanityChecks() const
 
 
 void
+cPaperLogic::_TryRespawningPlayer( cUser*  iUser )
+{
+    if( !iUser->mIsDead )
+        return;
+
+    const int WIDTH = GRIDSIZE - (2 * SPAWNINGAREAREQUIRED);
+    const int HEIGHT = WIDTH;
+    QVector< bool >  spawnIsPossible( WIDTH * HEIGHT, true );
+
+    auto _SetNotSpawnable = [&spawnIsPossible, WIDTH, HEIGHT] (const QPoint&  iPoint )
+    {
+        auto point = iPoint - QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED );
+
+        for( int dy = -SPAWNINGAREAREQUIRED / 2; dy <= SPAWNINGAREAREQUIRED / 2; ++dy )
+        {
+            for( int dx = -SPAWNINGAREAREQUIRED / 2; dx <= SPAWNINGAREAREQUIRED / 2; ++dx )
+            {
+                auto p = point + QPoint( dx, dy );
+                if( p.y() < 0 || p.y() >= HEIGHT )
+                    break;
+                if( p.x() < 0 || p.x() >= WIDTH )
+                    continue;
+                spawnIsPossible[p.x() + p.y() * WIDTH] = false;
+            }
+        }
+    };
+
+    for( int y = 0; y < GRIDSIZE; ++y )
+    {
+        for( int x = 0; x < GRIDSIZE; ++x )
+        {
+            QPoint  point( x, y ); 
+            eDataCell  cell = CELLAT( point );
+            if( !cell.empty() )
+                _SetNotSpawnable( point );
+        }    
+    }
+
+    std::vector< QPoint >  elligibleSpawnPoint;
+    for( int i = 0; i < spawnIsPossible.size(); ++i )
+    {    
+        if( spawnIsPossible[i] )
+        {
+            elligibleSpawnPoint.push_back( QPoint( i % WIDTH, i / WIDTH ) + QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED ) );
+        }
+    }
+
+    if( elligibleSpawnPoint.empty() )
+        return;
+
+    std::random_device  generator;
+    std::uniform_int_distribution< int >  distribution( 0, elligibleSpawnPoint.size() - 1 );
+
+    QPoint newStart = elligibleSpawnPoint[distribution( generator )];
+
+    SpawnUserAtPoint( iUser, newStart ); 
+}
+
+
+void
 cPaperLogic::_CallCB( int x, int y, int newValue, eDataType iDataType )
 {
     for( auto cb : mCBList )
@@ -617,6 +622,15 @@ cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint& iPoint ) const
     }
 
     return  result;
+}
+
+
+void
+cPaperLogic::_SetCellData( const QPoint & iPoint, const eDataCell & iCellData )
+{
+    _CallCB( iPoint.x(), iPoint.y(), -2, kPlayer ); // CB to erase old value
+    CELLAT( iPoint ) = iCellData;
+    _CallCB( iPoint.x(), iPoint.y(), iCellData.mPlayer, kPlayer ); // CB to set new value with player flag, as it's the only one that has a specific treatment
 }
 
 
@@ -790,6 +804,7 @@ QDebug&
 operator<<( QDebug & oStream, const cSnapShot & iSnapShot )
 {
     oStream << "START cSnapShot : =================";
+    oStream << "Tick : " << iSnapShot.mTick;
     for( auto& cell : iSnapShot.mDiffMap )
         oStream << cell;
     oStream << "END cSnapShot ==================";

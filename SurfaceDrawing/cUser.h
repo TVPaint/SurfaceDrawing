@@ -41,6 +41,7 @@ public:
     bool        mAskDirectionChange;
     bool        mIsOutOfGround;
     bool        mIsDead;
+    bool        mAskedRespawn = false;
 
     QList< QPoint >  mTrailPoints;
 

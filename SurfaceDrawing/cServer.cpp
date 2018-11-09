@@ -88,6 +88,7 @@ cServer::SendNextSnapShotToAllClient()
     stream << quint8(kSnap);
     stream << *(mPaperLogic->mSnapShots.Back());
 
+    //qDebug() << *(mPaperLogic->mSnapShots.Back());
     //_LOG( "Sending snap to all clients" );
 
     for( auto client : mClients )
@@ -355,7 +356,7 @@ cServer::GetData()
                 break;
 
             case 10 : // Respawn
-                mPaperLogic->TryRespawningPlayer( mPaperLogic->mAllUsers[ index ] );
+                mPaperLogic->SetUserAskedRespawn( mPaperLogic->mAllUsers[ index ] );
                 break;
 
             case 99 : // Ping
@@ -452,7 +453,7 @@ cServer::NewClientConnected( )
     };
 
     auto newUser = new cUser( mPaperLogic->mAllUsers.size(), colors[ mPaperLogic->mAllUsers.size() % colors.size() ] );
-    mPaperLogic->AddUser( newUser ); 
+    mPaperLogic->AddUser( newUser );
 
     // Tell all users a new one came
     for( auto client : mClients )

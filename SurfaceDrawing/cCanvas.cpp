@@ -122,7 +122,7 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     }
     else if( iEvent->key() == Qt::Key_Space )
     {
-        mPaperLogic->TryRespawningPlayer( mMyself->mUser );
+        mPaperLogic->SetUserAskedRespawn( mMyself->mUser );
         emit respawnRequest();
     }
     else if( iEvent->key() == Qt::Key_P )

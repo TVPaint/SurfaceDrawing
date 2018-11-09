@@ -51,6 +51,7 @@ cUser::copyFromUser( const cUser * iUser )
     mAskDirectionChange = iUser->mAskDirectionChange;
     mIsOutOfGround = iUser->mIsOutOfGround;
     mIsDead = iUser->mIsDead;
+    mAskedRespawn = iUser->mAskedRespawn;
 
     if( mTrailPoints.size() != iUser->mTrailPoints.size() )
         mTrailPoints = iUser->mTrailPoints;
@@ -130,6 +131,7 @@ operator<<( std::ostream& oStream, const cUser& iUser )
             << "\tAskDirectionChange: " << iUser.mAskDirectionChange << std::endl
             << "\tIsOutOfGround: " << iUser.mIsOutOfGround << std::endl
             << "\tIsDead: " << iUser.mIsDead << std::endl
+            << "\tAskedRespawn: " << iUser.mAskedRespawn << std::endl
             << "\tTrailPoints: " << iUser.mTrailPoints.size() << std::endl;
     return oStream;
 }
@@ -149,6 +151,7 @@ operator<<( QDebug& oStream, const cUser& iUser )
         << "\tAskDirectionChange: " << iUser.mAskDirectionChange
         << "\tIsOutOfGround: " << iUser.mIsOutOfGround
         << "\tIsDead: " << iUser.mIsDead
+        << "\tAskedRespawn: " << iUser.mAskedRespawn
         << "\tTrailPoints: " << iUser.mTrailPoints.size();
     return oStream;
 }
@@ -167,7 +170,8 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             << iUser.mGUICurrentMovementVector
             << iUser.mAskDirectionChange
             //<< iUser.mIsOutOfGround
-            << iUser.mIsDead;
+            << iUser.mIsDead
+            << iUser.mAskedRespawn;
             //<< iUser.mTrailPoints;
 
     return  oStream;
@@ -193,7 +197,8 @@ operator>>(QDataStream& iStream, cUser& oUser )
             >> oUser.mGUICurrentMovementVector
             >> oUser.mAskDirectionChange
             //>> oUser.mIsOutOfGround
-            >> oUser.mIsDead;
+            >> oUser.mIsDead
+            >> oUser.mAskedRespawn;
 
     //oUser.mTrailPoints.clear();
     //iStream >> oUser.mTrailPoints;
