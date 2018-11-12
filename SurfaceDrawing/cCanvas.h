@@ -45,6 +45,7 @@ signals:
     void  respawnRequest();
     void  pingRequest();
     void  rollbackTest();
+    void  askResync();
 
 public:
     cItemUser*                  mMyself = 0;

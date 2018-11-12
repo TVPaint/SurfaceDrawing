@@ -133,6 +133,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         emit rollbackTest();
     }
+    else if( iEvent->key() == Qt::Key_U )
+    {
+        emit askResync();
+    }
 }
 
 

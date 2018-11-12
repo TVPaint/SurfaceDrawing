@@ -42,6 +42,7 @@ SurfaceDrawing::Init()
     connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
     connect( mCanvas, &cCanvas::pingRequest, this, &SurfaceDrawing::PingRequest );
     connect( mCanvas, &cCanvas::rollbackTest, this, &SurfaceDrawing::RollbackTest );
+    connect( mCanvas, &cCanvas::askResync, mClientSocket, &cClient::SendStopResync );
 
 
     connect( mClientSocket, &cClient::newUserArrived, this, &SurfaceDrawing::NewUserArrived );
