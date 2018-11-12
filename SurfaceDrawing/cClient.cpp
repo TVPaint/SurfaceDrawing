@@ -120,6 +120,18 @@ cClient::SendPing()
 
 
 void
+cClient::SendStopResync()
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 123 );
+    write( data );
+}
+
+
+void
 cClient::StartPingAveraging()
 {
     _LOG( "Starting ping averaging ..." );
@@ -320,6 +332,8 @@ cClient::GetData()
             auto ping = mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
 
             _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" );
+            _LOG( "At tick : " + QString::number( packetTick ) );
+
             _PingAveraging( timestamp );
 
             mDataReadingState = kNone;

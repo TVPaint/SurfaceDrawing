@@ -43,6 +43,7 @@ public:
     void SendRdy(); // Client is properly set and connected, and now ready to get data;
 
     void  SendPing();
+    void  SendStopResync();
     void  StartPingAveraging();
 
     quint64  GetTime();

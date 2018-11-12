@@ -9,6 +9,8 @@
 
 #define CLOCKTIME       108000000 // 30 min
 
+static  quint16     sgIndexCounter = 0;
+
 cServer::~cServer()
 {
     delete  mUpdateTimer;
@@ -385,6 +387,10 @@ cServer::GetData()
                 SendGridToAllClient();
                 break;
 
+            case 123 : // ClientDesync, wants to resync
+                _LOG( "User : " + QString::number( index ) + " needs resync" );
+                break;
+
             default:
                 break;
         }
@@ -452,7 +458,8 @@ cServer::NewClientConnected( )
         QColor(236, 245, 12)
     };
 
-    auto newUser = new cUser( mPaperLogic->mAllUsers.size(), colors[ mPaperLogic->mAllUsers.size() % colors.size() ] );
+    auto newUser = new cUser( sgIndexCounter, colors[ sgIndexCounter % colors.size() ] );
+    ++sgIndexCounter;
     mPaperLogic->AddUser( newUser );
 
     // Tell all users a new one came

@@ -70,6 +70,8 @@ SurfaceDrawing::Update()
     }
     else
     {
+        qDebug() << "Manual update for tick " << tickToRender;
+        qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
         mPaperLogic->GoToTick( tickToRender ); // If packet were lost, here we fill ticks using simulation's update
     }
 

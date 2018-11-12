@@ -462,7 +462,6 @@ void
 cPaperLogic::AddSnapShot( cSnapShot * iSnap )
 {
     mSnapShots.Write( iSnap );
-
 }
 
 
@@ -549,16 +548,16 @@ cPaperLogic::_TryRespawningPlayer( cUser*  iUser )
     {
         for( int x = 0; x < GRIDSIZE; ++x )
         {
-            QPoint  point( x, y ); 
+            QPoint  point( x, y );
             eDataCell  cell = CELLAT( point );
             if( !cell.empty() )
                 _SetNotSpawnable( point );
-        }    
+        }
     }
 
     std::vector< QPoint >  elligibleSpawnPoint;
     for( int i = 0; i < spawnIsPossible.size(); ++i )
-    {    
+    {
         if( spawnIsPossible[i] )
         {
             elligibleSpawnPoint.push_back( QPoint( i % WIDTH, i / WIDTH ) + QPoint( SPAWNINGAREAREQUIRED, SPAWNINGAREAREQUIRED ) );
@@ -573,7 +572,7 @@ cPaperLogic::_TryRespawningPlayer( cUser*  iUser )
 
     QPoint newStart = elligibleSpawnPoint[distribution( generator )];
 
-    SpawnUserAtPoint( iUser, newStart ); 
+    SpawnUserAtPoint( iUser, newStart );
 }
 
 
