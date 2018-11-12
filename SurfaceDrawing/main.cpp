@@ -1,11 +1,15 @@
+
+#ifdef SERVERSIDE
+#include "cServer.h"
+#include <QObject>
+#endif
+
+#ifdef CLIENTSIDE
 #include "SurfaceDrawing.h"
+#endif
 
 #include <QApplication>
 #include <time.h>
-
-#include "cServer.h"
-
-#include <QObject>
 #include <QTimer>
 
 
