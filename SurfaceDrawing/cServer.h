@@ -50,6 +50,7 @@ public:
 
 
     void  SendClockToClient( QTcpSocket* iClient );
+    void  SendGridToClient( QTcpSocket* iClient );
     void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
     void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
     void  SendPongToClient( QTcpSocket* iClient );

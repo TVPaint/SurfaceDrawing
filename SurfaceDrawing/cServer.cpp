@@ -162,6 +162,27 @@ cServer::SendClockToClient( QTcpSocket * iClient )
 }
 
 
+void
+cServer::SendGridToClient( QTcpSocket * iClient )
+{
+    if( !_IsClientAvailable( mClients.key( iClient ) ) )
+        return;
+
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
+
+    _LOG( "Sending grid to client " + QString::number( mClients.key( iClient ) ) );
+
+    stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
+    stream << quint8(kGrid);
+    stream << *mPaperLogic;
+
+    _LOG( "DONE sending grid to client" );
+}
+
 
 void
 cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eType iType )
@@ -411,6 +432,7 @@ cServer::GetData()
                 else // Is ready again == no longer out of sync
                 {
                     mClientsOutOfSync.remove( index );
+                    SendGridToClient( mClients[ index ] );
                 }
 
                 break;
