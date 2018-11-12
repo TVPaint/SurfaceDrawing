@@ -367,7 +367,7 @@ cClient::_LOG( const QString & iText )
 void
 cClient::_PingAveraging( qint64 timestamp )
 {
-    if( mClockOffset == -1 && mPingAveraging && mPingAveragingCounter <= PINGAVERAGINGAMOUNT )
+    if( mPingAveraging && mPingAveragingCounter <= PINGAVERAGINGAMOUNT )
     {
         _LOG( "Undergoing ping averaging ..." );
         ++mPingAveragingCounter;
