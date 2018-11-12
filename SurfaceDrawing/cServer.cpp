@@ -73,7 +73,7 @@ cServer::SendGridToAllClient()
     _LOG( "Sending grid to all clients" );
 
     for( auto client : mClients )
-        if( _IsClientReady( mClients.key( client ) ) )
+        if( _IsClientAvailable( mClients.key( client ) ) )
             client->write( data );
 }
 
@@ -94,7 +94,7 @@ cServer::SendNextSnapShotToAllClient()
     //_LOG( "Sending snap to all clients" );
 
     for( auto client : mClients )
-        if( _IsClientReady( mClients.key( client ) ) )
+        if( _IsClientAvailable( mClients.key( client ) ) )
             client->write( data );
 }
 
@@ -122,9 +122,51 @@ cServer::SendClockToAllClients()
 
 
 void
+cServer::SendUserDisconnectedToAllClients( int iIndex )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
+    stream << quint8(kDisc);
+    stream << iIndex;
+
+
+    _LOG( "Sending disconnected msg to all clients" );
+
+    for( auto client : mClients )
+        if( _IsClientAvailable( mClients.key( client ) ) )
+            client->write( data );
+
+    _LOG( "DONE sending disconnect info" );
+}
+
+
+void
+cServer::SendClockToClient( QTcpSocket * iClient )
+{
+    _LOG( "Sending clock signal to client " + QString::number( mClients.key( iClient ) ) );
+
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+    stream.setDevice( iClient );
+
+    stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+    stream << quint64( mPaperLogic->mTick );
+    stream << quint8(kClock);
+
+    _LOG( "DONE sending clock signal to client" );
+}
+
+
+
+void
 cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eType iType )
 {
-    if( !_IsClientReady( mClients.key( iClient ) ) )
+    if( !_IsClientAvailable( mClients.key( iClient ) ) )
         return;
 
 
@@ -154,7 +196,7 @@ cServer::SendSimpleUserPositionToClient( QTcpSocket * iClient, cUser* iUser, eTy
 void
 cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iAction )
 {
-    if( !_IsClientReady( mClients.key( iClient ) ) )
+    if( !_IsClientAvailable( mClients.key( iClient ) ) )
         return;
 
 
@@ -172,29 +214,6 @@ cServer::SendUserActionToClient( QTcpSocket * iClient, cUser * iUser, int iActio
     stream << *iUser;
 
     _LOG( "DONE sending action" );
-}
-
-
-void
-cServer::SendUserDisconnectedToAllClients( int iIndex )
-{
-    QByteArray data;
-    QDataStream stream( &data, QIODevice::WriteOnly );
-    stream.setVersion( QDataStream::Qt_5_10 );
-
-    stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
-    stream << quint64( mPaperLogic->mTick );
-    stream << quint8(kDisc);
-    stream << iIndex;
-
-
-    _LOG( "Sending disconnected msg to all clients" );
-
-    for( auto client : mClients )
-        if( _IsClientReady( mClients.key( client ) ) )
-            client->write( data );
-
-    _LOG( "DONE sending disconnect info" );
 }
 
 
@@ -368,27 +387,40 @@ cServer::GetData()
 
             case 666 : // ClientIsReady
                 _LOG( "User : " + QString::number( index ) + " is ready to communicate" );
+
                 if( !mReadyClients.contains( index ) )
                     mReadyClients.push_back( index );
 
-                // Tell him his own position ( so client knows which player its controlling )
-                SendSimpleUserPositionToClient( mClients[ index ], mPaperLogic->mAllUsers[ index ], kSelfUser );
-
-                // Tell new client about others
-                for( auto client : mClients )
+                if( !mClientsOutOfSync.contains( index ) ) // First connection
                 {
-                    if( client == mClients[ index ] || !_IsClientReady( index ) )
-                        continue;
+                    // Tell him his own position ( so client knows which player its controlling )
+                    SendSimpleUserPositionToClient( mClients[ index ], mPaperLogic->mAllUsers[ index ], kSelfUser );
 
-                    cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
-                    SendSimpleUserPositionToClient( mClients[ index ], user, kOtherUser );
+                    // Tell new client about others
+                    for( auto client : mClients )
+                    {
+                        if( client == mClients[ index ] || !_IsClientAvailable( index ) )
+                            continue;
+
+                        cUser* user = mPaperLogic->mAllUsers[ mClients.key( client ) ];
+                        SendSimpleUserPositionToClient( mClients[ index ], user, kOtherUser );
+                    }
+
+                    SendGridToAllClient();
+                }
+                else // Is ready again == no longer out of sync
+                {
+                    mClientsOutOfSync.remove( index );
                 }
 
-                SendGridToAllClient();
                 break;
 
             case 123 : // ClientDesync, wants to resync
                 _LOG( "User : " + QString::number( index ) + " needs resync" );
+                if( !mClientsOutOfSync.contains( index ) )
+                    mClientsOutOfSync.push_back( index );
+
+                SendClockToClient( mClients[ index ] );
                 break;
 
             default:
@@ -430,11 +462,13 @@ cServer::_CheckForData()
 
 
 bool
-cServer::_IsClientReady( int iIndex ) const
+cServer::_IsClientAvailable( int iIndex ) const
 {
-    for( int index : mReadyClients )
-        if( index == iIndex )
-            return  true;
+    if( mClientsOutOfSync.contains( iIndex ) )
+        return  false;
+
+    if( mReadyClients.contains( iIndex ) )
+        return  true;
 
     return false;
 }

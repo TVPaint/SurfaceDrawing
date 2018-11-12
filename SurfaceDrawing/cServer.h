@@ -46,10 +46,12 @@ public:
     void  SendGridToAllClient();
     void  SendNextSnapShotToAllClient();
     void  SendClockToAllClients();
-    void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
-    void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
     void  SendUserDisconnectedToAllClients( int iIndex );
 
+
+    void  SendClockToClient( QTcpSocket* iClient );
+    void  SendSimpleUserPositionToClient( QTcpSocket* iClient, cUser* iUser, eType iType );
+    void  SendUserActionToClient( QTcpSocket* iClient, cUser* iUser, int iAction );
     void  SendPongToClient( QTcpSocket* iClient );
 
     void  BuildPacket( QByteArray* oData, QDataStream* oStream, int iType );
@@ -72,13 +74,14 @@ private:
     // LOGS
     void  _LOG( const QString& iText );
     bool  _CheckForData();
-    bool  _IsClientReady( int iIndex ) const;
+    bool  _IsClientAvailable( int iIndex ) const;
 
 
 private:
     QMap< int, QTcpSocket* >    mClients;
     QMap< int, QDataStream* >   mDataStream;
     QVector< int >              mReadyClients;
+    QVector< int >              mClientsOutOfSync;
 
     cPaperLogic*                mPaperLogic;
     QTimer*                     mApplicationClock;
