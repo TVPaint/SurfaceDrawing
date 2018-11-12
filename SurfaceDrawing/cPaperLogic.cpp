@@ -295,27 +295,27 @@ cPaperLogic::FillZone( cUser*  iUser )
     }
     iUser->mTrailPoints.clear();
 
-    // add 1 row to be sure to be outside of user ground
-    const int MASKWIDTH = GRIDSIZE;
-    const int MASKHEIGHT = GRIDSIZE + 1;
+    // add 2 row an 2 column to be sure to have an outside area
+    const int MASKWIDTH = GRIDSIZE + 2;
+    const int MASKHEIGHT = GRIDSIZE + 2;
 
     std::vector< bool >  mask( MASKWIDTH * MASKHEIGHT, false );
 
-    #define POINT2MASK( point ) point.x() + (point.y() + 1) * MASKWIDTH
+    #define POINT2MASK( point ) point.x() + 1 + (point.y() + 1) * MASKWIDTH
     #define IS_MASK_VALID( index ) index >= 0 && index < mask.size()
 
     for( int y = 0; y < GRIDSIZE; ++y )
     {
         for( int x = 0; x < GRIDSIZE; ++x )
         {
-            QPoint point(x, y);
-            mask[POINT2MASK(point)] = CELLAT(point).mGround == iUser->mIndex;
+            QPoint point( x, y );
+            mask[POINT2MASK( point )] = CELLAT( point ).mGround == iUser->mIndex;
         }
     }
 
-    // we need to find the first point outside of player area : 0 -1 should be ok!
+    // we need to find the first point outside of player area : -1 -1 should be ok!
     std::stack< QPoint >  stack;
-    QPoint empty(0, -1);
+    QPoint empty(-1, -1);
     if( !mask[POINT2MASK(empty)] )
         stack.push( empty );
 
