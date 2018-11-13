@@ -10,8 +10,10 @@ public:
     cCircularBuffer( int size );
 
 public:
-    void Write( T iObject );
-    T  Back();
+    void    Write( T iObject );
+    void    WriteAt( T iObject, int iIndex );
+    T       Back();
+    int     Find( const T& iObject );
 
 public:
     int Count() const;
@@ -61,6 +63,14 @@ cCircularBuffer< T >::Write( T iObject )
 }
 
 
+template<class T>
+inline
+void cCircularBuffer<T>::WriteAt( T iObject, int iIndex )
+{
+    mBuffer[ iIndex ] = iObject;
+}
+
+
 template< class T >
 T
 cCircularBuffer< T >::operator[] ( int iIndex )
@@ -76,6 +86,18 @@ T
 cCircularBuffer< T >::Back()
 {
     return operator[]( Count()-1 );
+}
+
+
+template<class T>
+inline
+int
+cCircularBuffer<T>::Find( const T & iObject )
+{
+    for( int i = 0; i < mCount; ++i )
+        if( operator[]( i ) == iObject )
+            return  i;
+    return  -1;
 }
 
 
@@ -118,8 +140,10 @@ public:
     cCircularBufferP ( int size );
 
 public:
-    void Write( T* iObject );
-    T*  Back();
+    void    Write( T* iObject );
+    void    WriteAt( T* iObject, int iIndex );
+    T*      Back();
+    int     Find( const T* iObject );
 
 public:
     int Count() const;
@@ -173,6 +197,14 @@ cCircularBufferP< T >::Write( T* iObject )
 }
 
 
+template<class T>
+inline
+void cCircularBufferP<T>::WriteAt( T * iObject, int iIndex )
+{
+    mBuffer[ iIndex ] = iObject;
+}
+
+
 template< class T >
 T*
 cCircularBufferP< T >::operator[] ( int iIndex )
@@ -188,6 +220,18 @@ T*
 cCircularBufferP< T >::Back()
 {
     return operator[]( Count()-1 );
+}
+
+
+template<class T>
+inline
+int
+cCircularBufferP<T>::Find( const T* iObject )
+{
+    for( int i = 0; i < mCount; ++i )
+        if( operator[]( i ) == iObject )
+            return  i;
+    return  -1;
 }
 
 

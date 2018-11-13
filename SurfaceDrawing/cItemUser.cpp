@@ -13,6 +13,7 @@ cItemUser::cItemUser( cUser* iUser, QGraphicsItem * parent ) :
     QGraphicsItem( parent ),
     mUser( iUser )
 {
+    qDebug() << "Create*********************************************************************************";
 }
 
 

@@ -100,6 +100,27 @@ cServer::SendNextSnapShotToAllClient()
 
 
 void
+cServer::SendSnapShotIntervalToAllClient( int iFirst, int iLast )
+{
+    for( int i = iFirst; i <= iLast; ++i )
+    {
+        QByteArray data;
+        QDataStream stream( &data, QIODevice::WriteOnly );
+        stream.setVersion( QDataStream::Qt_5_10 );
+
+        stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
+        stream << quint64( mPaperLogic->mTick );
+        stream << quint8(kSnap);
+        stream << *(mPaperLogic->mSnapShots[ i ]);
+
+        for( auto client : mClients )
+            if( _IsClientAvailable( mClients.key( client ) ) )
+                client->write( data );
+    }
+}
+
+
+void
 cServer::SendClockToAllClients()
 {
     _LOG( "Sending clock signal to all clients" );
@@ -301,9 +322,22 @@ cServer::ReadUserAction( int iClientIndex, int iAction )
     // Do we really need this ? i guess, but let's try without because it'll make things easier at first (because we know from branch fullgridnt that this approach works)
     // And this hasn't been tester yet
 
-    //mPaperLogic->GoToTick( tick ); // Lag Compensation
+    auto currentTick = mPaperLogic->mTick;
+    if( tick < currentTick )
+    {
+        mPaperLogic->GoToTick( tick ); // Lag Compensation
+    }
+
     user->setMovementVector( newVector );
-    //mPaperLogic->GoToTick( mPaperLogic->mTick );
+
+    if( tick < currentTick )
+    {
+        // Dirty way of doing it, but it should work for the concept test, then clean it if it works
+        for( int i = 0; i < currentTick - tick; ++i )
+            mPaperLogic->ApplyDeltaTick( 1 );
+
+        SendSnapShotIntervalToAllClient( tick, currentTick );
+    }
 
     // Information to other clients
     for( auto client : mClients )
@@ -410,10 +444,9 @@ cServer::GetData()
                 _LOG( "User : " + QString::number( index ) + " is ready to communicate" );
 
                 if( !mReadyClients.contains( index ) )
+                {
                     mReadyClients.push_back( index );
 
-                if( !mClientsOutOfSync.contains( index ) ) // First connection
-                {
                     // Tell him his own position ( so client knows which player its controlling )
                     SendSimpleUserPositionToClient( mClients[ index ], mPaperLogic->mAllUsers[ index ], kSelfUser );
 

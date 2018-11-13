@@ -169,16 +169,32 @@ cPaperLogic::GoToTick( quint64 iTick )
 {
     int deltaTick = int(iTick - mTick);
 
-    if( deltaTick == 0 )
+    if( deltaTick < 0 ) // Go back in time
+        ApplySnapShotHistoryUpToTick( iTick, kSetTickToSnap );
+    else
+        ApplyDeltaTick( deltaTick );
+}
+
+
+void
+cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
+{
+    if( iDeltaTick == 0 )
     {
         //qDebug() << "*********************************Nothing";
         return;
     }
-    else if( deltaTick > 0 ) // Advance in ticks
+    else if( iDeltaTick > 0 ) // Advance in ticks
     {
-        mSnapShots.Write( new cSnapShot( mTick + deltaTick ) );
+        // This will override history if needed
+        int indexSnap = FindSnapshotIndexByTick( mTick + iDeltaTick );
+        auto newSnap = new cSnapShot( mTick + iDeltaTick );
+        if( indexSnap == -1 )
+            mSnapShots.Write( newSnap );
+        else
+            mSnapShots.WriteAt( newSnap, indexSnap );
 
-        //qDebug() << "*********************************FWD : " << deltaTick;
+        //qDebug() << "*********************************FWD : " << iDeltaTick;
         for( auto user : mAllUsers )
         {
             if( !user )
@@ -198,7 +214,7 @@ cPaperLogic::GoToTick( quint64 iTick )
             SetPlayerValueAt( oldPosition, -1 );
 
             // User movement
-            user->Update( deltaTick );
+            user->Update( iDeltaTick );
             mSnapShots.Back()->AddUserDiff( user );
 
             QPoint newPosition = user->mPosition;
@@ -233,9 +249,9 @@ cPaperLogic::GoToTick( quint64 iTick )
             }
         }
     }
-    else if( deltaTick < 0 ) // Go back in time
+    else if( iDeltaTick < 0 ) // Go back in time
     {
-        ApplySnapShotHistoryUpToTick( iTick, kKeepOwnTick );
+        // Dunno yet
     }
 }
 
@@ -429,6 +445,19 @@ cPaperLogic::FindSnapShotByTick( quint64 iTick )
 
 
 int
+cPaperLogic::FindSnapshotIndexByTick( quint64 iTick )
+{
+    for( int i = 0; i < mSnapShots.Count(); ++i )
+    {
+        if( mSnapShots[i]->Tick() == iTick ) // The one exactly equal
+            return  i;
+    }
+
+    return  -1;
+}
+
+
+int
 cPaperLogic::GetSnapShotIndexByTick( quint64 iTick )
 {
     for( int i = 0; i < mSnapShots.Count(); ++i )
@@ -461,7 +490,11 @@ cPaperLogic::ApplySnapShot( cSnapShot * iSnap )
 void
 cPaperLogic::AddSnapShot( cSnapShot * iSnap )
 {
-    mSnapShots.Write( iSnap );
+    int indexSnap = FindSnapshotIndexByTick( iSnap->mTick );
+    if( indexSnap == -1 )
+        mSnapShots.Write( iSnap );
+    else
+        mSnapShots.WriteAt( iSnap, indexSnap );
 }
 
 

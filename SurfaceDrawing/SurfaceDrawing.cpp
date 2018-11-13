@@ -60,7 +60,7 @@ SurfaceDrawing::Update()
 {
     mPaperLogic->TickUpdate( mClientSocket->mApplicationClock->remainingTime() );
 
-    int tickToRender = mPaperLogic->mTick - 5; // Actually 4 tick of delai, as we update right before, it'll start at 1
+    int tickToRender = mPaperLogic->mTick - 4; // Actually 4 tick of delai, as we update right before, it'll start at 1
     if( tickToRender < 0 || tickToRender == mLasRenderedTick )
         return;
 
@@ -73,7 +73,7 @@ SurfaceDrawing::Update()
     {
         qDebug() << "Manual update for tick " << tickToRender;
         qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
-        mPaperLogic->GoToTick( tickToRender ); // If packet were lost, here we fill ticks using simulation's update
+        mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
     }
 
     //mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );

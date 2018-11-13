@@ -45,6 +45,7 @@ public:
 
     void  SendGridToAllClient();
     void  SendNextSnapShotToAllClient();
+    void  SendSnapShotIntervalToAllClient( int iFirst, int iLast );
     void  SendClockToAllClients();
     void  SendUserDisconnectedToAllClients( int iIndex );
 

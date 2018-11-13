@@ -48,7 +48,7 @@ public:
 
             return  *this;
         }
-        
+
         bool  empty() const
         {
             return  mPlayer == -1 && mTrail == -1 && mGround == -1;
@@ -93,11 +93,11 @@ public:
     void   RemoveUser( cUser* iUser );
     void   SetUserAskedRespawn( cUser* iUser );
 
-
 public:
     void Update( quint64 iCurrentTimeRemaining );
     void TickUpdate( quint64 iCurrentTimeRemaining );
     void GoToTick( quint64 iTick );
+    void ApplyDeltaTick( quint64 iTick );
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 
@@ -115,6 +115,7 @@ public:
 
 public:
     cSnapShot*  FindSnapShotByTick( quint64 iTick );
+    int         FindSnapshotIndexByTick( quint64 iTick );
     int         GetSnapShotIndexByTick( quint64 iTick );
     void        ApplySnapShot( cSnapShot* iSnap );
     void        AddSnapShot( cSnapShot* iSnap );
