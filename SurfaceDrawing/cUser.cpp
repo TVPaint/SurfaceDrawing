@@ -20,6 +20,9 @@ cUser::cUser() :
     mColor = Qt::transparent;
     mIsDead = false;
     setSize( QPoint( 1, 1 ) ); // Grid coordinates
+
+
+    mComps.push_back( cRollBack() );
 }
 
 
@@ -34,6 +37,9 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
     setMovementVector( QPoint( 1, 0 ) );
     mGUICurrentMovementVector = mGUIMovementVector;
     mIsDead = true;
+
+
+    mComps.push_back( cRollBack() );
 }
 
 
@@ -55,6 +61,10 @@ cUser::copyFromUser( const cUser * iUser )
 
     if( mTrailPoints.size() != iUser->mTrailPoints.size() )
         mTrailPoints = iUser->mTrailPoints;
+
+
+    for( int i = 0; i < iUser->mComps.size(); ++i )
+        mComps[ i ] = iUser->mComps[ i ];
 }
 
 
@@ -69,17 +79,23 @@ cUser::setPosition( QPoint iPosition )
 
 
 void
+cUser::setGUIPosition( QPoint iGUIPosition )
+{
+    mGUIPosition = iGUIPosition;
+    QPoint newCenter = mGUIPosition + mGUISize * 0.5;
+    mPosition = cPaperLogic::MapToGrid( newCenter );
+}
+
+
+void
 cUser::Update( int iTickCount )
 {
-    mGUIPosition += mGUICurrentMovementVector * iTickCount;
-
+    setGUIPosition( mGUIPosition + mGUICurrentMovementVector * iTickCount );
     QPoint newCenter = mGUIPosition + mGUISize * 0.5;
-    QPoint newCell   = cPaperLogic::MapToGrid( newCenter );
-    mPosition = newCell;
 
     if( iTickCount > 0 && mAskDirectionChange )
     {
-        QPoint centerNewCell = newCell * CELLSIZE + QPoint( CELLSIZE / 2, CELLSIZE / 2 );
+        QPoint centerNewCell = mPosition * CELLSIZE + QPoint( CELLSIZE / 2, CELLSIZE / 2 );
         QPoint delta = centerNewCell - newCenter;
         if( std::abs( delta.x() ) < 2 && std::abs( delta.y() ) < 2 )
         {
@@ -89,10 +105,13 @@ cUser::Update( int iTickCount )
         }
     }
 
-    //*mDEBUGStream   << "====================USER "
-    //                << mIndex
-    //                << " POS -----> "
-    //                << mGUIPosition.x() << "-" << mGUIPosition.y() << "\n";
+    for( auto& comp : mComps )
+    {
+        if( comp.mCooldown > 0 )
+        {
+            comp.mCooldown -= iTickCount;
+        }
+    }
 }
 
 
@@ -114,6 +133,21 @@ cUser::setMovementVector( QPoint iMovementVector )
 
     mGUIMovementVector = iMovementVector;
     mAskDirectionChange = true;
+}
+
+
+void
+cUser::activateComp( int iCompNumber )
+{
+    if( mComps[ 0 ].mCooldown <= 0 )
+        mComps[ 0 ].mActive = true;
+}
+
+
+void
+cUser::deactivateComp( int iCompNumber )
+{
+    mComps[ 0 ].mActive = false;
 }
 
 
@@ -171,7 +205,8 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             << iUser.mAskDirectionChange
             //<< iUser.mIsOutOfGround
             << iUser.mIsDead
-            << iUser.mAskedRespawn;
+            << iUser.mAskedRespawn
+            << iUser.mComps;
             //<< iUser.mTrailPoints;
 
     return  oStream;
@@ -198,25 +233,8 @@ operator>>(QDataStream& iStream, cUser& oUser )
             >> oUser.mAskDirectionChange
             //>> oUser.mIsOutOfGround
             >> oUser.mIsDead
-            >> oUser.mAskedRespawn;
-
-    //oUser.mTrailPoints.clear();
-    //iStream >> oUser.mTrailPoints;
-
-    //oUser.mPosition = cPaperLogic::MapToGrid( oUser.mGUIPosition );
-
-
-//
-//    if( oUser.mIndex >= 0 && !oUser.mDEBUGFile )
-//    {
-//        QString wher = "CLIENT";
-//#ifdef SERVERSIDE
-//        wher = "SERVER";
-//#endif
-//        oUser.mDEBUGFile = new QFile( "./DEBUGLOGS/deb" + QString::number( oUser.mIndex ) + wher + ".txt" );
-//        oUser.mDEBUGFile->open( QIODevice::WriteOnly );
-//        oUser.mDEBUGStream = new QTextStream( oUser.mDEBUGFile );
-//    }
+            >> oUser.mAskedRespawn
+            >> oUser.mComps;
 
     return  iStream;
 }

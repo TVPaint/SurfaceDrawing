@@ -319,9 +319,7 @@ cServer::ReadUserAction( int iClientIndex, int iAction )
             break;
     }
 
-    // Do we really need this ? i guess, but let's try without because it'll make things easier at first (because we know from branch fullgridnt that this approach works)
-    // And this hasn't been tester yet
-
+    // Does this lag compensation really do anything ? Hard to debug / test
     auto currentTick = mPaperLogic->mTick;
     if( tick < currentTick )
     {
@@ -337,15 +335,6 @@ cServer::ReadUserAction( int iClientIndex, int iAction )
             mPaperLogic->ApplyDeltaTick( 1 );
 
         SendSnapShotIntervalToAllClient( tick, currentTick );
-    }
-
-    // Information to other clients
-    for( auto client : mClients )
-    {
-        if( iClientIndex == mClients.key( client ) ) // Don't send to the guy that initially sent us the action
-            continue;
-
-        SendUserActionToClient( client, mPaperLogic->mAllUsers[ iClientIndex ], iAction );
     }
 
     return  true;
@@ -476,6 +465,22 @@ cServer::GetData()
                     mClientsOutOfSync.push_back( index );
 
                 SendClockToClient( mClients[ index ] );
+                break;
+
+
+
+
+                // ==========================
+                // ========================== COMPS
+                // ==========================
+
+            case 100 :
+                _LOG( "User : " + QString::number( index ) + " asked to use rollback" );
+                mPaperLogic->mAllUsers[ index ]->activateComp( 0 );
+                break;
+            case 200 :
+                _LOG( "User : " + QString::number( index ) + " asked to stop using rollback" );
+                mPaperLogic->mAllUsers[ index ]->deactivateComp( 0 );
                 break;
 
             default:

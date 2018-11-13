@@ -83,6 +83,34 @@ cClient::SendNewDirection( quint64 iTick, int iDirection )
 
 
 void
+cClient::SendCompUse( quint64 iTick, int iComp )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 100 + iComp );
+    stream << iTick;
+
+    write( data );
+}
+
+
+void
+cClient::SendCompStopUse( quint64 iTick, int iComp )
+{
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream.setVersion( QDataStream::Qt_5_10 );
+
+    stream << int( 200 + iComp );
+    stream << iTick;
+
+    write( data );
+}
+
+
+void
 cClient::SendRespawnRequest()
 {
     QByteArray data;
@@ -169,8 +197,6 @@ cClient::GetData()
     qint64      timestamp;
     quint64     packetTick = -1;
 
-    //_LOG( "======================INC================= : " + QString::number( bytesAvailable() ) );
-
     while( bytesAvailable() > 0 )
     {
         if( mDataReadingState == kNone )
@@ -180,16 +206,10 @@ cClient::GetData()
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
 
-            //_LOG( "TIMESTAMP : " + QString::number( timestamp) );
-            //_LOG( "PACKET got sent in : " + QString::number( qint64(timestamp - GetTime()) ) );
-
             mDataStream.startTransaction();
             mDataStream >> packetTick;
             if( !mDataStream.commitTransaction() ) // If packet isn't complete, this will restore data to initial position, so we can read again on next GetData
                 return;
-
-            //_LOG( "At tick : " + QString::number( packetTick ) );
-
 
             quint8 header;
             mDataStream.startTransaction();

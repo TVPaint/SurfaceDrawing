@@ -78,6 +78,9 @@
     <ClCompile Include="cConnectionDialog.cpp">
       <Filter>src\Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="cComp.cpp">
+      <Filter>src\PaperLogic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="SurfaceDrawing.qrc">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="CircularBuffer.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cComp.h">
+      <Filter>src\PaperLogic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

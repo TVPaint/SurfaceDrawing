@@ -39,6 +39,8 @@ SurfaceDrawing::Init()
     mClientSocket->AskConnection();
 
     connect( mCanvas, &cCanvas::directionChanged, this, &SurfaceDrawing::DirectionChanged );
+    connect( mCanvas, &cCanvas::compRequest, mClientSocket, &cClient::SendCompUse );
+    connect( mCanvas, &cCanvas::compStopRequest, mClientSocket, &cClient::SendCompStopUse );
     connect( mCanvas, &cCanvas::respawnRequest, this, &SurfaceDrawing::RespawnRequest );
     connect( mCanvas, &cCanvas::pingRequest, this, &SurfaceDrawing::PingRequest );
     connect( mCanvas, &cCanvas::rollbackTest, this, &SurfaceDrawing::RollbackTest );
@@ -80,7 +82,7 @@ SurfaceDrawing::Update()
 
     mCanvas->Update();
 
-    mLasRenderedTick = tickToRender;
+    //mLasRenderedTick = tickToRender;
 }
 
 
@@ -129,8 +131,12 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
 {
 
     // As we send newUser and otherUsers info, this should never be out of sync
-    Q_ASSERT_X( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size(), "SIZE", "Incoming size : " + QString::number( iPaper.mAllUsers.size() ) + " My user sier : " + QString::number( mPaperLogic->mAllUsers.size() ) );
-
+    if( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() )
+    {
+        std::string msg = "My size : " + std::to_string( mPaperLogic->mAllUsers.size() ) + " vs incoming size : " + std::to_string( iPaper.mAllUsers.size() );
+        qWarning( msg.c_str() );
+        Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
+    }
     //if( iPaper.mAllUsers.size() != mPaperLogic->mAllUsers.size() )
     //{
     //    for( auto user : iPaper.mAllUsers )

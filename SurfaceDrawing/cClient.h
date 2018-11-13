@@ -39,6 +39,8 @@ public:
     void  AskConnection();
 
     void SendNewDirection( quint64 iTick, int iDirection );
+    void SendCompUse( quint64 iTick, int iComp );
+    void SendCompStopUse( quint64 iTick, int iComp );
     void SendRespawnRequest();
     void SendRdy(); // Client is properly set and connected, and now ready to get data;
 

@@ -10,6 +10,8 @@
 
 #include "cHash.h"
 
+#include "cComp.h"
+
 class cUser
 {
 public:
@@ -22,9 +24,13 @@ public:
 
 public:
     void setPosition( QPoint iPosition );
+    void setGUIPosition( QPoint iGUIPosition );
     void Update( int iTickCount );
     void setSize( QPoint iSize );
     void setMovementVector( QPoint iMovementVector );
+
+    void activateComp( int iCompNumber );
+    void deactivateComp( int iCompNumber );
 
 public:
     int         mIndex;
@@ -45,9 +51,7 @@ public:
 
     QList< QPoint >  mTrailPoints;
 
-
-    //QFile*          mDEBUGFile;
-    //QTextStream*    mDEBUGStream;
+    QVector< cComp > mComps;
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );

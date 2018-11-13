@@ -31,6 +31,7 @@ public:
 
 public:
     void  keyPressEvent( QKeyEvent* iEvent ) override;
+    void  keyReleaseEvent( QKeyEvent* iEvent ) override;
     void  resizeEvent( QResizeEvent* event ) override;
 
 
@@ -42,6 +43,8 @@ public:
 
 signals:
     void  directionChanged( quint64 iTick, int iDirection );
+    void  compRequest( quint64 iTick, int iCompNumber );
+    void  compStopRequest( quint64 iTick, int iCompNumber );
     void  respawnRequest();
     void  pingRequest();
     void  rollbackTest();

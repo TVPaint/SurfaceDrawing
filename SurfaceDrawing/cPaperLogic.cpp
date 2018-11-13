@@ -11,6 +11,7 @@
 
 #define  CELLAT( point ) mPaperGrid[ point.x()][point.y()]
 #define  SPAWNINGAREAREQUIRED 5 // 5x5 ( spawns are 3x3, here we let a little room )
+#define  ROLLBACKSPEED 2
 
 
 cPaperLogic::~cPaperLogic()
@@ -208,45 +209,14 @@ cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
                 continue;
             }
 
-            // USER
-            QPoint oldPosition = user->mPosition;
-
-            SetPlayerValueAt( oldPosition, -1 );
-
-            // User movement
-            user->Update( iDeltaTick );
-            mSnapShots.Back()->AddUserDiff( user );
-
-            QPoint newPosition = user->mPosition;
-
-            if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
-                || newPosition.y() < 0 || newPosition.y() >= GRIDSIZE )
+            if( user->mComps[ 0 ].mActive )
             {
-                KillUser( user );
-                return;
+                _RunRollbackForUser( user, iDeltaTick );
+                continue;
             }
 
-            SetPlayerValueAt( newPosition, user->mIndex );
+            _RunStandardUpdateForUser( user, iDeltaTick );
 
-            if( oldPosition != newPosition && CELLAT(oldPosition).mGround != user->mIndex )
-            {
-                _AddTrailAtIndex( oldPosition, user );
-            }
-
-            // TRAILS
-            if( CELLAT(newPosition).mGround == user->mIndex && user->mIsOutOfGround == true ) // if we land back on our ground
-            {
-                user->mIsOutOfGround = false;
-                FillZone( user );
-            }
-            else if( CELLAT(newPosition).mGround != user->mIndex && user->mIsOutOfGround == false ) // If we leave our land
-            {
-                user->mIsOutOfGround = true;
-            }
-            else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
-            {
-                KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
-            }
         }
     }
     else if( iDeltaTick < 0 ) // Go back in time
@@ -663,6 +633,103 @@ cPaperLogic::_SetCellData( const QPoint & iPoint, const eDataCell & iCellData )
     _CallCB( iPoint.x(), iPoint.y(), -2, kPlayer ); // CB to erase old value
     CELLAT( iPoint ) = iCellData;
     _CallCB( iPoint.x(), iPoint.y(), iCellData.mPlayer, kPlayer ); // CB to set new value with player flag, as it's the only one that has a specific treatment
+}
+
+
+void
+cPaperLogic::_RunStandardUpdateForUser( cUser* iUser, int iDTick )
+{
+    // USER
+    QPoint oldPosition = iUser->mPosition;
+
+    SetPlayerValueAt( oldPosition, -1 );
+
+    // User movement
+    iUser->Update( iDTick );
+    mSnapShots.Back()->AddUserDiff( iUser );
+
+    QPoint newPosition = iUser->mPosition;
+
+    if( newPosition.x() < 0 || newPosition.x() >= GRIDSIZE
+        || newPosition.y() < 0 || newPosition.y() >= GRIDSIZE )
+    {
+        KillUser( iUser );
+        return;
+    }
+
+    SetPlayerValueAt( newPosition, iUser->mIndex );
+
+    if( oldPosition != newPosition && CELLAT(oldPosition).mGround != iUser->mIndex )
+    {
+        _AddTrailAtIndex( oldPosition, iUser );
+    }
+
+    // TRAILS
+    if( CELLAT(newPosition).mGround == iUser->mIndex && iUser->mIsOutOfGround == true ) // if we land back on our ground
+    {
+        iUser->mIsOutOfGround = false;
+        FillZone( iUser );
+    }
+    else if( CELLAT(newPosition).mGround != iUser->mIndex && iUser->mIsOutOfGround == false ) // If we leave our land
+    {
+        iUser->mIsOutOfGround = true;
+    }
+    else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
+    {
+        KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
+    }
+}
+
+
+void
+cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
+{
+    if( !iUser->mIsOutOfGround )
+        return;
+
+    if( iUser->mTrailPoints.size() == 0 )
+        return;
+
+
+    iUser->mComps[ 0 ].mCooldown = iUser->mComps[ 0 ].mCooldownBase;
+
+    auto trailCell = iUser->mTrailPoints.back();
+
+    QPoint trailCellGUICenter( trailCell.x() * CELLSIZE + CELLSIZE/2, trailCell.y() * CELLSIZE + CELLSIZE/2 );
+    QPoint userCellGUICenter = iUser->mGUIPosition + QPoint( CELLSIZE/2, CELLSIZE/2 );
+
+    if( std::abs(trailCellGUICenter.x() - userCellGUICenter.x()) > 2
+            || std::abs(trailCellGUICenter.y() - userCellGUICenter.y()) > 2 )
+    {
+        QPoint directionVector = trailCellGUICenter - userCellGUICenter;
+        if( directionVector.x () > 0 )
+            directionVector.setX( 1 );
+        else if( directionVector.x () < 0 )
+            directionVector.setX( -1 );
+
+        if( directionVector.y () > 0 )
+            directionVector.setY( 1 );
+        else if( directionVector.y () < 0 )
+            directionVector.setY( -1 );
+
+        iUser->mGUICurrentMovementVector = -directionVector;
+
+        SetPlayerValueAt( iUser->mPosition, -1 );
+        iUser->setGUIPosition( iUser->mGUIPosition + directionVector * ROLLBACKSPEED * iDTick );
+        SetPlayerValueAt( iUser->mPosition, iUser->mIndex );
+    }
+    else
+    {
+        SetPlayerValueAt( iUser->mPosition, -1 );
+        iUser->mTrailPoints.pop_back();
+        iUser->setPosition( trailCell ); // To snap properly on grid
+        SetPlayerValueAt( iUser->mPosition, iUser->mIndex );
+    }
+
+    if( CELLAT( iUser->mPosition ).mTrail == iUser->mIndex )
+        SetTrailValueAt( iUser->mPosition, -1 );
+
+    mSnapShots.Back()->AddUserDiff( iUser );
 }
 
 

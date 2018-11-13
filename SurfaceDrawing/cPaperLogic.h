@@ -131,6 +131,10 @@ private:
     void  _SetCellData( const QPoint& iPoint, const eDataCell& iCellData );
 
 
+    void  _RunStandardUpdateForUser( cUser* iUser, int iDTick );
+    void  _RunRollbackForUser( cUser* iUser, int iDTick );
+
+
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
     cCircularBufferP< cSnapShot >       mSnapShots;
