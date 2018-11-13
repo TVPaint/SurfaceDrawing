@@ -129,7 +129,7 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
 {
 
     // As we send newUser and otherUsers info, this should never be out of sync
-    Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
+    Q_ASSERT_X( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size(), "SIZE", "Incoming size : " + QString::number( iPaper.mAllUsers.size() ) + " My user sier : " + QString::number( mPaperLogic->mAllUsers.size() ) );
 
     //if( iPaper.mAllUsers.size() != mPaperLogic->mAllUsers.size() )
     //{
