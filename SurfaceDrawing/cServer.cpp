@@ -335,7 +335,7 @@ cServer::ClientDisconnected()
 
             client->deleteLater();
 
-            mReadyClients.remove( mReadyClients.indexOf( clientKey ) );
+            mReadyClients.removeAll( mReadyClients.indexOf( clientKey ) );
 
             SendUserDisconnectedToAllClients( clientKey );
             break;
@@ -431,7 +431,7 @@ cServer::GetData()
                 }
                 else // Is ready again == no longer out of sync
                 {
-                    mClientsOutOfSync.remove( index );
+                    mClientsOutOfSync.removeAll( index );
                     SendGridToClient( mClients[ index ] );
                 }
 

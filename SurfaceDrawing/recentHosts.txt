@@ -1,1 +1,1 @@
-silur.damsy.net
+localhost
