@@ -84,6 +84,9 @@
     <ClCompile Include="cItemPlayfield.cpp">
       <Filter>src\Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="cUIItemComp.cpp">
+      <Filter>src\Canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="SurfaceDrawing.qrc">
@@ -148,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="cItemPlayfield.h">
       <Filter>src\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIItemComp.h">
+      <Filter>src\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>src\PaperLogic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

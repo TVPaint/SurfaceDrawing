@@ -8,6 +8,7 @@
 #include "cItemPlayfield.h"
 #include "cPaperLogic.h"
 #include "cBordersItem.h"
+#include "cUIItemComp.h"
 
 
 #include <QGraphicsScene>
@@ -16,6 +17,7 @@
 
 cCanvas::~cCanvas()
 {
+    // when the scene deletes it'll delete items inside
 }
 
 
@@ -186,7 +188,12 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
     scene()->addItem( userItem );
 
     if( iUserType == kMyself )
+    {
         mMyself = mAllUserItems[ iUser->mIndex ];
+        auto uiRollback = new cUIItemComp( mMyself->mUser, 0 );
+        mUIItemsComps.push_back( uiRollback );
+        scene()->addItem( uiRollback );
+    }
 }
 
 
@@ -202,6 +209,14 @@ cCanvas::Update()
         item->setPos( item->mUser->mGUIPosition );
 
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
+
+    QPointF uiPos = mapToScene( size().width()/2 - UICOMPSIZE/2, size().height() - UICOMPSIZE - 5 );
+
+    for( auto uiItem : mUIItemsComps )
+    {
+        uiItem->setPos( uiPos );
+        uiItem->Update();
+    }
 }
 
 

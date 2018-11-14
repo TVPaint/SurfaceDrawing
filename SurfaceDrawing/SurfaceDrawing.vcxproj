@@ -270,6 +270,7 @@
     <ClCompile Include="cItemPlayfield.cpp" />
     <ClCompile Include="cPaperLogic.cpp" />
     <ClCompile Include="cServer.cpp" />
+    <ClCompile Include="cUIItemComp.cpp" />
     <ClCompile Include="cUser.cpp" />
     <ClCompile Include="cItemUser.cpp" />
     <ClCompile Include="main.cpp" />
@@ -368,6 +369,8 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='DebugServer|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtNetwork</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='DebugServer|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SERVERSIDE;QT_NETWORK_LIB</Define>
     </QtMoc>
+    <ClInclude Include="cUIItemComp.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="TickerTimer.h" />
     <QtMoc Include="cCanvas.h" />
     <ClInclude Include="cPaperLogic.h" />
