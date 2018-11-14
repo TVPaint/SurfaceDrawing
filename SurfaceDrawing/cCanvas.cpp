@@ -191,7 +191,7 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
     {
         mMyself = mAllUserItems[ iUser->mIndex ];
         auto uiRollback = new cUIItemComp( mMyself->mUser, 0 );
-        uiRollback->SetImage( "Resources/Icone.png" );
+        uiRollback->SetImage( ":/SurfaceDrawing/Resources/Icone.png" );
         mUIItemsComps.push_back( uiRollback );
         scene()->addItem( uiRollback );
     }

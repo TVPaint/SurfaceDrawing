@@ -1,150 +1,94 @@
-107989533 : New client connected
-107989527 : Sending clock signal to all clients
-107989524 : DONE sending clock signal to all clients
-107989463 : User : 0 did a ping request
-107989458 : Sending pong
-107989448 : DONE sending pong
-107989392 : User : 0 did a ping request
-107989391 : Sending pong
-107989391 : DONE sending pong
-107989389 : User : 0 did a ping request
-107989389 : Sending pong
-107989388 : DONE sending pong
-107989387 : User : 0 did a ping request
-107989387 : Sending pong
-107989386 : DONE sending pong
-107989385 : User : 0 did a ping request
-107989385 : Sending pong
-107989384 : DONE sending pong
-107989383 : User : 0 did a ping request
-107989383 : Sending pong
-107989383 : DONE sending pong
-107989381 : User : 0 did a ping request
-107989381 : Sending pong
-107989381 : DONE sending pong
-107989379 : User : 0 did a ping request
-107989379 : Sending pong
-107989379 : DONE sending pong
-107989377 : User : 0 did a ping request
-107989377 : Sending pong
-107989377 : DONE sending pong
-107989376 : User : 0 did a ping request
-107989375 : Sending pong
-107989375 : DONE sending pong
-107989374 : User : 0 did a ping request
-107989374 : Sending pong
-107989373 : DONE sending pong
-107989373 : User : 0 did a ping request
-107989373 : Sending pong
-107989372 : DONE sending pong
-107989372 : User : 0 is ready to communicate
-107989372 : Sending kSelfAssign information to client : 0
-107989372 : DONE sending information
-107989367 : Sending grid to all clients
-107988431 : User : 0 did an action 3 -- Requested at tick : 571
-107987277 : User : 0 did an action 1 -- Requested at tick : 629
-107986036 : User : 0 asked to use rollback
-107985543 : User : 0 asked to use rollback
-107985510 : User : 0 asked to use rollback
-107985477 : User : 0 asked to use rollback
-107985444 : User : 0 asked to use rollback
-107985411 : User : 0 asked to use rollback
-107985378 : User : 0 asked to use rollback
-107985344 : User : 0 asked to use rollback
-107985312 : User : 0 asked to use rollback
-107985278 : User : 0 asked to use rollback
-107985246 : User : 0 asked to use rollback
-107985213 : User : 0 asked to use rollback
-107985180 : User : 0 asked to use rollback
-107985143 : User : 0 asked to use rollback
-107985114 : User : 0 asked to use rollback
-107985081 : User : 0 asked to use rollback
-107985043 : User : 0 asked to use rollback
-107985015 : User : 0 asked to use rollback
-107984982 : User : 0 asked to use rollback
-107984943 : User : 0 asked to use rollback
-107984916 : User : 0 asked to use rollback
-107984913 : User : 0 asked to stop using rollback
-107983678 : User : 0 did an action 1 -- Requested at tick : 809
-107981662 : User : 0 did an action 4 -- Requested at tick : 910
-107979282 : User : 0 did an action 2 -- Requested at tick : 1029
-107977933 : User : 0 did an action 3 -- Requested at tick : 1096
-107974921 : User : 0 did an action 1 -- Requested at tick : 1247
-107973497 : User : 0 asked to use rollback
-107972997 : User : 0 asked to use rollback
-107972962 : User : 0 asked to use rollback
-107972932 : User : 0 asked to use rollback
-107972898 : User : 0 asked to use rollback
-107972865 : User : 0 asked to use rollback
-107972833 : User : 0 asked to use rollback
-107972800 : User : 0 asked to use rollback
-107972766 : User : 0 asked to use rollback
-107972734 : User : 0 asked to use rollback
-107972701 : User : 0 asked to use rollback
-107972666 : User : 0 asked to use rollback
-107972635 : User : 0 asked to use rollback
-107972601 : User : 0 asked to use rollback
-107972582 : User : 0 asked to stop using rollback
-107971462 : User : 0 did an action 1 -- Requested at tick : 1420
-107969935 : User : 0 did an action 4 -- Requested at tick : 1496
-107967421 : User : 0 did an action 2 -- Requested at tick : 1622
-107966833 : User : 0 did an action 4 -- Requested at tick : 1651
-107965113 : User : 0 did an action 1 -- Requested at tick : 1737
-107964153 : User : 0 did an action 3 -- Requested at tick : 1785
-107959857 : User : 0 asked to use rollback
-107959358 : User : 0 asked to use rollback
-107959321 : User : 0 asked to use rollback
-107959291 : User : 0 asked to use rollback
-107959259 : User : 0 asked to use rollback
-107959220 : User : 0 asked to use rollback
-107959194 : User : 0 asked to use rollback
-107959160 : User : 0 asked to use rollback
-107959122 : User : 0 asked to use rollback
-107959094 : User : 0 asked to use rollback
-107959061 : User : 0 asked to use rollback
-107959022 : User : 0 asked to use rollback
-107958981 : User : 0 asked to use rollback
-107958960 : User : 0 asked to use rollback
-107958929 : User : 0 asked to use rollback
-107958896 : User : 0 asked to use rollback
-107958861 : User : 0 asked to use rollback
-107958831 : User : 0 asked to use rollback
-107958797 : User : 0 asked to use rollback
-107958763 : User : 0 asked to use rollback
-107958715 : User : 0 asked to use rollback
-107958697 : User : 0 asked to use rollback
-107958661 : User : 0 asked to use rollback
-107958633 : User : 0 asked to use rollback
-107958599 : User : 0 asked to use rollback
-107958550 : User : 0 asked to use rollback
-107958510 : User : 0 asked to use rollback
-107958500 : User : 0 asked to use rollback
-107958461 : User : 0 asked to use rollback
-107958435 : User : 0 asked to use rollback
-107958402 : User : 0 asked to use rollback
-107958362 : User : 0 asked to use rollback
-107958335 : User : 0 asked to use rollback
-107958302 : User : 0 asked to use rollback
-107958269 : User : 0 asked to use rollback
-107958236 : User : 0 asked to use rollback
-107958203 : User : 0 asked to use rollback
-107958170 : User : 0 asked to use rollback
-107958119 : User : 0 asked to use rollback
-107958101 : User : 0 asked to use rollback
-107958071 : User : 0 asked to use rollback
-107958037 : User : 0 asked to use rollback
-107958003 : User : 0 asked to use rollback
-107957973 : User : 0 asked to use rollback
-107957939 : User : 0 asked to use rollback
-107957902 : User : 0 asked to use rollback
-107957873 : User : 0 asked to use rollback
-107957840 : User : 0 asked to use rollback
-107957803 : User : 0 asked to use rollback
-107957774 : User : 0 asked to use rollback
-107957720 : User : 0 asked to use rollback
-107957712 : User : 0 asked to stop using rollback
-107955836 : User : 0 did an action 2 -- Requested at tick : 2201
-107953668 : Client 0 disconnected.
-107953664 : Sending disconnected msg to all clients
-107953664 : DONE sending disconnect info
-107953659 : Sending grid to all clients
+107987399 : New client connected
+107987394 : Sending clock signal to all clients
+107987394 : DONE sending clock signal to all clients
+107987342 : User : 0 did a ping request
+107987341 : Sending pong
+107987340 : DONE sending pong
+107987333 : User : 0 did a ping request
+107987333 : Sending pong
+107987333 : DONE sending pong
+107987329 : User : 0 did a ping request
+107987329 : Sending pong
+107987327 : DONE sending pong
+107987325 : User : 0 did a ping request
+107987325 : Sending pong
+107987324 : DONE sending pong
+107987323 : User : 0 did a ping request
+107987323 : Sending pong
+107987323 : DONE sending pong
+107987321 : User : 0 did a ping request
+107987321 : Sending pong
+107987321 : DONE sending pong
+107987320 : User : 0 did a ping request
+107987320 : Sending pong
+107987320 : DONE sending pong
+107987319 : User : 0 did a ping request
+107987318 : Sending pong
+107987318 : DONE sending pong
+107987317 : User : 0 did a ping request
+107987317 : Sending pong
+107987317 : DONE sending pong
+107987316 : User : 0 did a ping request
+107987316 : Sending pong
+107987316 : DONE sending pong
+107987314 : User : 0 did a ping request
+107987314 : Sending pong
+107987314 : DONE sending pong
+107987314 : User : 0 did a ping request
+107987314 : Sending pong
+107987313 : DONE sending pong
+107987313 : User : 0 is ready to communicate
+107987313 : Sending kSelfAssign information to client : 0
+107987313 : DONE sending information
+107987308 : Sending grid to all clients
+107984980 : Client 0 disconnected.
+107984977 : Sending disconnected msg to all clients
+107984977 : DONE sending disconnect info
+107984972 : Sending grid to all clients
+107968639 : New client connected
+107968636 : Sending clock signal to all clients
+107968635 : DONE sending clock signal to all clients
+107968596 : User : 1 did a ping request
+107968593 : Sending pong
+107968587 : DONE sending pong
+107968575 : User : 1 did a ping request
+107968575 : Sending pong
+107968574 : DONE sending pong
+107968571 : User : 1 did a ping request
+107968570 : Sending pong
+107968570 : DONE sending pong
+107968568 : User : 1 did a ping request
+107968568 : Sending pong
+107968568 : DONE sending pong
+107968566 : User : 1 did a ping request
+107968566 : Sending pong
+107968566 : DONE sending pong
+107968565 : User : 1 did a ping request
+107968565 : Sending pong
+107968565 : DONE sending pong
+107968562 : User : 1 did a ping request
+107968562 : Sending pong
+107968561 : DONE sending pong
+107968559 : User : 1 did a ping request
+107968559 : Sending pong
+107968559 : DONE sending pong
+107968558 : User : 1 did a ping request
+107968558 : Sending pong
+107968558 : DONE sending pong
+107968557 : User : 1 did a ping request
+107968557 : Sending pong
+107968556 : DONE sending pong
+107968555 : User : 1 did a ping request
+107968555 : Sending pong
+107968555 : DONE sending pong
+107968554 : User : 1 did a ping request
+107968554 : Sending pong
+107968554 : DONE sending pong
+107968554 : User : 1 is ready to communicate
+107968554 : Sending kSelfAssign information to client : 1
+107968554 : DONE sending information
+107968549 : Sending grid to all clients
+107966147 : Client 1 disconnected.
+107966145 : Sending disconnected msg to all clients
+107966145 : DONE sending disconnect info
+107966139 : Sending grid to all clients
