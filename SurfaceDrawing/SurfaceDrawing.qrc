@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/SurfaceDrawing">
         <file>Resources/Icone.png</file>
+        <file>Resources/IconeGray.png</file>
     </qresource>
 </RCC>

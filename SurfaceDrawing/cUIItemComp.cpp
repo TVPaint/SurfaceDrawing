@@ -13,7 +13,7 @@
 cUIItemComp::~cUIItemComp()
 {
     delete  mPixmap;
-    delete  mGreyOut;
+    delete  mPixmapGrayOut;
 }
 
 
@@ -41,23 +41,30 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
 
     if( mActive )
         color = QColor( 150, 50, 50, 100 );
+    else if( mCoolingdown )
+        color = QColor( 126, 126, 126, 100 );
 
     iPainter->setBrush( color );
     iPainter->setPen( Qt::black );
 
-    iPainter->drawRect( bbox );
 
     if( mPixmap )
     {
         if( mCoolingdown && !mActive )
         {
-            mGreyOut->setEnabled( false );
-            iPainter->drawPixmap( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent, *mPixmap );
-            mGreyOut->setEnabled( true );
-            iPainter->drawPixmap( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent, *mPixmap );
+            QRectF subRectoTop( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent );
+            QRectF subRectBottom( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent );
+            iPainter->drawRect( subRectBottom );
+            iPainter->drawPixmap( subRectoTop, *mPixmap, subRectoTop );
+
+            if( mPixmapGrayOut )
+            {
+                iPainter->drawPixmap( subRectBottom, *mPixmapGrayOut, subRectBottom );
+            }
         }
         else
         {
+            iPainter->drawRect( bbox );
             iPainter->drawPixmap( 0, 0, *mPixmap );
         }
     }
@@ -74,6 +81,14 @@ cUIItemComp::SetImage( const QString & iImageFileName )
 
 
 void
+cUIItemComp::SetGrayImage( const QString & iImageFileName )
+{
+    delete  mPixmapGrayOut;
+    mPixmapGrayOut = new QPixmap( iImageFileName );
+}
+
+
+void
 cUIItemComp::Update()
 {
     mActive        = mUser->mComps[ mCompIndex ].mActive;
@@ -83,18 +98,11 @@ cUIItemComp::Update()
 
     if( mCoolingdown && !mActive )
     {
-        if( mGreyOut == 0 )
-        {
-            _CreateGrayOutEffect();
-            setGraphicsEffect( mGreyOut );
-        }
-
         update();
     }
     else
     {
         setGraphicsEffect( 0 );
-        mGreyOut = 0;
     }
 }
 
@@ -102,9 +110,6 @@ cUIItemComp::Update()
 void
 cUIItemComp::_CreateGrayOutEffect()
 {
-    mGreyOut = new QGraphicsColorizeEffect();
-    mGreyOut->setColor( Qt::gray );
-    mGreyOut->setStrength( 1.0F );
 }
 
 

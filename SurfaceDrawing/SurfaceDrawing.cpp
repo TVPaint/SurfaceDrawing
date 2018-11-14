@@ -82,7 +82,7 @@ SurfaceDrawing::Update()
 
     mCanvas->Update();
 
-    //mLasRenderedTick = tickToRender;
+    mLasRenderedTick = tickToRender;
 }
 
 

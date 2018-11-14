@@ -18,6 +18,7 @@ public:
 
 public:
     void  SetImage( const QString& iImageFileName );
+    void  SetGrayImage( const QString& iImageFileName ); // Yeah i know, but QGraphicsEffects are kinda shit to use as they apply to the wole item and affects every paint operation
     void  Update();
 
 private:
@@ -25,8 +26,8 @@ private:
 
 public:
     QPixmap*                    mPixmap             = 0;
-    QPixmap*                    mOffScreenBuffer    = 0;
-    QGraphicsColorizeEffect*    mGreyOut            = 0;
+    QPixmap*                    mPixmapGrayOut      = 0;
+    //QGraphicsColorizeEffect*    mGreyOut            = 0;
     cUser*                      mUser               = 0;
     int                         mCompIndex          = -1;
 
