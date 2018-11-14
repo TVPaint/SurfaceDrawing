@@ -94,7 +94,7 @@ inline
 int
 cCircularBuffer<T>::Find( const T & iObject )
 {
-    for( int i = 0; i < mCount; ++i )
+    for( int i = 0; i < Count(); ++i )
         if( operator[]( i ) == iObject )
             return  i;
     return  -1;
@@ -228,7 +228,7 @@ inline
 int
 cCircularBufferP<T>::Find( const T* iObject )
 {
-    for( int i = 0; i < mCount; ++i )
+    for( int i = 0; i < Count(); ++i )
         if( operator[]( i ) == iObject )
             return  i;
     return  -1;
