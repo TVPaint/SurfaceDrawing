@@ -48,7 +48,19 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
     iPainter->drawRect( bbox );
 
     if( mPixmap )
-        iPainter->drawPixmap( 0, 0, *mPixmap );
+    {
+        if( mCoolingdown && !mActive )
+        {
+            mGreyOut->setEnabled( false );
+            iPainter->drawPixmap( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent, *mPixmap );
+            mGreyOut->setEnabled( true );
+            iPainter->drawPixmap( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent, *mPixmap );
+        }
+        else
+        {
+            iPainter->drawPixmap( 0, 0, *mPixmap );
+        }
+    }
 }
 
 
@@ -67,6 +79,8 @@ cUIItemComp::Update()
     mActive        = mUser->mComps[ mCompIndex ].mActive;
     mCoolingdown   = mUser->mComps[ mCompIndex ].mCooldown > 0;
 
+    mCDPercent = float(mUser->mComps[ mCompIndex ].mCooldown) / float(mUser->mComps[ mCompIndex ].mCooldownBase);
+
     if( mCoolingdown && !mActive )
     {
         if( mGreyOut == 0 )
@@ -74,6 +88,8 @@ cUIItemComp::Update()
             _CreateGrayOutEffect();
             setGraphicsEffect( mGreyOut );
         }
+
+        update();
     }
     else
     {

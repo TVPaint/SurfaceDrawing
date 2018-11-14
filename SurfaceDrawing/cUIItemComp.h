@@ -25,10 +25,12 @@ private:
 
 public:
     QPixmap*                    mPixmap             = 0;
+    QPixmap*                    mOffScreenBuffer    = 0;
     QGraphicsColorizeEffect*    mGreyOut            = 0;
     cUser*                      mUser               = 0;
     int                         mCompIndex          = -1;
 
     bool                        mActive             = false;
     bool                        mCoolingdown        = false;
+    float                       mCDPercent          = 1.0F;
 };
