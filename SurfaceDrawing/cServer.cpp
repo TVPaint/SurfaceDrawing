@@ -61,6 +61,9 @@ cServer::Run()
 void
 cServer::SendGridToAllClient()
 {
+    if( mPaperLogic->mPaperGrid.size() <= 0 )
+        _LOG( "Grid is fucked (size <= 0)" );
+
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
@@ -193,6 +196,10 @@ cServer::SendGridToClient( QTcpSocket * iClient )
 {
     if( !_IsClientAvailable( mClients.key( iClient ) ) )
         return;
+
+    if( mPaperLogic->mPaperGrid.size() <= 0 )
+        _LOG( "Grid is fucked (size <= 0)" );
+
 
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
