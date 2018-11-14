@@ -203,6 +203,7 @@ SurfaceDrawing::UserRequestedRespawn( cUser * iUser )
 void
 SurfaceDrawing::UserDisconnected( int iIndex )
 {
+    mCanvas->RemoveUser( mPaperLogic->mAllUsers[ iIndex ] );
     mPaperLogic->RemoveUser( mPaperLogic->mAllUsers[ iIndex ] );
     mAuthPaperLogic->RemoveUser( mAuthPaperLogic->mAllUsers[ iIndex ] );
 }

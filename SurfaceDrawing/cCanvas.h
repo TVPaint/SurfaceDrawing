@@ -40,6 +40,7 @@ public:
 
 public:
     void  AddUser( cUser* iUser, eUserType iUserType );
+    void  RemoveUser( cUser* iUser );
 
 public:
     void  Update();

@@ -205,6 +205,36 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
 
 
 void
+cCanvas::RemoveUser( cUser* iUser )
+{
+    if( iUser->mIndex < 0 )
+        return;
+    
+    auto userItem = mAllUserItems[iUser->mIndex];
+    if( !userItem || userItem == mMyself )
+        return;
+    auto it = mAllUserItems.find( iUser->mIndex );
+    mAllUserItems.erase( it );
+
+    cUIItemPlayerStat* uiItem = 0;
+    for( int i = 0; i < mUIItemsStats.size(); ++i )
+    {
+        if( mUIItemsStats[i]->mUser->mIndex == iUser->mIndex )
+         {
+             uiItem = mUIItemsStats[i];
+             mUIItemsStats.erase( mUIItemsStats.begin() + i );
+             break;
+         }
+    }
+    if( uiItem )
+    {
+        scene()->removeItem( uiItem );
+        delete uiItem;
+    }
+}
+
+
+void
 cCanvas::Update()
 {
     //QPointF firstPos = mapToScene( 0, 0 );
