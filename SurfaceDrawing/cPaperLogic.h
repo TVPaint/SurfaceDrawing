@@ -33,7 +33,7 @@ public:
 public:
     struct  eDataCell
     {
-        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ), mSpawnIsImpossibleHere( false ){};
+        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ) {};
 
         bool  operator==( const eDataCell& iRHS )
         {
@@ -57,8 +57,6 @@ public:
         int8_t  mPlayer;
         int8_t  mTrail;
         int8_t  mGround;
-
-        bool  mSpawnIsImpossibleHere; // To check if spawn is available, just to avoid having a whole different array
     };
 
     enum eDataType
@@ -127,7 +125,6 @@ private:
     void  _CallCB( int, int, int, eDataType );
     void  _AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser );
 
-    bool  _IsAvailableSpaceAtPoint( const QPoint& iPoint ) const;
     void  _SetCellData( const QPoint& iPoint, const eDataCell& iCellData );
 
 

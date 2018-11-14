@@ -369,8 +369,6 @@ cPaperLogic::KillUser( cUser* iUser )
                 SetTrailValueAt( pos, -2 );
                 SetTrailValueAt( pos, -1 );
             }
-
-            CELLAT( pos ).mSpawnIsImpossibleHere = false;
         }
     }
 }
@@ -597,36 +595,6 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser )
 }
 
 
-bool
-cPaperLogic::_IsAvailableSpaceAtPoint( const QPoint& iPoint ) const
-{
-    bool result = true;
-    for( int x = iPoint.x() - SPAWNINGAREAREQUIRED / 2; x < iPoint.x() + SPAWNINGAREAREQUIRED / 2; ++x )
-    {
-        for( int y = iPoint.y() - SPAWNINGAREAREQUIRED / 2; y < iPoint.y() + SPAWNINGAREAREQUIRED / 2; ++y )
-        {
-            eDataCell cell = mPaperGrid[ x ][ y ];
-            if( cell.mSpawnIsImpossibleHere )
-                continue;
-
-            if( result == false )
-            {
-                cell.mSpawnIsImpossibleHere = true;
-            }
-            else if( cell.mGround >= 0 || cell.mTrail >= 0 ) // If there is a player's ground or trail, we can't spawn here
-            {
-                result = false;
-                // We reset the loop, to set all cells at impossible spawn
-                x = iPoint.x() - SPAWNINGAREAREQUIRED / 2;
-                y = iPoint.y() - SPAWNINGAREAREQUIRED / 2;
-            }
-        }
-    }
-
-    return  result;
-}
-
-
 void
 cPaperLogic::_SetCellData( const QPoint & iPoint, const eDataCell & iCellData )
 {
@@ -740,7 +708,6 @@ operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell )
     oStream << iDataCell.mPlayer
             << iDataCell.mTrail
             << iDataCell.mGround;
-            //<< iDataCell.mSpawnIsImpossibleHere;
 
     return  oStream;
 }
@@ -760,7 +727,6 @@ operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
     iStream >> oDataCell.mPlayer
             >> oDataCell.mTrail
             >> oDataCell.mGround;
-            //>> oDataCell.mSpawnIsImpossibleHere;
 
     return  iStream;
 }
