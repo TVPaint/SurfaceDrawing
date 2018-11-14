@@ -54,13 +54,12 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
         {
             QRectF subRectoTop( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent );
             QRectF subRectBottom( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent );
-            iPainter->drawRect( subRectBottom );
-            iPainter->drawPixmap( subRectoTop, *mPixmap, subRectoTop );
 
+            iPainter->drawRect( subRectBottom );
+
+            iPainter->drawPixmap( subRectoTop, *mPixmap, subRectoTop );
             if( mPixmapGrayOut )
-            {
                 iPainter->drawPixmap( subRectBottom, *mPixmapGrayOut, subRectBottom );
-            }
         }
         else
         {
@@ -91,19 +90,12 @@ cUIItemComp::SetGrayImage( const QString & iImageFileName )
 void
 cUIItemComp::Update()
 {
-    mActive        = mUser->mComps[ mCompIndex ].mActive;
-    mCoolingdown   = mUser->mComps[ mCompIndex ].mCooldown > 0;
-
-    mCDPercent = float(mUser->mComps[ mCompIndex ].mCooldown) / float(mUser->mComps[ mCompIndex ].mCooldownBase);
+    mActive         = mUser->mComps[ mCompIndex ].mActive;
+    mCoolingdown    = mUser->mComps[ mCompIndex ].mCooldown > 0;
+    mCDPercent      = float(mUser->mComps[ mCompIndex ].mCooldown) / float(mUser->mComps[ mCompIndex ].mCooldownBase);
 
     if( mCoolingdown && !mActive )
-    {
         update();
-    }
-    else
-    {
-        setGraphicsEffect( 0 );
-    }
 }
 
 
