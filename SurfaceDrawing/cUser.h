@@ -26,6 +26,7 @@ public:
     void setPosition( QPoint iPosition );
     void setGUIPosition( QPoint iGUIPosition );
     void Update( int iTickCount );
+    void UpdateComps( int iTickCount );
     void setSize( QPoint iSize );
     void setMovementVector( QPoint iMovementVector );
 

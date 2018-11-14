@@ -111,6 +111,13 @@ cUser::Update( int iTickCount )
         }
     }
 
+    UpdateComps( iTickCount );
+}
+
+
+void
+cUser::UpdateComps( int iTickCount )
+{
     for( auto& comp : mComps )
     {
         if( comp.mCooldown > 0 )

@@ -140,7 +140,6 @@ cPaperLogic::Update( quint64 iCurrentTimeRemaining )
     AdvanceBy( mTick - oldTick );
     */
 
-
     mTick += tickCount;
 }
 
@@ -156,8 +155,8 @@ cPaperLogic::TickUpdate( quint64 iCurrentTimeRemaining )
 
     mTimeBuffer += deltaTimeMs;
 
-    int tickCount = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
-    mTimeBuffer = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
+    int tickCount   = mTimeBuffer / SPEED; // Because we want 1 pixel per SPEEDms
+    mTimeBuffer     = mTimeBuffer % SPEED; // This is remaining ms that doesn't make a full tick, so we add them next round
 
     mTick += tickCount;
 }
@@ -207,10 +206,11 @@ cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
                 continue;
             }
 
+
+            _RunSpeedForUser( user, iDeltaTick );
             if( _RunRollbackForUser( user, iDeltaTick ) )
                 continue;
 
-            _RunSpeedForUser( user, iDeltaTick );
 
             _RunStandardUpdateForUser( user, iDeltaTick );
         }
@@ -711,6 +711,8 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
 
     if( CELLAT( iUser->mPosition ).mTrail == iUser->mIndex )
         SetTrailValueAt( iUser->mPosition, -1 );
+
+    iUser->UpdateComps( iDTick ); // Or not if we say rollback freezes other comps cooldown
 
     mSnapShots.Back()->AddUserDiff( iUser );
 
