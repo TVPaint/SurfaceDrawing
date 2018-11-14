@@ -737,11 +737,11 @@ cPaperLogic::_RunSpeedForUser( cUser * iUser, int iDTick )
     }
 
     // If already set, don't set it again
-    if( iUser->mSpeedMultiplicator == 3 )
+    if( iUser->mSpeedMultiplicator == SPEEDBOOST )
         return  true;
 
 
-    iUser->mSpeedMultiplicator = 3;
+    iUser->mSpeedMultiplicator = SPEEDBOOST;
     mSnapShots.Back()->AddUserDiff( iUser );
 
     return  true;
