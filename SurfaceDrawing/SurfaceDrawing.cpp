@@ -134,7 +134,7 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
     if( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() )
     {
         std::string msg = "My size : " + std::to_string( mPaperLogic->mAllUsers.size() ) + " vs incoming size : " + std::to_string( iPaper.mAllUsers.size() );
-        qWarning( msg.c_str() );
+        qWarning( "%s", msg.c_str() );
         Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
     }
     //if( iPaper.mAllUsers.size() != mPaperLogic->mAllUsers.size() )
