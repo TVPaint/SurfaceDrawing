@@ -5,6 +5,7 @@
 #include "cItemUser.h"
 #include "cBasicTile.h"
 //#include "cItemGrid.h"
+#include "cItemPlayfield.h"
 #include "cPaperLogic.h"
 #include "cBordersItem.h"
 
@@ -23,13 +24,21 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
     mPaperLogic( iPaperLogic )
 {
     int offset = 600;
-    QGraphicsScene* scene = new QGraphicsScene();
     int gridSize = GRIDSIZE * CELLSIZE + offset*2;
+
+    QGraphicsScene* scene = new QGraphicsScene();
     scene->setSceneRect( -offset, -offset, gridSize, gridSize );
     setScene( scene );
 
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+
+    //setStyleSheet( "background: #404050" ); // Lags the game !
+
+
+    mItemPlayfied = new cItemPlayfield( 0 );
+    scene->addItem( mItemPlayfied );
 
     //mGrid = new cItemGrid( 0 );
     //mGrid->mSize = size();

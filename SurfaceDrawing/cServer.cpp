@@ -100,16 +100,16 @@ cServer::SendNextSnapShotToAllClient()
 
 
 void
-cServer::SendSnapShotIntervalToAllClient( int iFirst, int iLast )
+cServer::SendSnapShotIntervalToAllClient( int iFirstTick, int iLastTick )
 {
-    for( int i = iFirst; i <= iLast; ++i )
+    for( int i = iFirstTick; i <= iLastTick; ++i )
     {
         QByteArray data;
         QDataStream stream( &data, QIODevice::WriteOnly );
         stream.setVersion( QDataStream::Qt_5_10 );
 
         auto snap = mPaperLogic->FindSnapShotByTick( i );
-        
+
         Q_ASSERT( snap );
 
         stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );

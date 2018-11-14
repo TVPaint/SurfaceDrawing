@@ -267,6 +267,7 @@
     <ClCompile Include="cComp.cpp" />
     <ClCompile Include="cConnectionDialog.cpp" />
     <ClCompile Include="cItemGrid.cpp" />
+    <ClCompile Include="cItemPlayfield.cpp" />
     <ClCompile Include="cPaperLogic.cpp" />
     <ClCompile Include="cServer.cpp" />
     <ClCompile Include="cUser.cpp" />
@@ -340,6 +341,7 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='ReleaseServer|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
       <Define Condition="'$(Configuration)|$(Platform)'=='ReleaseClient|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
     </ClInclude>
+    <ClInclude Include="cItemPlayfield.h" />
     <ClInclude Include="cItemUser.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='DebugClient|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='DebugServer|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>

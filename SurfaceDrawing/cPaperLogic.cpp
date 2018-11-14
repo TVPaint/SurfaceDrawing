@@ -216,7 +216,6 @@ cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
             }
 
             _RunStandardUpdateForUser( user, iDeltaTick );
-
         }
     }
     else if( iDeltaTick < 0 ) // Go back in time

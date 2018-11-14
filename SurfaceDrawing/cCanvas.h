@@ -5,6 +5,7 @@
 
 
 class cItemUser;
+class cItemPlayfield;
 class cBasicTile;
 class cUser;
 class cPaperLogic;
@@ -57,5 +58,6 @@ public:
     QVector< cBasicTile* >      mAllTiles;
     cPaperLogic*                mPaperLogic;
     cItemGrid*                  mGrid;
+    cItemPlayfield*             mItemPlayfied;
     cBordersItem*               mBordersItem;
 };
