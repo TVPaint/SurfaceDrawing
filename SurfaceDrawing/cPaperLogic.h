@@ -129,7 +129,7 @@ private:
 
 
     void  _RunStandardUpdateForUser( cUser* iUser, int iDTick );
-    void  _RunRollbackForUser( cUser* iUser, int iDTick );
+    bool  _RunRollbackForUser( cUser* iUser, int iDTick ); // Returns true if it handled the user, false otherwise, meaning main loop has to handle still the user
 
 
 public:

@@ -209,11 +209,8 @@ cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
                 continue;
             }
 
-            if( user->mComps[ 0 ].mActive )
-            {
-                _RunRollbackForUser( user, iDeltaTick );
+            if( _RunRollbackForUser( user, iDeltaTick ) )
                 continue;
-            }
 
             _RunStandardUpdateForUser( user, iDeltaTick );
         }
@@ -648,14 +645,17 @@ cPaperLogic::_RunStandardUpdateForUser( cUser* iUser, int iDTick )
 }
 
 
-void
+bool
 cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
 {
-    if( !iUser->mIsOutOfGround )
-        return;
+    if( !iUser->mComps[ 0 ].mActive )
+        return  false;
+
+    if( !iUser->mIsOutOfGround || iUser->mIsDead )
+        return  false;
 
     if( iUser->mTrailPoints.size() == 0 )
-        return;
+        return  false;
 
 
     iUser->mComps[ 0 ].mCooldown = iUser->mComps[ 0 ].mCooldownBase;
@@ -697,6 +697,8 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
         SetTrailValueAt( iUser->mPosition, -1 );
 
     mSnapShots.Back()->AddUserDiff( iUser );
+
+    return  true;
 }
 
 
