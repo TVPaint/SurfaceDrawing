@@ -394,6 +394,21 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
     SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
 }
 
+float
+cPaperLogic::ComputeLandUsage( const cUser*  iUser )
+{
+    float count = 0;
+    for( auto r: mPaperGrid )
+    {
+        for( auto c: r )
+        {
+            if( c.mGround == iUser->mIndex )
+                ++count;
+        }
+    }
+    return  count / ( GRIDSIZE * GRIDSIZE );
+}
+
 
 cSnapShot*
 cPaperLogic::FindSnapShotByTick( quint64 iTick )

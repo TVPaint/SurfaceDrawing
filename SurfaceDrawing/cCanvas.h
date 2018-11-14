@@ -12,6 +12,7 @@ class cPaperLogic;
 class cItemGrid;
 class  cBordersItem;
 class cUIItemComp;
+class cUIItemPlayerStat;
 
 class cCanvas :
     public QGraphicsView
@@ -63,4 +64,5 @@ public:
     cBordersItem*               mBordersItem;
 
     QVector< cUIItemComp* >     mUIItemsComps;
+    QVector< cUIItemPlayerStat* > mUIItemsStats;
 };

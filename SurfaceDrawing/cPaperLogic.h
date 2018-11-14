@@ -103,6 +103,8 @@ public:
 
     void  SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint );
 
+    float  ComputeLandUsage( const cUser*  iUser );
+
 
 public:
     cSnapShot*  FindSnapShotByTick( quint64 iTick );

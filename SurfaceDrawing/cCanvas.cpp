@@ -8,6 +8,7 @@
 #include "cItemPlayfield.h"
 #include "cPaperLogic.h"
 #include "cBordersItem.h"
+#include "cUIItemPlayerStat.h"
 #include "cUIItemComp.h"
 
 
@@ -187,6 +188,10 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
     mAllUserItems.insert( iUser->mIndex, userItem );
     scene()->addItem( userItem );
 
+    auto uiStat = new cUIItemPlayerStat( mPaperLogic, iUser );
+    mUIItemsStats.push_back( uiStat );
+    scene()->addItem( uiStat );
+
     if( iUserType == kMyself )
     {
         mMyself = mAllUserItems[ iUser->mIndex ];
@@ -219,6 +224,14 @@ cCanvas::Update()
         uiItem->setPos( uiPos );
         uiItem->Update();
     }
+
+    QPointF uiStatPos = mapToScene( size().width() - cUIItemPlayerStat::UI_ITEM_RECT.width(), cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );
+    for( auto uiItem : mUIItemsStats )
+    {
+        uiItem->setPos( uiStatPos );
+        uiStatPos += QPointF( 0, cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );
+    }
+
 }
 
 
