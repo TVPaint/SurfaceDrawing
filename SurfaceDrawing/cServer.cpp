@@ -109,8 +109,9 @@ cServer::SendSnapShotIntervalToAllClient( int iFirstTick, int iLastTick )
         stream.setVersion( QDataStream::Qt_5_10 );
 
         auto snap = mPaperLogic->FindSnapShotByTick( i );
-
-        Q_ASSERT( snap );
+        if( !snap )
+            continue;
+        //Q_ASSERT( snap );
 
         stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
         stream << quint64( mPaperLogic->mTick );

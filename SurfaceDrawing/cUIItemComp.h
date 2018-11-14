@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include <QGraphicsColorizeEffect>
 
 #include "cUser.h"
 
@@ -16,12 +17,18 @@ public:
     void   paint( QPainter* iPainter, const QStyleOptionGraphicsItem*  iOptions, QWidget* iWidget = 0 )  override;
 
 public:
+    void  SetImage( const QString& iImageFileName );
     void  Update();
 
-public:
-    cUser*  mUser;
-    int     mCompIndex;
+private:
+    void  _CreateGrayOutEffect();
 
-    bool    mActive;
-    bool    mCoolingdown;
+public:
+    QPixmap*                    mPixmap             = 0;
+    QGraphicsColorizeEffect*    mGreyOut            = 0;
+    cUser*                      mUser               = 0;
+    int                         mCompIndex          = -1;
+
+    bool                        mActive             = false;
+    bool                        mCoolingdown        = false;
 };
