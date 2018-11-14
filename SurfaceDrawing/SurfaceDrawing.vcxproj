@@ -271,6 +271,7 @@
     <ClCompile Include="cPaperLogic.cpp" />
     <ClCompile Include="cServer.cpp" />
     <ClCompile Include="cUIItemComp.cpp" />
+    <ClCompile Include="cUIItemPlayerStat.cpp" />
     <ClCompile Include="cUser.cpp" />
     <ClCompile Include="cItemUser.cpp" />
     <ClCompile Include="main.cpp" />
@@ -370,6 +371,7 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='DebugServer|x64'">UNICODE;_UNICODE;WIN32;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;SERVERSIDE;QT_NETWORK_LIB</Define>
     </QtMoc>
     <ClInclude Include="cUIItemComp.h" />
+    <ClInclude Include="cUIItemPlayerStat.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="TickerTimer.h" />
     <QtMoc Include="cCanvas.h" />

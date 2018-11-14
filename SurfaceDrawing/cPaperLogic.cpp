@@ -394,6 +394,7 @@ cPaperLogic::SpawnUserAtPoint( cUser*  iUser, const QPoint& iPoint )
     SetGroundValueAt( iUser->mPosition + QPoint( 1, 1 ),    iUser->mIndex );
 }
 
+
 float
 cPaperLogic::ComputeLandUsage( const cUser*  iUser )
 {

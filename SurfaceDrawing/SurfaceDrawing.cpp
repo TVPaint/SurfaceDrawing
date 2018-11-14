@@ -73,9 +73,9 @@ SurfaceDrawing::Update()
     }
     else
     {
-        qDebug() << "Manual update for tick " << tickToRender;
-        qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
-        mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
+        //qDebug() << "Manual update for tick " << tickToRender;
+        //qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
+        //mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
     }
 
     //mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );
