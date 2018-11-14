@@ -481,8 +481,13 @@ cServer::GetData()
 
             case 100 :
                 _LOG( "User : " + QString::number( index ) + " asked to use rollback" );
-                mPaperLogic->mAllUsers[ index ]->activateComp( 0 );
+                mPaperLogic->mAllUsers[ index ]->activateComp( header - 100 );
                 break;
+            case 101 :
+                _LOG( "User : " + QString::number( index ) + " asked to use speed" );
+                mPaperLogic->mAllUsers[ index ]->activateComp( header - 100 );
+                break;
+
             case 200 :
                 _LOG( "User : " + QString::number( index ) + " asked to stop using rollback" );
                 mPaperLogic->mAllUsers[ index ]->deactivateComp( 0 );

@@ -49,6 +49,8 @@ public:
     bool        mIsDead;
     bool        mAskedRespawn = false;
 
+    int         mSpeedMultiplicator = 1;
+
     QList< QPoint >  mTrailPoints;
 
     QVector< cComp > mComps;

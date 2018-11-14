@@ -50,7 +50,20 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
 
     if( mPixmap )
     {
-        if( mCoolingdown && !mActive )
+        if( mActive && mUsagePercent > 0 )
+        {
+            float inverse = (1.0F-mUsagePercent);
+            QRectF subRectToTop( 0, 0, UICOMPSIZE, UICOMPSIZE * inverse);
+            QRectF subRectBottom( 0, UICOMPSIZE*inverse, UICOMPSIZE, UICOMPSIZE*mUsagePercent );
+
+            iPainter->drawRect( subRectBottom );
+
+            iPainter->drawPixmap( subRectToTop, *mPixmap, subRectToTop );
+            if( mPixmapGrayOut )
+                iPainter->drawPixmap( subRectBottom, *mPixmapGrayOut, subRectBottom );
+
+        }
+        else if( mCoolingdown && !mActive )
         {
             QRectF subRectoTop( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent );
             QRectF subRectBottom( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent );
@@ -93,8 +106,9 @@ cUIItemComp::Update()
     mActive         = mUser->mComps[ mCompIndex ].mActive;
     mCoolingdown    = mUser->mComps[ mCompIndex ].mCooldown > 0;
     mCDPercent      = float(mUser->mComps[ mCompIndex ].mCooldown) / float(mUser->mComps[ mCompIndex ].mCooldownBase);
+    mUsagePercent   = float(mUser->mComps[ mCompIndex ].mCompDuration) / float(mUser->mComps[ mCompIndex ].mCompDurationBase);
 
-    if( mCoolingdown && !mActive )
+    if( mCoolingdown || mActive )
         update();
 }
 

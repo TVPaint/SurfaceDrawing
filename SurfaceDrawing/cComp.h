@@ -6,7 +6,7 @@ class cComp
 {
 public:
     cComp();
-    cComp( unsigned int iCD );
+    cComp( unsigned int iCD, unsigned int iDurationBase );
     cComp( const cComp& iClone );
 
 public:
@@ -16,6 +16,8 @@ public:
     unsigned int    mCooldown       = 0;        // Time in tick
     unsigned int    mCooldownBase   = 0;        // Time in tick
     bool            mActive         = false;
+    unsigned int    mCompDuration   = 0;
+    unsigned int    mCompDurationBase   = -1;
 };
 
 QDataStream& operator<<(QDataStream& oStream, const cComp& iComp );
@@ -36,3 +38,13 @@ class  cRollBack :
 public:
     cRollBack();
 };
+
+
+
+class  cSpeed :
+    public cComp
+{
+public:
+    cSpeed();
+};
+

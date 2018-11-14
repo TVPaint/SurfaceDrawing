@@ -27,6 +27,7 @@ cUser::cUser() :
 
 
     mComps.push_back( cRollBack() );
+    mComps.push_back( cSpeed() );
 }
 
 
@@ -44,6 +45,7 @@ cUser::cUser( int iIndex, const QColor& iColor ) :
 
 
     mComps.push_back( cRollBack() );
+    mComps.push_back( cSpeed() );
 }
 
 
@@ -94,7 +96,7 @@ cUser::setGUIPosition( QPoint iGUIPosition )
 void
 cUser::Update( int iTickCount )
 {
-    setGUIPosition( mGUIPosition + mGUICurrentMovementVector * iTickCount );
+    setGUIPosition( mGUIPosition + mGUICurrentMovementVector * iTickCount * mSpeedMultiplicator );
     QPoint newCenter = mGUIPosition + mGUISize * 0.5;
 
     if( iTickCount > 0 && mAskDirectionChange )
@@ -112,9 +114,10 @@ cUser::Update( int iTickCount )
     for( auto& comp : mComps )
     {
         if( comp.mCooldown > 0 )
-        {
             comp.mCooldown -= iTickCount;
-        }
+
+        if( comp.mCompDuration > 0 )
+            comp.mCompDuration -= iTickCount;
     }
 }
 
@@ -143,15 +146,19 @@ cUser::setMovementVector( QPoint iMovementVector )
 void
 cUser::activateComp( int iCompNumber )
 {
-    if( mComps[ 0 ].mCooldown <= 0 )
-        mComps[ 0 ].mActive = true;
+    if( mComps[ iCompNumber ].mCooldown <= 0 && !mComps[ iCompNumber ].mActive && mComps[ iCompNumber ].mCompDuration <= 0 )
+    {
+        mComps[ iCompNumber ].mActive = true;
+        mComps[ iCompNumber ].mCompDuration = mComps[ iCompNumber ].mCompDurationBase;
+    }
 }
 
 
 void
 cUser::deactivateComp( int iCompNumber )
 {
-    mComps[ 0 ].mActive = false;
+    mComps[ iCompNumber ].mActive = false;
+    mComps[ iCompNumber ].mCompDuration = 0;
 }
 
 
@@ -210,6 +217,7 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             //<< iUser.mIsOutOfGround
             << iUser.mIsDead
             << iUser.mAskedRespawn
+            << iUser.mSpeedMultiplicator
             << iUser.mComps;
             //<< iUser.mTrailPoints;
 
@@ -238,6 +246,7 @@ operator>>(QDataStream& iStream, cUser& oUser )
             //>> oUser.mIsOutOfGround
             >> oUser.mIsDead
             >> oUser.mAskedRespawn
+            >> oUser.mSpeedMultiplicator
             >> oUser.mComps;
 
     return  iStream;

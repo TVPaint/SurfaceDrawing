@@ -8,9 +8,11 @@ cComp::cComp()
 }
 
 
-cComp::cComp( unsigned int iCD ) :
+cComp::cComp( unsigned int iCD, unsigned int iDurationBase ) :
     mCooldown( 0 ),
-    mCooldownBase( iCD )
+    mCooldownBase( iCD ),
+    mCompDuration( 0 ),
+    mCompDurationBase( iDurationBase )
 {
 }
 
@@ -18,7 +20,9 @@ cComp::cComp( unsigned int iCD ) :
 cComp::cComp( const cComp& iClone ) :
     mCooldown( iClone.mCooldown ),
     mCooldownBase( iClone.mCooldownBase ),
-    mActive( iClone.mActive )
+    mActive( iClone.mActive ),
+    mCompDuration( iClone.mCompDuration ),
+    mCompDurationBase( iClone.mCompDurationBase )
 {
 }
 
@@ -29,6 +33,8 @@ cComp::operator=( const cComp & iRHS )
     mCooldown = iRHS.mCooldown;
     mCooldownBase = iRHS.mCooldownBase;
     mActive = iRHS.mActive;
+    mCompDuration = iRHS.mCompDuration;
+    mCompDurationBase = iRHS.mCompDurationBase;
     return  *this;
 }
 
@@ -38,7 +44,9 @@ operator<<( QDataStream & oStream, const cComp & iComp )
 {
     oStream << iComp.mCooldown
             << iComp.mCooldownBase
-            << iComp.mActive;
+            << iComp.mActive
+            << iComp.mCompDuration
+            << iComp.mCompDurationBase;
 
     return  oStream;
 }
@@ -49,7 +57,9 @@ operator>>( QDataStream & iStream, cComp & oComp )
 {
     iStream >> oComp.mCooldown
             >> oComp.mCooldownBase
-            >> oComp.mActive;
+            >> oComp.mActive
+            >> oComp.mCompDuration
+            >> oComp.mCompDurationBase;
 
     return  iStream;
 }
@@ -81,6 +91,21 @@ operator>>( QDataStream & iStream, cComp *& oComp )
 
 
 cRollBack::cRollBack() :
-    cComp( 6000 / SPEED ) // Time in tick
+    cComp( 6000 / SPEED, 0 ) // Time in tick
 {
 }
+
+
+
+// =========================================
+// =========================================
+// =========================================
+
+
+
+
+cSpeed::cSpeed() :
+    cComp( 6000 / SPEED, 2000/SPEED ) // Time in tick
+{
+}
+

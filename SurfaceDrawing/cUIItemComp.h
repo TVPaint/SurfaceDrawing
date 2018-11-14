@@ -34,4 +34,5 @@ public:
     bool                        mActive             = false;
     bool                        mCoolingdown        = false;
     float                       mCDPercent          = 1.0F;
+    float                       mUsagePercent       = 1.0F;
 };

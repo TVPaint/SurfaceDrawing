@@ -74,8 +74,12 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
             if( iType == cPaperLogic::kPlayer )
             {
+
                 if( newValue >= 0 )
                 {
+                    if( mAllUserItems[ newValue ] == nullptr )
+                        return;
+
                     if( mPaperLogic->mPaperGrid[x][y].mGround < 0 )
                     {
                         tile->mHalf = true;
@@ -107,6 +111,9 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 void
 cCanvas::keyPressEvent( QKeyEvent * iEvent )
 {
+    if( iEvent->isAutoRepeat() )
+        return;
+
     if( iEvent->key() == Qt::Key_Left )
     {
         mMyself->mUser->setMovementVector( QPoint( -1, 0 ) );
@@ -136,6 +143,11 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
     {
         mMyself->mUser->activateComp( 0 );
         emit compRequest( mPaperLogic->mTick, 0 );
+    }
+    else if( iEvent->key() == Qt::Key_Eacute )
+    {
+        mMyself->mUser->activateComp( 1 );
+        emit compRequest( mPaperLogic->mTick, 1 );
     }
     else if( iEvent->key() == Qt::Key_P )
     {
@@ -195,11 +207,18 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
     if( iUserType == kMyself )
     {
         mMyself = mAllUserItems[ iUser->mIndex ];
+
         auto uiRollback = new cUIItemComp( mMyself->mUser, 0 );
         uiRollback->SetImage( ":/SurfaceDrawing/Resources/Icone.png" );
         uiRollback->SetGrayImage( ":/SurfaceDrawing/Resources/IconeGray.png" );
         mUIItemsComps.push_back( uiRollback );
         scene()->addItem( uiRollback );
+
+        auto uiSpeed = new cUIItemComp( mMyself->mUser, 1 );
+        uiSpeed->SetImage( ":/SurfaceDrawing/Resources/SpeedUp.png" );
+        uiSpeed->SetGrayImage( ":/SurfaceDrawing/Resources/SpeedUpGray.png" );
+        mUIItemsComps.push_back( uiSpeed );
+        scene()->addItem( uiSpeed );
     }
 }
 
@@ -209,7 +228,7 @@ cCanvas::RemoveUser( cUser* iUser )
 {
     if( iUser->mIndex < 0 )
         return;
-    
+
     auto userItem = mAllUserItems[iUser->mIndex];
     if( !userItem || userItem == mMyself )
         return;
@@ -247,12 +266,15 @@ cCanvas::Update()
 
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 
-    QPointF uiPos = mapToScene( size().width()/2 - UICOMPSIZE/2, size().height() - UICOMPSIZE - 5 );
+
+    float xPos = size().width()/2 - UICOMPSIZE/2;
+    QPointF uiPos = mapToScene( xPos, size().height() - UICOMPSIZE - 5 );
 
     for( auto uiItem : mUIItemsComps )
     {
         uiItem->setPos( uiPos );
         uiItem->Update();
+        uiPos.setX( uiPos.x() + UICOMPSIZE + 5 );
     }
 
     QPointF uiStatPos = mapToScene( size().width() - cUIItemPlayerStat::UI_ITEM_RECT.width(), cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );

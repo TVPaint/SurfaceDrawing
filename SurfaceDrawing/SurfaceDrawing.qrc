@@ -2,5 +2,7 @@
     <qresource prefix="/SurfaceDrawing">
         <file>Resources/Icone.png</file>
         <file>Resources/IconeGray.png</file>
+        <file>Resources/SpeedUp.png</file>
+        <file>Resources/SpeedUpGray.png</file>
     </qresource>
 </RCC>

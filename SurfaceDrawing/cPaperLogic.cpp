@@ -210,6 +210,8 @@ cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
             if( _RunRollbackForUser( user, iDeltaTick ) )
                 continue;
 
+            _RunSpeedForUser( user, iDeltaTick );
+
             _RunStandardUpdateForUser( user, iDeltaTick );
         }
     }
@@ -710,6 +712,36 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
     if( CELLAT( iUser->mPosition ).mTrail == iUser->mIndex )
         SetTrailValueAt( iUser->mPosition, -1 );
 
+    mSnapShots.Back()->AddUserDiff( iUser );
+
+    return  true;
+}
+
+
+bool
+cPaperLogic::_RunSpeedForUser( cUser * iUser, int iDTick )
+{
+    if( !iUser->mComps[ 1 ].mActive )
+        return  false;
+
+    if( iUser->mIsDead )
+        return  false;
+
+    if( iUser->mComps[ 1 ].mCompDuration <= 0 )
+    {
+        iUser->deactivateComp( 1 );
+        iUser->mSpeedMultiplicator = 1;
+        iUser->mComps[ 1 ].mCooldown = iUser->mComps[ 1 ].mCooldownBase;
+        mSnapShots.Back()->AddUserDiff( iUser );
+        return  true;
+    }
+
+    // If already set, don't set it again
+    if( iUser->mSpeedMultiplicator == 3 )
+        return  true;
+
+
+    iUser->mSpeedMultiplicator = 3;
     mSnapShots.Back()->AddUserDiff( iUser );
 
     return  true;
