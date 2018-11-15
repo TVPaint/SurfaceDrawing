@@ -27,7 +27,7 @@ cUIItemPlayerStat::cUIItemPlayerStat( cPaperLogic*  iPaperLogic, cUser* iUser, Q
 QRectF
 cUIItemPlayerStat::boundingRect() const
 {
-    return   UI_ITEM_RECT;
+    return  QRectF( 0, 0, UI_STAT_ITEM_WIDTH, UI_STAT_ITEM_HEIGHT );
 }
 
 
@@ -49,13 +49,13 @@ cUIItemPlayerStat::paint( QPainter* iPainter, const QStyleOptionGraphicsItem* iO
 QRectF
 cUIItemPlayerStat::iconBoundingRect() const
 {
-    return   QRectF( QPoint( 0, 0 ), QSize( UI_ICON_SIZE, UI_ICON_SIZE ) );
+    return   QRectF( QPoint( 0, 0 ), QSize( UI_STAT_ICON_SIZE, UI_STAT_ICON_SIZE ) );
 }
 
 
 QRectF
 cUIItemPlayerStat::textBoundingRect() const
 {
-    return   QRect( QPoint( UI_ICON_SIZE + UI_TEXT_OFFSET, 0 ), QPoint( UI_TEXT_WIDTH, UI_ITEM_HEIGHT ) );
+    return   QRect( QPoint( UI_STAT_ICON_SIZE + UI_STAT_TEXT_OFFSET, 0 ), QPoint( UI_STAT_TEXT_WIDTH, UI_STAT_ITEM_HEIGHT ) );
 }
 

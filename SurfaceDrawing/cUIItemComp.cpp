@@ -28,7 +28,7 @@ cUIItemComp::cUIItemComp( cUser* iUser, int iCompIndex, QGraphicsItem* iParent )
 QRectF
 cUIItemComp::boundingRect() const
 {
-    return   QRectF( QPoint( 0, 0 ), QSize( UICOMPSIZE, UICOMPSIZE ) );
+    return   QRectF( QPoint( 0, 0 ), QSize( UI_COMP_SIZE, UI_COMP_SIZE ) );
 }
 
 
@@ -53,8 +53,8 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
         if( mActive && mUsagePercent > 0 )
         {
             float inverse = (1.0F-mUsagePercent);
-            QRectF subRectToTop( 0, 0, UICOMPSIZE, UICOMPSIZE * inverse);
-            QRectF subRectBottom( 0, UICOMPSIZE*inverse, UICOMPSIZE, UICOMPSIZE*mUsagePercent );
+            QRectF subRectToTop( 0, 0, UI_COMP_SIZE, UI_COMP_SIZE * inverse);
+            QRectF subRectBottom( 0, UI_COMP_SIZE*inverse, UI_COMP_SIZE, UI_COMP_SIZE*mUsagePercent );
 
             iPainter->drawRect( subRectBottom );
 
@@ -65,8 +65,8 @@ cUIItemComp::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOptio
         }
         else if( mCoolingdown && !mActive )
         {
-            QRectF subRectoTop( 0, 0, UICOMPSIZE, UICOMPSIZE*mCDPercent );
-            QRectF subRectBottom( 0, UICOMPSIZE*mCDPercent, UICOMPSIZE, UICOMPSIZE - UICOMPSIZE*mCDPercent );
+            QRectF subRectoTop( 0, 0, UI_COMP_SIZE, UI_COMP_SIZE*mCDPercent );
+            QRectF subRectBottom( 0, UI_COMP_SIZE*mCDPercent, UI_COMP_SIZE, UI_COMP_SIZE - UI_COMP_SIZE*mCDPercent );
 
             iPainter->drawRect( subRectBottom );
 

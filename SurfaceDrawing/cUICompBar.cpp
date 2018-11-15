@@ -24,7 +24,7 @@ cUICompBar::cUICompBar( QGraphicsItem* iParent ) :
 QRectF
 cUICompBar::boundingRect() const
 {
-    return   QRectF( QPoint( 0, 0 ), QSize( UIBARWIDTH, UIBARHEIGHT ) );
+    return   QRectF( QPoint( 0, 0 ), QSize( UI_BAR_WIDTH, UI_BAR_HEIGHT ) );
 }
 
 

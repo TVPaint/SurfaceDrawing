@@ -281,31 +281,31 @@ cCanvas::Update()
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 
     // CompBar
-    QPointF uiBarPos = mapToScene( size().width()/2 - UIBARWIDTH/2, size().height() - UIBARHEIGHT );
+    QPointF uiBarPos = mapToScene( size().width()/2 - UI_BAR_WIDTH/2, size().height() - UI_BAR_HEIGHT );
     mCompBar->setPos( uiBarPos );
 
     // Comps
     int uiElementCount = mUIItemsComps.size();
-    int totalUIElementsSize = UICOMPCOUNT * UICOMPSIZE   +   (UICOMPCOUNT-1) * UICOMPSPACING;
+    int totalUIElementsSize = UI_COMP_COUNT * UI_COMP_SIZE   +   (UI_COMP_COUNT-1) * UI_COMP_SPACING;
 
 
     float xPos = size().width()/2 - totalUIElementsSize/2;
-    QPointF uiPos = mapToScene( xPos, size().height() - UICOMPSIZE - 3 );
+    QPointF uiPos = mapToScene( xPos, size().height() - UI_COMP_SIZE - 3 );
 
     for( auto uiItem : mUIItemsComps )
     {
         uiItem->setPos( uiPos );
         uiItem->Update();
-        uiPos.setX( uiPos.x() + UICOMPSIZE + UICOMPSPACING );
+        uiPos.setX( uiPos.x() + UI_COMP_SIZE + UI_COMP_SPACING );
     }
 
 
     // Stats
-    QPointF uiStatPos = mapToScene( size().width() - cUIItemPlayerStat::UI_ITEM_RECT.width(), cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );
+    QPointF uiStatPos = mapToScene( size().width() - UI_STAT_ITEM_WIDTH, UI_STAT_ITEM_HEIGHT + 2 );
     for( auto uiItem : mUIItemsStats )
     {
         uiItem->setPos( uiStatPos );
-        uiStatPos += QPointF( 0, cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );
+        uiStatPos += QPointF( 0, UI_STAT_ITEM_HEIGHT + 2 );
     }
 
 }
