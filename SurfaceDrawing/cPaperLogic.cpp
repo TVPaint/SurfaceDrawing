@@ -175,7 +175,7 @@ cPaperLogic::GoToTick( quint64 iTick )
 
 
 void
-cPaperLogic::ApplyDeltaTick( quint64 iDeltaTick )
+cPaperLogic::ApplyDeltaTick( int iDeltaTick )
 {
     if( iDeltaTick == 0 )
     {

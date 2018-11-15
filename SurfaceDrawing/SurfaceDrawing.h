@@ -56,6 +56,7 @@ private:
     QVector< cUser* >           mAllUsers;
 
     quint64                     mLasRenderedTick = -1;
+    quint8                      mDesyncCounter = 0;
 
     // GUI
     QVBoxLayout*    mMainLayout;

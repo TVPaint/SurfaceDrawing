@@ -70,12 +70,18 @@ SurfaceDrawing::Update()
     {
         mAuthPaperLogic->ApplySnapShotHistoryUpToTick( tickToRender, cPaperLogic::kSetTickToSnap );
         mPaperLogic->CopyFromPaper( *mAuthPaperLogic, 0, cPaperLogic::kKeepOwnTick );
+        mDesyncCounter = 0;
     }
     else
     {
-        //qDebug() << "Manual update for tick " << tickToRender;
-        //qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
-        //mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
+        qDebug() << "Manual update for tick " << tickToRender;
+        qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
+        mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
+        if( ++mDesyncCounter >= 20 )
+        {
+            mClientSocket->SendStopResync();
+            qDebug() << "Client asking resync";
+        }
     }
 
     //mPaperLogic->Update( mClientSocket->mApplicationClock->remainingTimeAsDuration().count() );

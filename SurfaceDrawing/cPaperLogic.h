@@ -88,7 +88,7 @@ public:
     void Update( quint64 iCurrentTimeRemaining );
     void TickUpdate( quint64 iCurrentTimeRemaining );
     void GoToTick( quint64 iTick );
-    void ApplyDeltaTick( quint64 iTick );
+    void ApplyDeltaTick( int iTick );
 
     void  AddGridChangedCB( std::function< void( int, int, int, eDataType ) > iCB );
 

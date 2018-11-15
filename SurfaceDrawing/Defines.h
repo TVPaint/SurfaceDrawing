@@ -10,13 +10,14 @@
 #define     SPEEDBOOST              3           // Multiplier of speed
 #define     RENDERDELAY             3           // In ticks
 
+
 #define     UI_COMP_SIZE            32
 #define     UI_COMP_SPACING         5
 #define     UI_COMP_COUNT           2
 #define     UI_BAR_HEIGHT           40
+#define     UI_BAR_WIDTH            200
 #define     UI_BAR_SPACING          10
 //#define     UI_BAR_WIDTH            (UI_COMP_COUNT * UI_COMP_SIZE   +   (UI_COMP_COUNT-1) * UI_COMP_SPACING   +   UI_BAR_SPACING * 2)
-#define     UI_BAR_WIDTH            200
 
 
 #define     UI_STAT_ICON_SIZE       16
