@@ -10,6 +10,7 @@
 #include "cBordersItem.h"
 #include "cUIItemPlayerStat.h"
 #include "cUIItemComp.h"
+#include "cUICompBar.h"
 
 
 #include <QGraphicsScene>
@@ -42,6 +43,10 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
     mItemPlayfied = new cItemPlayfield( 0 );
     scene->addItem( mItemPlayfied );
+
+    mCompBar = new cUICompBar();
+    mCompBar->setZValue( 10 );
+    scene->addItem( mCompBar );
 
     //mGrid = new cItemGrid( 0 );
     //mGrid->mSize = size();
@@ -211,12 +216,14 @@ cCanvas::AddUser( cUser* iUser, eUserType iUserType )
         auto uiRollback = new cUIItemComp( mMyself->mUser, 0 );
         uiRollback->SetImage( ":/SurfaceDrawing/Resources/Icone.png" );
         uiRollback->SetGrayImage( ":/SurfaceDrawing/Resources/IconeGray.png" );
+        uiRollback->setZValue( 11 );
         mUIItemsComps.push_back( uiRollback );
         scene()->addItem( uiRollback );
 
         auto uiSpeed = new cUIItemComp( mMyself->mUser, 1 );
         uiSpeed->SetImage( ":/SurfaceDrawing/Resources/SpeedUp.png" );
         uiSpeed->SetGrayImage( ":/SurfaceDrawing/Resources/SpeedUpGray.png" );
+        uiSpeed->setZValue( 11 );
         mUIItemsComps.push_back( uiSpeed );
         scene()->addItem( uiSpeed );
     }
@@ -261,22 +268,33 @@ cCanvas::Update()
     //firstPos.setY( firstPos.y() - (int(firstPos.y()) %  CELLSIZE) );
     //mGrid->setPos( firstPos );
 
+    // Users
     for( auto item : mAllUserItems )
         item->setPos( item->mUser->mGUIPosition );
 
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 
+    // CompBar
+    QPointF uiBarPos = mapToScene( size().width()/2 - UIBARWIDTH/2, size().height() - UIBARHEIGHT );
+    mCompBar->setPos( uiBarPos );
 
-    float xPos = size().width()/2 - UICOMPSIZE/2;
-    QPointF uiPos = mapToScene( xPos, size().height() - UICOMPSIZE - 5 );
+    // Comps
+    int uiElementCount = mUIItemsComps.size();
+    int totalUIElementsSize = UICOMPCOUNT * UICOMPSIZE   +   (UICOMPCOUNT-1) * UICOMPSPACING;
+
+
+    float xPos = size().width()/2 - totalUIElementsSize/2;
+    QPointF uiPos = mapToScene( xPos, size().height() - UICOMPSIZE - 3 );
 
     for( auto uiItem : mUIItemsComps )
     {
         uiItem->setPos( uiPos );
         uiItem->Update();
-        uiPos.setX( uiPos.x() + UICOMPSIZE + 5 );
+        uiPos.setX( uiPos.x() + UICOMPSIZE + UICOMPSPACING );
     }
 
+
+    // Stats
     QPointF uiStatPos = mapToScene( size().width() - cUIItemPlayerStat::UI_ITEM_RECT.width(), cUIItemPlayerStat::UI_ITEM_RECT.height() + 2 );
     for( auto uiItem : mUIItemsStats )
     {

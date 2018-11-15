@@ -13,6 +13,7 @@ class cItemGrid;
 class  cBordersItem;
 class cUIItemComp;
 class cUIItemPlayerStat;
+class cUICompBar;
 
 class cCanvas :
     public QGraphicsView
@@ -63,6 +64,7 @@ public:
     cItemGrid*                  mGrid;
     cItemPlayfield*             mItemPlayfied;
     cBordersItem*               mBordersItem;
+    cUICompBar*                 mCompBar;
 
     QVector< cUIItemComp* >     mUIItemsComps;
     QVector< cUIItemPlayerStat* > mUIItemsStats;

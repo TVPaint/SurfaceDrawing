@@ -4,5 +4,6 @@
         <file>Resources/IconeGray.png</file>
         <file>Resources/SpeedUp.png</file>
         <file>Resources/SpeedUpGray.png</file>
+        <file>Resources/Bar200.png</file>
     </qresource>
 </RCC>

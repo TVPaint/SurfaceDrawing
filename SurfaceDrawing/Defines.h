@@ -10,3 +10,9 @@
 #define     SPEEDBOOST              3           // Multiplier of speed
 
 #define     UICOMPSIZE              32
+#define     UICOMPSPACING           5
+#define     UICOMPCOUNT             2
+#define     UIBARHEIGHT             40
+#define     UIBARSPACING            10
+//#define     UIBARWIDTH              (UICOMPCOUNT * UICOMPSIZE   +   (UICOMPCOUNT-1) * UICOMPSPACING   +   UIBARSPACING * 2)
+#define     UIBARWIDTH              200

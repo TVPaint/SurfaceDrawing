@@ -90,6 +90,9 @@
     <ClCompile Include="cUIItemPlayerStat.cpp">
       <Filter>src\Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="cUICompBar.cpp">
+      <Filter>src\Canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="SurfaceDrawing.qrc">
@@ -162,6 +165,9 @@
       <Filter>src\PaperLogic</Filter>
     </ClInclude>
     <ClInclude Include="cUIItemPlayerStat.h">
+      <Filter>src\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="cUICompBar.h">
       <Filter>src\Canvas</Filter>
     </ClInclude>
   </ItemGroup>
