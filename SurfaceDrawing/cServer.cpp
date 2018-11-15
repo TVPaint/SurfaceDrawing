@@ -331,23 +331,23 @@ cServer::ReadUserAction( int iClientIndex, int iAction )
             break;
     }
 
-    // Does this lag compensation really do anything ? Hard to debug / test
-    //auto currentTick = mPaperLogic->mTick;
-    //if( tick < currentTick )
-    //{
-    //    mPaperLogic->GoToTick( tick ); // Lag Compensation
-    //}
+     //Does this lag compensation really do anything ? Hard to debug / test
+    auto currentTick = mPaperLogic->mTick;
+    if( tick < currentTick )
+    {
+        mPaperLogic->GoToTick( tick ); // Lag Compensation
+    }
 
     user->setMovementVector( newVector );
 
-    //if( tick < currentTick )
-    //{
-    //    // Dirty way of doing it, but it should work for the concept test, then clean it if it works
-    //    for( int i = 0; i < currentTick - tick; ++i )
-    //        mPaperLogic->ApplyDeltaTick( 1 );
+    if( tick < currentTick )
+    {
+        // Dirty way of doing it, but it should work for the concept test, then clean it if it works
+        for( int i = 0; i < currentTick - tick; ++i )
+            mPaperLogic->ApplyDeltaTick( 1 );
 
-    //    SendSnapShotIntervalToAllClient( tick, currentTick );
-    //}
+        SendSnapShotIntervalToAllClient( tick, currentTick );
+    }
 
     return  true;
 }

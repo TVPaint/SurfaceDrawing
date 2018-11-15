@@ -270,7 +270,10 @@ cCanvas::Update()
 
     // Users
     for( auto item : mAllUserItems )
-        item->setPos( item->mUser->mGUIPosition );
+    {
+        if( item )
+            item->setPos( item->mUser->mGUIPosition );
+    }
 
     ensureVisible( mMyself, width()/2-CELLSIZE - 2, height()/2-CELLSIZE - 2 );
 

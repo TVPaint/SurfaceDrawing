@@ -62,7 +62,7 @@ SurfaceDrawing::Update()
 {
     mPaperLogic->TickUpdate( mClientSocket->mApplicationClock->remainingTime() );
 
-    int tickToRender = mPaperLogic->mTick - 2; // Actually 4 tick of delai, as we update right before, it'll start at 1
+    int tickToRender = mPaperLogic->mTick - RENDERDELAY; // Actually 4 tick of delai, as we update right before, it'll start at 1
     if( tickToRender < 0 || tickToRender == mLasRenderedTick )
         return;
 
