@@ -185,6 +185,9 @@ cCanvas::resizeEvent( QResizeEvent* event )
 {
     //mGrid->mSize = size() + QSize( CELLSIZE, CELLSIZE );
     //mGrid->update();
+    for( auto item : items() )
+        item->update();
+
     QGraphicsView::resizeEvent( event );
 }
 
