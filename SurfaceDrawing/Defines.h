@@ -8,7 +8,7 @@
 #define     SPAWNINGAREAREQUIRED    5           // 5x5 ( spawns are 3x3, here we let a little room )
 #define     ROLLBACKSPEED           2           // Multiplier of speed
 #define     SPEEDBOOST              3           // Multiplier of speed
-#define     RENDERDELAY             4           // In ticks
+#define     RENDERDELAY             2           // In ticks
 
 #define     UICOMPSIZE              32
 #define     UICOMPSPACING           5
