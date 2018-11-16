@@ -6,6 +6,7 @@
 #include "cPaperLogic.h"
 
 #include <QHostAddress>
+#include <QDir>
 
 #include <iostream>
 #include <ctime>
@@ -33,6 +34,26 @@ cClient::cClient() :
     mApplicationClock = new QTimer();
     mApplicationClock->start( CLOCKTIME );
     mClockOffset = -1;
+
+    QDir logDir( "./DEBUGLOGS" );
+    if( !logDir.exists() )
+    {
+        qDebug() << "Making debugDir";
+        if( !logDir.mkdir( "." ) )
+            qDebug() << "FAILED Making debugDir";
+    }
+
+    mDEBUGFile = new QFile( "./DEBUGLOGS/ClientLOGS.txt" );
+    if( mDEBUGFile->open( QIODevice::WriteOnly ) )
+    {
+        mDEBUGStream = new QTextStream( mDEBUGFile );
+    }
+    else
+    {
+        mDEBUGFile = 0;
+        qDebug() << "Can't open file";
+    }
+
 }
 
 
@@ -265,21 +286,7 @@ cClient::GetData()
             auto typeAsEnum = cServer::eType( type );
             if( typeAsEnum == cServer::kSelfUser )
             {
-
-                QString fileName = "./DEBUGLOGS/Client" + QString::number( newUser->mIndex ) + "LOGS.txt";
-                mDEBUGFile = new QFile( fileName );
-                if( mDEBUGFile->open( QIODevice::WriteOnly ) )
-                {
-                    mDEBUGStream = new QTextStream( mDEBUGFile );
-                }
-                else
-                {
-                    mDEBUGFile = 0;
-                    qDebug() << "Can't open file";
-                }
-
                 _LOG( "SELF : " + QString::number( newUser->mGUIPosition.x() ) + "-" + QString::number( newUser->mGUIPosition.y() ) );
-
 
                 emit myUserAssigned( newUser );
             }
@@ -395,7 +402,7 @@ cClient::_LOG( const QString & iText )
     //qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
 
     if( mDEBUGStream )
-        *mDEBUGStream << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
+        *mDEBUGStream << GetTime() << " : " << iText << "\r" << endl;
 }
 
 
