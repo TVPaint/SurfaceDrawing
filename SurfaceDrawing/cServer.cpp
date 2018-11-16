@@ -521,7 +521,7 @@ cServer::GetData()
 void
 cServer::_LOG( const QString & iText )
 {
-    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
+    //qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
     *mDEBUGStream << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
 }
 

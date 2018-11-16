@@ -268,10 +268,16 @@ cClient::GetData()
 
                 QString fileName = "./DEBUGLOGS/Client" + QString::number( newUser->mIndex ) + "LOGS.txt";
                 mDEBUGFile = new QFile( fileName );
-                if( !mDEBUGFile->open( QIODevice::WriteOnly ) )
+                if( mDEBUGFile->open( QIODevice::WriteOnly ) )
+                {
+                    mDEBUGStream = new QTextStream( mDEBUGFile );
+                }
+                else
+                {
+                    mDEBUGFile = 0;
                     qDebug() << "Can't open file";
+                }
 
-                mDEBUGStream = new QTextStream( mDEBUGFile );
                 _LOG( "SELF : " + QString::number( newUser->mGUIPosition.x() ) + "-" + QString::number( newUser->mGUIPosition.y() ) );
 
 
@@ -358,9 +364,7 @@ cClient::GetData()
         {
             auto ping = mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
 
-            _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" );
-            _LOG( "At tick : " + QString::number( packetTick ) );
-
+            _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" + "At tick : " + QString::number( packetTick ) );
             _PingAveraging( timestamp );
 
             mDataReadingState = kNone;
@@ -388,7 +392,7 @@ cClient::GetData()
 void
 cClient::_LOG( const QString & iText )
 {
-    qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
+    //qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
 
     if( mDEBUGStream )
         *mDEBUGStream << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
