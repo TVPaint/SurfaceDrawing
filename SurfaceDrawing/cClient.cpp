@@ -35,11 +35,12 @@ cClient::cClient() :
     mApplicationClock->start( CLOCKTIME );
     mClockOffset = -1;
 
-    QDir logDir( "./DEBUGLOGS" );
+    QDir appPath( QCoreApplication::applicationDirPath() );
+    QDir logDir( appPath.absolutePath() + "/DEBUGLOGS" );
     if( !logDir.exists() )
     {
         qDebug() << "Making debugDir";
-        if( !logDir.mkdir( "." ) )
+        if( !appPath.mkdir( "DEBUGLOGS" ) )
             qDebug() << "FAILED Making debugDir";
     }
 

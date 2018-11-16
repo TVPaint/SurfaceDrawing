@@ -264,5 +264,7 @@ build/
 
 # QT Generated files
 GeneratedFiles/
+
+
 .vscode/
 recentHosts.txt
