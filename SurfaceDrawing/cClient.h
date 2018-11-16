@@ -78,11 +78,15 @@ public:
     QDataStream         mDataStream;
 
     QTimer*             mApplicationClock;
-    int                 mClockOffset;  // Offset with server, as we can't restart the clock once started (because start will round given time to the second ... )
+    int                 mClockOffset;           // Offset with server, as we can't restart the clock once started (because start will round given time to the second ... )
 
     quint64             mPingStartTime;
-    bool                mPingAveraging; // In the state where client is pinging to calculate a speed
-    int                 mPingAveragingCounter; // To count where we at while receiving packets
+    bool                mPingAveraging;         // In the state where client is pinging to calculate a speed
+    int                 mPingAveragingCounter;  // To count where we at while receiving packets
     int                 mPingAverage;
+
+    // DEBUG
+    QFile*                       mDEBUGFile     = 0;
+    QTextStream*                 mDEBUGStream   = 0;
 };
 

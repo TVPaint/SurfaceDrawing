@@ -265,8 +265,15 @@ cClient::GetData()
             auto typeAsEnum = cServer::eType( type );
             if( typeAsEnum == cServer::kSelfUser )
             {
-                qDebug() << "SELF" << newUser->mGUIPosition;
+
+                QString fileName = "./DEBUGLOGS/Client" + QString::number( newUser->mIndex ) + "LOGS.txt";
+                mDEBUGFile = new QFile( fileName );
+                if( !mDEBUGFile->open( QIODevice::WriteOnly ) )
+                    qDebug() << "Can't open file";
+
+                mDEBUGStream = new QTextStream( mDEBUGFile );
                 _LOG( "SELF : " + QString::number( newUser->mGUIPosition.x() ) + "-" + QString::number( newUser->mGUIPosition.y() ) );
+
 
                 emit myUserAssigned( newUser );
             }
@@ -360,7 +367,6 @@ cClient::GetData()
         }
         else if( mDataReadingState == KSNAP )
         {
-            //_LOG( "Data type : SNAP" );
 
             cSnapShot* ss = new cSnapShot( packetTick );
 
@@ -368,6 +374,8 @@ cClient::GetData()
             mDataStream >> *ss;
             if( !mDataStream.commitTransaction() )
                 return;
+
+            _LOG( "Getting SNAP :" + QString::number( ss-> mTick ) + ":" );
 
             emit snapShotArrived( ss );
 
@@ -381,6 +389,9 @@ void
 cClient::_LOG( const QString & iText )
 {
     qDebug() << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText;
+
+    if( mDEBUGStream )
+        *mDEBUGStream << mApplicationClock->remainingTimeAsDuration().count() << " : " << iText << "\r" << endl;
 }
 
 

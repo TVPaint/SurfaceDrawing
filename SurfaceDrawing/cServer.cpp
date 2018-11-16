@@ -94,7 +94,7 @@ cServer::SendNextSnapShotToAllClient()
     stream << *(mPaperLogic->mSnapShots.Back());
 
     //qDebug() << *(mPaperLogic->mSnapShots.Back());
-    //_LOG( "Sending snap to all clients" );
+    _LOG( "Sending snap  :" + QString::number( mPaperLogic->mTick ) + ": to all clients" );
 
     for( auto client : mClients )
         if( _IsClientAvailable( mClients.key( client ) ) )
