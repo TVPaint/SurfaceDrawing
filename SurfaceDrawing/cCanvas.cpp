@@ -76,6 +76,7 @@ cCanvas::cCanvas( cPaperLogic* iPaperLogic, QWidget* parent ) :
 
             tile->mGroundColor  = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mGround ).darker( 170 );
             tile->mTrailColor   = mPaperLogic->GetColorByIndex( mPaperLogic->mPaperGrid[x][y].mTrail ).lighter( 170 );
+            tile->mDrop         = mPaperLogic->mPaperGrid[x][y].mDrop;
 
             if( iType == cPaperLogic::kPlayer )
             {
@@ -144,12 +145,12 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
         mPaperLogic->SetUserAskedRespawn( mMyself->mUser );
         emit respawnRequest();
     }
-    else if( iEvent->key() == Qt::Key_Ampersand )
+    else if( iEvent->key() == Qt::Key_Ampersand || iEvent->key() == Qt::Key_X )
     {
         mMyself->mUser->activateComp( 0 );
         emit compRequest( mPaperLogic->mTick, 0 );
     }
-    else if( iEvent->key() == Qt::Key_Eacute )
+    else if( iEvent->key() == Qt::Key_Eacute || iEvent->key() == Qt::Key_C )
     {
         mMyself->mUser->activateComp( 1 );
         emit compRequest( mPaperLogic->mTick, 1 );
@@ -172,7 +173,10 @@ cCanvas::keyPressEvent( QKeyEvent * iEvent )
 void
 cCanvas::keyReleaseEvent( QKeyEvent * iEvent )
 {
-    if( iEvent->key() == Qt::Key_Ampersand && !iEvent->isAutoRepeat() )
+    if( iEvent->isAutoRepeat() )
+        return;
+
+    if( iEvent->key() == Qt::Key_Ampersand || iEvent->key() == Qt::Key_X  )
     {
         mMyself->mUser->deactivateComp( 0 );
         emit compStopRequest( mPaperLogic->mTick, 0 );

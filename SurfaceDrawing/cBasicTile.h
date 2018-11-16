@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include "cPaperLogic.h"
 
 class cBasicTile :
     public QGraphicsItem
@@ -23,10 +24,13 @@ public:
     void   paint( QPainter* iPainter, const QStyleOptionGraphicsItem*  iOptions, QWidget* iWidget = 0 )  override;
 
 public:
-    QColor      mColor;
-    bool        mHalf;
-    eDirection  mDirection;
+    QColor                  mColor;
+    bool                    mHalf;
+    eDirection              mDirection;
 
-    QColor      mGroundColor;
-    QColor      mTrailColor;
+    QColor                  mGroundColor;
+    QColor                  mTrailColor;
+
+    cPaperLogic::eDropType  mDrop;
+    QPixmap*                mDropCDReducPix = 0; // Go vector < eDropType > if growing
 };

@@ -24,40 +24,51 @@ public:
     cPaperLogic();
 
 public:
+    enum eDataType
+    {
+        kPlayer,
+        kTrail,
+        kGround,
+        kDrop
+    };
+
+    enum  eDropType : int8_t
+    {
+        kNone,
+        kCooldownReduction
+    };
+
     struct  eDataCell
     {
-        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ) {};
+        eDataCell() : mPlayer( -1 ), mTrail( -1 ), mGround( -1 ), mDrop( kNone ) {};
 
         bool  operator==( const eDataCell& iRHS )
         {
-            return  mPlayer == iRHS.mPlayer && mTrail == iRHS.mTrail && mGround == iRHS.mGround;
+            return  mPlayer == iRHS.mPlayer && mTrail == iRHS.mTrail && mGround == iRHS.mGround && mDrop == iRHS.mDrop;
         }
 
         eDataCell&  operator=( const eDataCell& iRHS )
         {
-            mPlayer = iRHS.mPlayer;
-            mTrail = iRHS.mTrail;
-            mGround = iRHS.mGround;
+            mPlayer     = iRHS.mPlayer;
+            mTrail      = iRHS.mTrail;
+            mGround     = iRHS.mGround;
+            mDrop       = iRHS.mDrop;
 
             return  *this;
         }
 
         bool  empty() const
         {
-            return  mPlayer == -1 && mTrail == -1 && mGround == -1;
+            return  mPlayer == -1 && mTrail == -1 && mGround == -1 && mDrop == kNone;
         }
 
-        int8_t  mPlayer;
-        int8_t  mTrail;
-        int8_t  mGround;
+        int8_t      mPlayer;
+        int8_t      mTrail;
+        int8_t      mGround;
+        eDropType   mDrop;
     };
 
-    enum eDataType
-    {
-        kPlayer,
-        kTrail,
-        kGround
-    };
+
 
     enum eRollBackType
     {
@@ -95,6 +106,7 @@ public:
     void  SetPlayerValueAt( const QPoint& iPoint, int value );
     void  SetTrailValueAt( const QPoint& iPoint, int value );
     void  SetGroundValueAt( const QPoint& iPoint, int value );
+    void  SetDropAt( const QPoint& iPoint, eDropType iDrop );
 
     void  FillZone( cUser*  iUser );
 
@@ -119,17 +131,22 @@ private:
     void  _TryRespawningPlayer( cUser*  iUser );
     void  _CallCB( int, int, int, eDataType );
     void  _AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser );
+    void  _SpawnDrop( eDropType iDropType );
 
     void  _SetCellData( const QPoint& iPoint, const eDataCell& iCellData );
 
 
+    // Comp logics
     void  _RunStandardUpdateForUser( cUser* iUser, int iDTick );
     bool  _RunRollbackForUser( cUser* iUser, int iDTick ); // Returns true if it handled the user, false otherwise, meaning main loop has to handle still the user
     bool  _RunSpeedForUser( cUser* iUser, int iDTick ); // Returns true if it handled the user, false otherwise, meaning main loop has to handle still the user
 
+    // Drop logics
+    void  _ApplyReducCooldownOnUser( cUser* iUser, int iDTick );
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
+
     cCircularBufferP< cSnapShot >       mSnapShots;
     QMap< int, cUser* >                 mAllUsers;
 

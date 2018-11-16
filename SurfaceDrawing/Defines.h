@@ -9,7 +9,7 @@
 #define     ROLLBACKSPEED           2           // Multiplier of speed
 #define     SPEEDBOOST              3           // Multiplier of speed
 #define     RENDERDELAY             3           // In ticks
-
+#define     DROPCOUNT               10
 
 #define     UI_COMP_SIZE            32
 #define     UI_COMP_SPACING         5

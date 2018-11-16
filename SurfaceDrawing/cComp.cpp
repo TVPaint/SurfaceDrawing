@@ -8,7 +8,7 @@ cComp::cComp()
 }
 
 
-cComp::cComp( unsigned int iCD, unsigned int iDurationBase ) :
+cComp::cComp( int iCD, int iDurationBase ) :
     mCooldown( 0 ),
     mCooldownBase( iCD ),
     mCompDuration( 0 ),

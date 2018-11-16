@@ -63,6 +63,10 @@ cPaperLogic::Init()
     for( int i = 0; i < GRIDSIZE; ++i )
         mPaperGrid.push_back( QVector< eDataCell >( GRIDSIZE, eDataCell() ) );
 
+
+    for( int i = 0; i < DROPCOUNT; ++i )
+        _SpawnDrop( kCooldownReduction );
+
     Q_ASSERT( SanityChecks() );
 }
 
@@ -261,6 +265,15 @@ cPaperLogic::SetGroundValueAt( const QPoint& iPoint, int value )
     CELLAT( iPoint ).mGround = value;
     mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
     _CallCB( iPoint.x(), iPoint.y(), value, kGround );
+}
+
+
+void
+cPaperLogic::SetDropAt( const QPoint & iPoint, eDropType iDrop )
+{
+    CELLAT( iPoint ).mDrop = iDrop;
+    mSnapShots.Back()->AddCellDiff( iPoint, CELLAT( iPoint ) );
+    _CallCB( iPoint.x(), iPoint.y(), 0, kDrop );
 }
 
 
@@ -608,6 +621,24 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser )
 
 
 void
+cPaperLogic::_SpawnDrop( eDropType iDropType )
+{
+    int x = (rand() % GRIDSIZE) + 1;
+    int y = (rand() % GRIDSIZE) + 1;
+    QPoint asPoint( x, y );
+
+    while( CELLAT( asPoint ).mPlayer >= 0 )
+    {
+        x = (rand() % GRIDSIZE) + 1;
+        y = (rand() % GRIDSIZE) + 1;
+        asPoint = QPoint( x, y );
+    }
+
+    SetDropAt( asPoint, iDropType );
+}
+
+
+void
 cPaperLogic::_SetCellData( const QPoint & iPoint, const eDataCell & iCellData )
 {
     _CallCB( iPoint.x(), iPoint.y(), -2, kPlayer ); // CB to erase old value
@@ -657,6 +688,13 @@ cPaperLogic::_RunStandardUpdateForUser( cUser* iUser, int iDTick )
     else if( CELLAT( newPosition).mTrail >= 0 ) // If user encounters a trail
     {
         KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
+    }
+
+    if( CELLAT( newPosition ).mDrop == kCooldownReduction )
+    {
+        _ApplyReducCooldownOnUser( iUser, iDTick );
+        SetDropAt( newPosition, kNone );
+        _SpawnDrop( kCooldownReduction );
     }
 }
 
@@ -750,6 +788,16 @@ cPaperLogic::_RunSpeedForUser( cUser * iUser, int iDTick )
 }
 
 
+void
+cPaperLogic::_ApplyReducCooldownOnUser( cUser * iUser, int iDTick )
+{
+    for( auto& comp : iUser->mComps )
+        comp.mCooldown -= 1000/SPEED; // 1 sec gain
+
+    mSnapShots.Back()->AddUserDiff( iUser );
+}
+
+
 QDataStream&
 operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell )
 {
@@ -757,6 +805,8 @@ operator<<(QDataStream& oStream, const cPaperLogic::eDataCell& iDataCell )
     oStream << iDataCell.mPlayer
             << iDataCell.mTrail
             << iDataCell.mGround;
+
+    oStream  << int8_t(iDataCell.mDrop);
 
     return  oStream;
 }
@@ -776,6 +826,10 @@ operator>>(QDataStream& iStream, cPaperLogic::eDataCell& oDataCell )
     iStream >> oDataCell.mPlayer
             >> oDataCell.mTrail
             >> oDataCell.mGround;
+
+    int8_t drop;
+    iStream >> drop;
+    oDataCell.mDrop = cPaperLogic::eDropType( drop );
 
     return  iStream;
 }
@@ -844,10 +898,18 @@ operator>>(QDataStream& iStream, cPaperLogic& oPaperLogic )
 
 
 
-// ===========================
-// ===========================
-// ===========================
-// ===========================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// ==================================================================================================================================================================================================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
+// =================================================================================================================================================================================
 
 
 

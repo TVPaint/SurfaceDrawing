@@ -5,5 +5,6 @@
         <file>Resources/SpeedUp.png</file>
         <file>Resources/SpeedUpGray.png</file>
         <file>Resources/Bar200.png</file>
+        <file>Resources/Time.png</file>
     </qresource>
 </RCC>

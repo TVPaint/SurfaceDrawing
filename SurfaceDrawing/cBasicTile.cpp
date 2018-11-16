@@ -11,6 +11,7 @@
 
 cBasicTile::~cBasicTile()
 {
+    delete  mDropCDReducPix;
 }
 
 
@@ -19,8 +20,10 @@ cBasicTile::cBasicTile( QGraphicsItem* iParent ) :
     mHalf( false ),
     mDirection( kNorth ),
     mGroundColor( Qt::transparent ),
-    mTrailColor( Qt::transparent )
+    mTrailColor( Qt::transparent ),
+    mDrop( cPaperLogic::kNone )
 {
+    mDropCDReducPix = new QPixmap( ":/SurfaceDrawing/Resources/Time.png" );
 }
 
 
@@ -67,6 +70,9 @@ cBasicTile::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOption
     iPainter->setPen( mTrailColor );
     iPainter->setCompositionMode( QPainter::CompositionMode_Multiply );
     iPainter->drawRect( bbox );
+
+    if( mDrop == cPaperLogic::kCooldownReduction )
+        iPainter->drawPixmap( 0, 0, *mDropCDReducPix );
 }
 
 
