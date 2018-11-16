@@ -71,6 +71,8 @@ cUser::copyFromUser( const cUser * iUser )
 
     for( int i = 0; i < iUser->mComps.size(); ++i )
         mComps[ i ] = iUser->mComps[ i ];
+
+    mCompPower = iUser->mCompPower;
 }
 
 
@@ -166,6 +168,7 @@ cUser::deactivateComp( int iCompNumber )
 {
     mComps[ iCompNumber ].mActive = false;
     mComps[ iCompNumber ].mCompDuration = 0;
+    mCompPower = 1;
 }
 
 
@@ -225,7 +228,8 @@ operator<<(QDataStream& oStream, const cUser& iUser )
             << iUser.mIsDead
             << iUser.mAskedRespawn
             << iUser.mSpeedMultiplicator
-            << iUser.mComps;
+            << iUser.mComps
+            << iUser.mCompPower;
             //<< iUser.mTrailPoints;
 
     return  oStream;
@@ -254,7 +258,8 @@ operator>>(QDataStream& iStream, cUser& oUser )
             >> oUser.mIsDead
             >> oUser.mAskedRespawn
             >> oUser.mSpeedMultiplicator
-            >> oUser.mComps;
+            >> oUser.mComps
+            >> oUser.mCompPower;
 
     return  iStream;
 }

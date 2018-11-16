@@ -65,7 +65,7 @@ cPaperLogic::Init()
 
 
     for( int i = 0; i < DROPCOUNT; ++i )
-        _SpawnDrop( kCooldownReduction );
+        _SpawnDrop();
 
     Q_ASSERT( SanityChecks() );
 }
@@ -356,6 +356,14 @@ cPaperLogic::KillUser( cUser* iUser )
     iUser->mGUIMovementVector = QPoint( 0, 0 );
     iUser->mTrailPoints.clear();
     iUser->setPosition( QPoint( 1, 1 ) );
+
+    iUser->mCompPower = 1;
+    for( int i = 0; i < iUser->mComps.size(); ++i )
+    {
+        iUser->deactivateComp( i );
+        iUser->mComps[ i ].mCooldown = 0;
+    }
+
     mSnapShots.Back()->AddUserDiff( iUser );
 
     for( auto row = 0; row < GRIDSIZE; ++row )
@@ -621,20 +629,21 @@ cPaperLogic::_AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser )
 
 
 void
-cPaperLogic::_SpawnDrop( eDropType iDropType )
+cPaperLogic::_SpawnDrop()
 {
-    int x = (rand() % GRIDSIZE) + 1;
-    int y = (rand() % GRIDSIZE) + 1;
+    int8_t type = int8_t((rand() % 2) + 1);
+    int x = (rand() % (GRIDSIZE-1)) + 1;
+    int y = (rand() % (GRIDSIZE-1)) + 1;
     QPoint asPoint( x, y );
 
     while( CELLAT( asPoint ).mPlayer >= 0 )
     {
-        x = (rand() % GRIDSIZE) + 1;
-        y = (rand() % GRIDSIZE) + 1;
+        x = (rand() % (GRIDSIZE-1)) + 1;
+        y = (rand() % (GRIDSIZE-1)) + 1;
         asPoint = QPoint( x, y );
     }
 
-    SetDropAt( asPoint, iDropType );
+    SetDropAt( asPoint, eDropType( type ) );
 }
 
 
@@ -690,11 +699,15 @@ cPaperLogic::_RunStandardUpdateForUser( cUser* iUser, int iDTick )
         KillUser( mAllUsers[ CELLAT(newPosition).mTrail ] );
     }
 
-    if( CELLAT( newPosition ).mDrop == kCooldownReduction )
+    if( CELLAT( newPosition ).mDrop != kNone )
     {
-        _ApplyReducCooldownOnUser( iUser, iDTick );
+        if( CELLAT( newPosition ).mDrop == kCooldownReduction )
+            _ApplyReducCooldownOnUser( iUser, iDTick );
+        else if( CELLAT( newPosition ).mDrop == kPower )
+            _ApplyPower( iUser, iDTick );
+
         SetDropAt( newPosition, kNone );
-        _SpawnDrop( kCooldownReduction );
+        _SpawnDrop();
     }
 }
 
@@ -702,7 +715,8 @@ cPaperLogic::_RunStandardUpdateForUser( cUser* iUser, int iDTick )
 bool
 cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
 {
-    if( !iUser->mComps[ 0 ].mActive )
+    int compIndex = 0;
+    if( !iUser->mComps[ compIndex ].mActive )
         return  false;
 
     if( !iUser->mIsOutOfGround || iUser->mIsDead )
@@ -712,7 +726,7 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
         return  false;
 
 
-    iUser->mComps[ 0 ].mCooldown = iUser->mComps[ 0 ].mCooldownBase;
+    iUser->mComps[ compIndex ].mCooldown = iUser->mComps[ compIndex ].mCooldownBase;
 
     auto trailCell = iUser->mTrailPoints.back();
 
@@ -736,7 +750,7 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
         iUser->mGUICurrentMovementVector = -directionVector;
 
         SetPlayerValueAt( iUser->mPosition, -1 );
-        iUser->setGUIPosition( iUser->mGUIPosition + directionVector * ROLLBACKSPEED * iDTick );
+        iUser->setGUIPosition( iUser->mGUIPosition + directionVector * ROLLBACKSPEED * iUser->mCompPower * iDTick );
         SetPlayerValueAt( iUser->mPosition, iUser->mIndex );
     }
     else
@@ -761,17 +775,18 @@ cPaperLogic::_RunRollbackForUser( cUser* iUser, int iDTick )
 bool
 cPaperLogic::_RunSpeedForUser( cUser * iUser, int iDTick )
 {
-    if( !iUser->mComps[ 1 ].mActive )
+    int compIndex = 1;
+    if( !iUser->mComps[ compIndex ].mActive )
         return  false;
 
     if( iUser->mIsDead )
         return  false;
 
-    if( iUser->mComps[ 1 ].mCompDuration <= 0 )
+    if( iUser->mComps[ compIndex ].mCompDuration <= 0 )
     {
-        iUser->deactivateComp( 1 );
+        iUser->deactivateComp( compIndex );
         iUser->mSpeedMultiplicator = 1;
-        iUser->mComps[ 1 ].mCooldown = iUser->mComps[ 1 ].mCooldownBase;
+        iUser->mComps[ compIndex ].mCooldown = iUser->mComps[ compIndex ].mCooldownBase;
         mSnapShots.Back()->AddUserDiff( iUser );
         return  true;
     }
@@ -781,7 +796,7 @@ cPaperLogic::_RunSpeedForUser( cUser * iUser, int iDTick )
         return  true;
 
 
-    iUser->mSpeedMultiplicator = SPEEDBOOST;
+    iUser->mSpeedMultiplicator = SPEEDBOOST * iUser->mCompPower;
     mSnapShots.Back()->AddUserDiff( iUser );
 
     return  true;
@@ -793,6 +808,15 @@ cPaperLogic::_ApplyReducCooldownOnUser( cUser * iUser, int iDTick )
 {
     for( auto& comp : iUser->mComps )
         comp.mCooldown -= 1000/SPEED; // 1 sec gain
+
+    mSnapShots.Back()->AddUserDiff( iUser );
+}
+
+
+void
+cPaperLogic::_ApplyPower( cUser * iUser, int iDTick )
+{
+    iUser->mCompPower += 1;
 
     mSnapShots.Back()->AddUserDiff( iUser );
 }

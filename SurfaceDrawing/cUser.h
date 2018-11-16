@@ -52,9 +52,10 @@ public:
 
     int         mSpeedMultiplicator = 1;
 
-    QList< QPoint >  mTrailPoints;
+    QList< QPoint >     mTrailPoints;
 
-    QVector< cComp > mComps;
+    QVector< cComp >    mComps;
+    int                 mCompPower = 1;
 };
 
 std::ostream& operator<<( std::ostream& oStream, const cUser& iUser );

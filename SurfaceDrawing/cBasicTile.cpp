@@ -24,6 +24,7 @@ cBasicTile::cBasicTile( QGraphicsItem* iParent ) :
     mDrop( cPaperLogic::kNone )
 {
     mDropCDReducPix = new QPixmap( ":/SurfaceDrawing/Resources/Time.png" );
+    mDropPowerPix   = new QPixmap( ":/SurfaceDrawing/Resources/Power.png" );
 }
 
 
@@ -73,6 +74,8 @@ cBasicTile::paint( QPainter * iPainter, const QStyleOptionGraphicsItem * iOption
 
     if( mDrop == cPaperLogic::kCooldownReduction )
         iPainter->drawPixmap( 0, 0, *mDropCDReducPix );
+    else if( mDrop == cPaperLogic::kPower )
+        iPainter->drawPixmap( 0, 0, *mDropPowerPix );
 }
 
 

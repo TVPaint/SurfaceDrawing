@@ -54,7 +54,6 @@ cServer::Run()
 {
     if( !listen( QHostAddress::Any, 55666 ) )
         qDebug() << "Error";
-
 }
 
 

@@ -33,4 +33,5 @@ public:
 
     cPaperLogic::eDropType  mDrop;
     QPixmap*                mDropCDReducPix = 0; // Go vector < eDropType > if growing
+    QPixmap*                mDropPowerPix = 0; // Go vector < eDropType > if growing
 };

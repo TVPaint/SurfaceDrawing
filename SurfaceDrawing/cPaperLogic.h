@@ -35,7 +35,8 @@ public:
     enum  eDropType : int8_t
     {
         kNone,
-        kCooldownReduction
+        kCooldownReduction,
+        kPower
     };
 
     struct  eDataCell
@@ -131,7 +132,7 @@ private:
     void  _TryRespawningPlayer( cUser*  iUser );
     void  _CallCB( int, int, int, eDataType );
     void  _AddTrailAtIndex( const QPoint& iPoint, cUser*  iUser );
-    void  _SpawnDrop( eDropType iDropType );
+    void  _SpawnDrop();
 
     void  _SetCellData( const QPoint& iPoint, const eDataCell& iCellData );
 
@@ -143,6 +144,7 @@ private:
 
     // Drop logics
     void  _ApplyReducCooldownOnUser( cUser* iUser, int iDTick );
+    void  _ApplyPower( cUser* iUser, int iDTick );
 
 public:
     QVector< QVector< eDataCell > >     mPaperGrid;
