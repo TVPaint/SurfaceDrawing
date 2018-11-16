@@ -44,7 +44,7 @@ cClient::cClient() :
             qDebug() << "FAILED Making debugDir";
     }
 
-    mDEBUGFile = new QFile( "./DEBUGLOGS/ClientLOGS.txt" );
+    mDEBUGFile = new QFile( logDir.absolutePath() + "/ClientLOGS.txt" );
     if( mDEBUGFile->open( QIODevice::WriteOnly ) )
     {
         mDEBUGStream = new QTextStream( mDEBUGFile );

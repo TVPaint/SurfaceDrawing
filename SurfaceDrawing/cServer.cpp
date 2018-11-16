@@ -4,6 +4,8 @@
 #include "cPaperLogic.h"
 
 #include <QHostAddress>
+#include <QCoreApplication>
+#include <QDir>
 #include <ctime>
 
 
@@ -41,11 +43,25 @@ cServer::cServer() :
     mPaperLogic = new cPaperLogic();
     mPaperLogic->Init();
 
-    mDEBUGFile = new QFile( "./DEBUGLOGS/ServerLogs.txt" );
-    if( !mDEBUGFile->open( QIODevice::WriteOnly ) )
-        qDebug() << "Can't open file";
+    QDir appPath( QCoreApplication::applicationDirPath() );
+    QDir logDir( appPath.absolutePath() + "/DEBUGLOGS" );
+    if( !logDir.exists() )
+    {
+        qDebug() << "Making debugDir";
+        if( !appPath.mkdir( "DEBUGLOGS" ) )
+            qDebug() << "FAILED Making debugDir";
+    }
 
-    mDEBUGStream = new QTextStream( mDEBUGFile );
+    mDEBUGFile = new QFile( logDir.absolutePath() + "/ClientLOGS.txt" );
+    if( mDEBUGFile->open( QIODevice::WriteOnly ) )
+    {
+        mDEBUGStream = new QTextStream( mDEBUGFile );
+    }
+    else
+    {
+        mDEBUGFile = 0;
+        qDebug() << "Can't open file";
+    }
 }
 
 
@@ -60,6 +76,9 @@ cServer::Run()
 void
 cServer::SendGridToAllClient()
 {
+    if( mClients.size() <= 0 )
+        return;
+
     if( mPaperLogic->mPaperGrid.size() <= 0 )
         _LOG( "Grid is fucked (size <= 0)" );
 
@@ -83,6 +102,9 @@ cServer::SendGridToAllClient()
 void
 cServer::SendNextSnapShotToAllClient()
 {
+    if( mClients.size() <= 0 )
+        return;
+
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
@@ -104,6 +126,9 @@ cServer::SendNextSnapShotToAllClient()
 void
 cServer::SendSnapShotIntervalToAllClient( int iFirstTick, int iLastTick )
 {
+    if( mClients.size() <= 0 )
+        return;
+
     for( int i = iFirstTick; i <= iLastTick; ++i )
     {
         QByteArray data;
@@ -130,6 +155,9 @@ cServer::SendSnapShotIntervalToAllClient( int iFirstTick, int iLastTick )
 void
 cServer::SendClockToAllClients()
 {
+    if( mClients.size() <= 0 )
+        return;
+
     _LOG( "Sending clock signal to all clients" );
     for( auto client : mClients )
     {
@@ -152,6 +180,9 @@ cServer::SendClockToAllClients()
 void
 cServer::SendUserDisconnectedToAllClients( int iIndex )
 {
+    if( mClients.size() <= 0 )
+        return;
+
     QByteArray data;
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
