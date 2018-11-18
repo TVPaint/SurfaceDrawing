@@ -357,7 +357,9 @@ cPaperLogic::KillUser( cUser* iUser )
     iUser->mTrailPoints.clear();
     iUser->setPosition( QPoint( 1, 1 ) );
 
+    iUser->mSpeedMultiplicator = 1;
     iUser->mCompPower = 1;
+
     for( int i = 0; i < iUser->mComps.size(); ++i )
     {
         iUser->deactivateComp( i );
