@@ -9,8 +9,6 @@ RUN git clone -b $BRANCH https://github.com/TVPDamienL/SurfaceDrawing /tmp/Surfa
 
 RUN cd /tmp/SurfaceDrawing && \
     cmake . -DBUILD_CLIENT=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install && \
-    ls -l &&\
-    cat Makefile &&\
     make install -j 4
 
 RUN mkdir -p /install/server/lib && \
