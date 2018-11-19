@@ -8,14 +8,13 @@ ADD https://api.github.com/repos/TVPDamienL/SurfaceDrawing/git/refs/heads/$BRANC
 RUN git clone -b $BRANCH https://github.com/TVPDamienL/SurfaceDrawing /tmp/SurfaceDrawing
 
 RUN cd /tmp/SurfaceDrawing && \
-    cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install && \
+    cmake . -DBUILD_CLIENT=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install && \
     ls -l &&\
     cat Makefile &&\
     make install -j 4
 
 RUN mkdir -p /install/server/lib && \
     for i in $(ldd /install/server/SurfaceDrawing_SERVER | grep -o "=> .* " | sed "s/=>//"); do \
-        echo $i && \
         cp $i /install/server/lib/; \
     done
 
