@@ -4,8 +4,8 @@ RUN apt update && apt install --no-install-recommends -y git cmake build-essenti
 
 ARG BRANCH=network
 
-ADD https://api.github.com/repos/TVPDamienL/SurfaceDrawing/git/refs/heads/$BRANCH /tmp/version.json
-RUN git clone -b $BRANCH https://github.com/TVPDamienL/SurfaceDrawing /tmp/SurfaceDrawing
+ADD https://api.github.com/repos/TVPaint/SurfaceDrawing/git/refs/heads/$BRANCH /tmp/version.json
+RUN git clone -b $BRANCH https://github.com/TVPaint/SurfaceDrawing /tmp/SurfaceDrawing
 
 RUN cd /tmp/SurfaceDrawing && \
     cmake . -DBUILD_CLIENT=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install && \
