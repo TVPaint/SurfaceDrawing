@@ -74,9 +74,10 @@ SurfaceDrawing::Update()
     }
     else
     {
+        mClientSocket->_LOG( "Manual update for tick " + QString::number( tickToRender ) );
         qDebug() << "Manual update for tick " << tickToRender;
-        qDebug() << "Lastest SS is at tick " << mPaperLogic->mSnapShots.Back()->mTick;
         mPaperLogic->ApplyDeltaTick( 1 ); // If packet were lost, here we fill ticks using simulation's update
+
         if( ++mDesyncCounter >= 20 )
         {
             mClientSocket->SendStopResync();

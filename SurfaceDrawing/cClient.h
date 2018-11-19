@@ -68,8 +68,10 @@ signals:
 
     void  userDisconnected( int iIndex );
 
-private:
+
+public:
     void  _LOG( const QString& iText );
+private:
     void  _PingAveraging( qint64 timestamp );
 
 public:

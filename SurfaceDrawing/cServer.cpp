@@ -109,17 +109,24 @@ cServer::SendNextSnapShotToAllClient()
     QDataStream stream( &data, QIODevice::WriteOnly );
     stream.setVersion( QDataStream::Qt_5_10 );
 
+    auto snap = mPaperLogic->mSnapShots.Back();
+
     stream << qint64( mApplicationClock->remainingTimeAsDuration().count() );
     stream << quint64( mPaperLogic->mTick );
     stream << quint8(kSnap);
-    stream << *(mPaperLogic->mSnapShots.Back());
+    stream << *(snap);
 
     //qDebug() << *(mPaperLogic->mSnapShots.Back());
-    _LOG( "Sending snap  :" + QString::number( mPaperLogic->mTick ) + ": to all clients" );
+    _LOG( "Sending snap  :" + QString::number( snap->mTick ) + ": to all clients" );
 
     for( auto client : mClients )
+    {
         if( _IsClientAvailable( mClients.key( client ) ) )
+        {
             client->write( data );
+            client->flush();
+        }
+    }
 }
 
 
