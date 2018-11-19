@@ -1,6 +1,6 @@
 FROM debian:sid-slim as builder
 
-RUN apt update && apt install --no-install-recommends -y git cmake build-essential qtbase5-dev ca-certificates && apt clean
+RUN apt update && apt install --no-install-recommends -y git grep cmake build-essential qtbase5-dev ca-certificates && apt clean
 
 ARG BRANCH=master
 
