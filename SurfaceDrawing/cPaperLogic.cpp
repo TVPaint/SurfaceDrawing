@@ -38,8 +38,7 @@ cPaperLogic::CopyFromPaper( const cPaperLogic& iPaper, quint16 iMissingUpdates, 
         if( !user )
             continue;
 
-        int index = mAllUsers.key( user );
-        user->copyFromUser( iPaper.mAllUsers[ index ] );
+        user->copyFromUser( iPaper.mAllUsers[ user->mIndex ] );
         mSnapShots.Back()->AddUserDiff( user );
     }
 
@@ -100,6 +99,7 @@ cPaperLogic::GetColorByIndex( int iIndex )
 void
 cPaperLogic::AddUser( cUser * iUser )
 {
+    Q_ASSERT( iUser->mIndex >= 0 );
     mAllUsers.insert( iUser->mIndex, iUser );
     _TryRespawningPlayer( iUser );
 }

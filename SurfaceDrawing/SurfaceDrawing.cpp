@@ -135,7 +135,6 @@ SurfaceDrawing::RollbackTest()
 void
 SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
 {
-
     // As we send newUser and otherUsers info, this should never be out of sync
     if( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() )
     {
@@ -143,21 +142,6 @@ SurfaceDrawing::PaperLogicArrived( cPaperLogic & iPaper, int  iLatencyInMs )
         qWarning( "%s", msg.c_str() );
         Q_ASSERT( iPaper.mAllUsers.size() == mPaperLogic->mAllUsers.size() );
     }
-    //if( iPaper.mAllUsers.size() != mPaperLogic->mAllUsers.size() )
-    //{
-    //    for( auto user : iPaper.mAllUsers )
-    //    {
-    //        int  index = iPaper.mAllUsers.key( user );
-    //        if( mPaperLogic->mAllUsers.find( index ) != mPaperLogic->mAllUsers.end() )
-    //            continue;
-
-    //        auto newUser = new cUser( index );
-    //        mCanvas->AddUser( newUser );
-    //        mPaperLogic->AddUser( newUser );
-    //    }
-    //}
-
-    //qDebug() << "Paper arrived : Tick == " << iPaper.mTick;
 
     mAuthPaperLogic->CopyFromPaper( iPaper, 0, cPaperLogic::kSetTickToSnap );
     mPaperLogic->CopyFromPaper( iPaper, 0, cPaperLogic::kSetTickToSnap );

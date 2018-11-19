@@ -373,6 +373,7 @@ cClient::GetData()
             auto ping = mPingStartTime - mApplicationClock->remainingTimeAsDuration().count();
 
             _LOG( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" + "At tick : " + QString::number( packetTick ) );
+            qDebug() << ( "PING : " + QString::number( mPingStartTime - mApplicationClock->remainingTime() ) + " ms" + "At tick : " + QString::number( packetTick ) );
             _PingAveraging( timestamp );
 
             mDataReadingState = kNone;
